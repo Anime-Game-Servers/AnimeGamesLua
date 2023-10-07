@@ -2,6 +2,7 @@ package org.anime_game_servers.gi_lua.models;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.anime_game_servers.gi_lua.models.Position;
 
 @ToString
 @Getter

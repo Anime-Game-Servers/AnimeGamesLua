@@ -7,8 +7,8 @@ import org.anime_game_servers.gi_lua.models.constants.EntityType;
 @ToString
 @Getter
 public abstract class SceneObject {
-    protected int level;
     protected int config_id;
+    protected int level;
     protected int area_id;
     protected int vision_level = 0;
     protected int mark_flag;

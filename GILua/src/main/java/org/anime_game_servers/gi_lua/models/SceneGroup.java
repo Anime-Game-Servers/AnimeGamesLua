@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.scene.block.GroupLifecycle;
+import org.anime_game_servers.gi_lua.models.scene.group.SceneMonsterPool;
+import org.anime_game_servers.gi_lua.models.scene.group.ScenePoint;
 import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.models.ScriptType;
@@ -12,6 +15,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("FieldMayBeFinal")
 @ToString
 @Getter
 public class SceneGroup {
@@ -19,10 +23,34 @@ public class SceneGroup {
 
     @Setter
     private int id;
+    // from block
     private int refresh_id;
+    private int area;
     @Nullable
     private Position pos;
+    @Nullable
+    private SceneReplaceable is_replaceable;
+    private final boolean dynamic_load = false;
+    @Nullable
+    private SceneBusiness business;
+    @Nullable
+    private GroupLifecycle life_cycle = GroupLifecycle.FULL_TIME__CYCLE;
+    private int activity_revise_level_grow_id;
+    private int rely_start_world_level_limit_activity_id;
+    private int vision_type;
+    private boolean across_block = false;
+    private boolean unload_when_disconnect = false;
+    private boolean ignore_world_level_revise = false;
+    private boolean force_unload_nodelay = false;
+    private boolean force_clean_sub_entity = false;
+    private boolean is_load_by_vision_type = false;
+    private int load_strategy;
+    private Set<String> forbid_monster_die; //todo find enum values
+    private List<Integer> related_level_tag_series_list;
+    private List<Integer> group_tag_list;
+    private List<Integer> weathers;
 
+    // from group script
     @Nullable
     private Map<Integer, SceneMonster> monsters; // <ConfigId, Monster>
     @Nullable
@@ -30,25 +58,27 @@ public class SceneGroup {
     @Nullable
     private Map<Integer, SceneGadget> gadgets; // <ConfigId, Gadgets>
     @Nullable
-    private Map<String, SceneTrigger> triggers;
+    private Map<String, SceneTrigger> triggers; // <TriggerName, Trigger>
     @Nullable
-    private Map<Integer, SceneRegion> regions;
+    private Map<Integer, SceneRegion> regions;  // <ConfigId, Region>
     @Nullable
-    private List<SceneSuite> suites;
+    private Map<Integer, ScenePoint> points;  // <ConfigId, ScenePoint>
     @Nullable
     private List<SceneVar> variables;
 
     @Nullable
-    private SceneBusiness business;
+    private SceneInitConfig init_config;
+    @Nullable
+    private List<SceneSuite> suites;
+
+    private List<SceneMonsterPool> monster_pools;
+    private List<List<Integer>> sight_groups;
+
     @Nullable
     private SceneGarbage garbages;
-    @Nullable
-    private SceneInitConfig init_config;
-    private final boolean dynamic_load = false;
 
-    @Nullable
-    private SceneReplaceable is_replaceable;
 
+    // internal
     private transient boolean loaded; // Not an actual variable in the scripts either
     private transient LuaScript script;
 
@@ -62,12 +92,17 @@ public class SceneGroup {
         return this.business == null ? 0 : this.business.getType();
     }
 
+    public boolean hasGarbages() {
+        return this.garbages != null && !garbages.isEmpty();
+    }
+
+    @Nullable
     public List<SceneGadget> getGarbageGadgets() {
         return this.garbages == null ? null : this.garbages.getGadgets();
     }
 
     public boolean isReplaceable() {
-        return this.is_replaceable != null ? this.is_replaceable.isValue() : false;
+        return this.is_replaceable != null && this.is_replaceable.isValue();
     }
 
     public SceneSuite getSuiteByIndex(int index) {

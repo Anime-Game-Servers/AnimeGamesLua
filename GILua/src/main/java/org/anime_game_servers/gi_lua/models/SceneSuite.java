@@ -7,6 +7,7 @@ import lombok.val;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("FieldMayBeFinal")
 @ToString
 @Getter
 public class SceneSuite {
@@ -15,6 +16,7 @@ public class SceneSuite {
     private List<Integer> gadgets = List.of();
     private List<String> triggers = List.of();
     private List<Integer> regions = List.of();
+    private List<Integer> npcs = List.of();
     private int rand_weight;
 
     private boolean ban_refresh = false;
@@ -23,6 +25,7 @@ public class SceneSuite {
     private transient List<SceneGadget> sceneGadgets = List.of();
     private transient List<SceneTrigger> sceneTriggers = List.of();
     private transient List<SceneRegion> sceneRegions = List.of();
+    private transient List<SceneNPC> sceneNPCs = List.of();
 
     public void init(SceneGroup sceneGroup) {
         val monsters = sceneGroup.getMonsters();
@@ -60,6 +63,15 @@ public class SceneSuite {
                 this.regions.stream()
                     .filter(regions::containsKey)
                     .map(regions::get)
+                    .toList()
+            );
+        }
+        val npcs = sceneGroup.getNpcs();
+        if(npcs != null) {
+            this.sceneNPCs = new ArrayList<>(
+                this.npcs.stream()
+                    .filter(npcs::containsKey)
+                    .map(npcs::get)
                     .toList()
             );
         }

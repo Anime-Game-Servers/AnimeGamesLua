@@ -8,6 +8,7 @@ import org.anime_game_servers.gi_lua.models.constants.EntityType;
 @Getter
 public class SceneNPC extends SceneObject{
 	private int npc_id;
+    int area_id;
 
     @Override
     public EntityType getType() {

@@ -6,7 +6,6 @@ import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.engine.LuaTable;
 import org.anime_game_servers.lua.models.IntValueEnum;
 import org.anime_game_servers.lua.models.ScriptType;
-import org.anime_game_servers.lua.serialize.Serializer;
 import org.jetbrains.annotations.Nullable;
 import org.terasology.jnlua.JavaFunction;
 

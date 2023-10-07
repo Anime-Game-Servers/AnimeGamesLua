@@ -7,6 +7,7 @@ import org.anime_game_servers.gi_lua.models.constants.ScriptRegionShape;
 import java.util.List;
 
 
+@SuppressWarnings("FieldMayBeFinal")
 @Getter
 public class SceneRegion extends SceneObject{
     private int shape;
@@ -17,8 +18,9 @@ public class SceneRegion extends SceneObject{
     // for CYLINDER and POLYGON
     private float height;
     private List<Position> point_array;
+    private List<String> ability_group_list;
     private List<String> team_ability_group;
-    private boolean is_trigger_reload_group;
+    private boolean is_trigger_reload_group = false;
 
     public boolean contains(Position position) {
         switch (shape) {
