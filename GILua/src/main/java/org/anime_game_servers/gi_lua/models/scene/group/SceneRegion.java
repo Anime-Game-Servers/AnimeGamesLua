@@ -1,6 +1,7 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
+import org.anime_game_servers.gi_lua.models.Position;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
 import org.anime_game_servers.gi_lua.models.constants.ScriptRegionShape;
 

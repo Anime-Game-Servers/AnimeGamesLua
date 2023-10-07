@@ -1,7 +1,8 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 
 @Data
 @NoArgsConstructor

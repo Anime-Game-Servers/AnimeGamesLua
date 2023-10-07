@@ -1,8 +1,9 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.scene.group.*;
 
 import java.util.ArrayList;
 import java.util.List;

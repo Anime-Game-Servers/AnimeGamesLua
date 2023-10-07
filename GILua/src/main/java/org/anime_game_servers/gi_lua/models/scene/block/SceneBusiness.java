@@ -1,4 +1,4 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.block;
 
 import lombok.Getter;
 import lombok.ToString;

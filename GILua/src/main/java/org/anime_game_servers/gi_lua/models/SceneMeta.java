@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
 import org.anime_game_servers.gi_lua.SceneIndexManager;
+import org.anime_game_servers.gi_lua.models.scene.block.SceneBlock;
 import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.models.ScriptType;

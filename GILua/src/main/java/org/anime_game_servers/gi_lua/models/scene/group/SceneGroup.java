@@ -1,12 +1,13 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.*;
 import org.anime_game_servers.gi_lua.models.scene.block.GroupLifecycle;
-import org.anime_game_servers.gi_lua.models.scene.group.SceneMonsterPool;
-import org.anime_game_servers.gi_lua.models.scene.group.ScenePoint;
+import org.anime_game_servers.gi_lua.models.scene.block.SceneBusiness;
+import org.anime_game_servers.gi_lua.models.scene.block.SceneReplaceable;
 import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.models.ScriptType;

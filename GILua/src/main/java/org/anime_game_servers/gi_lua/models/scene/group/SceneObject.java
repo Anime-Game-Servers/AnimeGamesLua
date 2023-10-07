@@ -1,8 +1,10 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.anime_game_servers.gi_lua.models.Position;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
+import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 
 @ToString
 @Getter

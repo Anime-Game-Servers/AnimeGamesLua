@@ -1,10 +1,12 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.block;
 
 import com.github.davidmoten.rtreemulti.RTree;
 import com.github.davidmoten.rtreemulti.geometry.Geometry;
 import com.github.davidmoten.rtreemulti.geometry.Rectangle;
 import lombok.*;
 import org.anime_game_servers.gi_lua.SceneIndexManager;
+import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
 import org.anime_game_servers.lua.models.ScriptType;
 
@@ -15,13 +17,13 @@ import java.util.stream.Collectors;
 @ToString
 @Getter
 public class SceneBlock {
-    @Setter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PUBLIC)
     private int id;
     private Position max;
     private Position min;
 
     private int sceneId;
-    private Map<Integer,SceneGroup> groups;
+    private Map<Integer, SceneGroup> groups;
     private RTree<SceneGroup, Geometry> sceneGroupIndex;
 
     private transient boolean loaded; // Not an actual variable in the scripts either

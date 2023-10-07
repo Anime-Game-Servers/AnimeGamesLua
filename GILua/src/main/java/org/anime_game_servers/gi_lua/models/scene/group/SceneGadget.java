@@ -1,11 +1,8 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.ToString;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
-import org.anime_game_servers.gi_lua.models.scene.group.CrucibleConfig;
-import org.anime_game_servers.gi_lua.models.scene.group.OfferingConfig;
-import org.anime_game_servers.gi_lua.models.scene.group.WorktopConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +10,7 @@ import java.util.Map;
 @SuppressWarnings("FieldMayBeFinal")
 @ToString
 @Getter
-public class SceneGadget extends SceneObject{
+public class SceneGadget extends SceneObject {
     private int gadget_id;
     private int state;
     private int point_type;
