@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.anime_game_servers"
-version = "1.0-SNAPSHOT"
+version = "0.1"
 
 repositories {
     mavenCentral()
@@ -24,4 +24,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            artifactId = "LuaJEngine"
+        }
+    }
 }
