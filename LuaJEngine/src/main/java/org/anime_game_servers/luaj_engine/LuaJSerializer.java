@@ -1,5 +1,7 @@
 package org.anime_game_servers.luaj_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LuaJSerializer extends BaseSerializer {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(LuaJEngine.class.getName());
 
 
     @Override
@@ -49,7 +52,7 @@ public class LuaJSerializer extends BaseSerializer {
             object = (T) keyValue;
         }
         if (object == null) {
-            //LuaEngine.logger.warn("Can't serialize value: {} to type: {}", keyValue, type);
+            logger.warn(() -> "Can't serialize value: "+keyValue+" to type: "+type);
         }
         return object;
     }
@@ -76,7 +79,7 @@ public class LuaJSerializer extends BaseSerializer {
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.error("Exception while serializing map", e);
+            logger.error(e, () -> "Exception while serializing map");
         }
 
         return map;
@@ -105,7 +108,7 @@ public class LuaJSerializer extends BaseSerializer {
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.error("Exception while serializing list", e);
+            logger.error(e, () -> "Exception while serializing list");
         }
 
         return list;
@@ -131,7 +134,7 @@ public class LuaJSerializer extends BaseSerializer {
                 Class<?> listType = getListType(type, field);
                 return (T) serializeList(listType, table);
             } catch (Exception e) {
-                //LuaEngine.logger.error("Exception while serializing {}", type.getName(), e);
+                logger.error("Exception while serializing {}", type.getName(), e);
                 return null;
             }
         }
@@ -173,12 +176,12 @@ public class LuaJSerializer extends BaseSerializer {
                         set(object, fieldMeta, methodAccess, keyValue.tojstring());
                     }
                 } catch (Exception ex) {
-                    //LuaEngine.logger.error("Exception serializing", ex);
+                    logger.error(ex, () -> "Exception serializing");
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.info(ScriptUtils.toMap(table).toString());
-            //LuaEngine.logger.error("Exception while serializing {}", type.getName(), e);
+            //logger.info(ScriptUtils.toMap(table).toString());
+            logger.error(e, () -> "Exception while serializing "+ type.getName());
         }
 
         return object;

@@ -3,6 +3,8 @@ package org.anime_game_servers.lua.serialize;
 
 import com.esotericsoftware.reflectasm.ConstructorAccess;
 import com.esotericsoftware.reflectasm.MethodAccess;
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,6 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseSerializer implements Serializer {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(BaseSerializer.class.getName());
 
     protected static final Map<Class<?>, MethodAccess> methodAccessCache = new ConcurrentHashMap<>();
     protected static final Map<Class<?>, ConstructorAccess<?>> constructorCache = new ConcurrentHashMap<>();
@@ -81,7 +84,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().setInt(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
     protected void set(Object object, @Nonnull FieldMeta fieldMeta, @Nullable MethodAccess methodAccess, double value){
@@ -92,7 +95,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().setDouble(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
     protected void set(Object object, @Nonnull FieldMeta fieldMeta, @Nullable MethodAccess methodAccess, float value){
@@ -103,7 +106,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().setFloat(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
     protected void set(Object object, @Nonnull FieldMeta fieldMeta, @Nullable MethodAccess methodAccess, long value){
@@ -114,7 +117,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().setLong(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
     protected void set(Object object, @Nonnull FieldMeta fieldMeta, @Nullable MethodAccess methodAccess, boolean value){
@@ -125,7 +128,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().setBoolean(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
     protected void set(Object object, @Nonnull FieldMeta fieldMeta, @Nullable MethodAccess methodAccess, Object value){
@@ -136,7 +139,7 @@ public abstract class BaseSerializer implements Serializer {
                 fieldMeta.getField().set(object, value);
             }
         } catch (Exception ex){
-            //Grasscutter.getLogger().warn("Failed to set field {} of type {} to value {}", fieldMeta.getName(), fieldMeta.getType(), value, ex);
+            logger.warn(ex, () -> "Failed to set field "+fieldMeta.getName()+" of type "+fieldMeta.getType()+" to value "+ value);
         }
     }
 }

@@ -20,6 +20,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     implementation("com.esotericsoftware:reflectasm:1.11.9")
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 }
 
 tasks.test {

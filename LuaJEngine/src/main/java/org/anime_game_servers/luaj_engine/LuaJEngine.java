@@ -1,5 +1,7 @@
 package org.anime_game_servers.luaj_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaEngine;
@@ -24,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class LuaJEngine implements LuaEngine {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(LuaJEngine.class.getName());
     private final ScriptEngineManager manager;
     private final LuajContext context;
 
@@ -83,7 +86,7 @@ public class LuaJEngine implements LuaEngine {
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            //logger.error("Failed to add static class to lua engine: " + name, e);
+            logger.error(e, () -> "Failed to add static class to lua engine: " + name);
         }
         return false;
     }

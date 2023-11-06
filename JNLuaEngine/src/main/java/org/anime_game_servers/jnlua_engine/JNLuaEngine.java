@@ -1,9 +1,12 @@
 package org.anime_game_servers.jnlua_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.engine.LuaTable;
+import org.anime_game_servers.lua.engine.ScriptConfig;
 import org.anime_game_servers.lua.models.IntValueEnum;
 import org.anime_game_servers.lua.models.ScriptType;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JNLuaEngine implements LuaEngine {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(JNLuaEngine.class.getName());
     @Getter
     private final ScriptEngineManager manager;
     @Getter(onMethod = @__(@Override))
@@ -34,8 +38,8 @@ public class JNLuaEngine implements LuaEngine {
         bindings = new SimpleBindings();
         this.serializer = new JNLuaSerializer();
 
-        bindings.put("print", (JavaFunction) luaState -> {
-            //logger.debug("[LUA] print {} ", luaState.checkString(1));
+        this.bindings.put("print", (JavaFunction) luaState -> {
+            logger.debug(() -> "[LUA] print " + luaState.checkString(1));
             return 1;
         });
 
@@ -69,6 +73,7 @@ public class JNLuaEngine implements LuaEngine {
             bindings.put(name, new StaticClassWrapper(staticClass));
             return true;
         } catch (Exception e) {
+            logger.error("Failed to add static class to lua engine: " + name, e);
         }
         return false;
     }

@@ -1,5 +1,7 @@
 package org.anime_game_servers.jnlua_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JNLuaConverter implements Converter {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(JNLuaConverter.class.getName());
     @Getter private static final JNLuaConverter INSTANCE = new JNLuaConverter();
     final Converter defaultConverter = DefaultConverter.getInstance();
     @Override
@@ -65,7 +68,7 @@ public class JNLuaConverter implements Converter {
                                 Object ret = m.invoke(null, args.toArray());
                                 luaState.pushJavaObject(ret);
                             } catch (Exception e) {
-                                //LuaEngine.logger.error("Error on invoking binding function. ", e);
+                                logger.error(e, ()->"Error on invoking binding function. ");
                                 throw e;
                             }
                             return 1;

@@ -18,6 +18,7 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("com.esotericsoftware:reflectasm:1.11.9")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 }
 
 tasks.test {

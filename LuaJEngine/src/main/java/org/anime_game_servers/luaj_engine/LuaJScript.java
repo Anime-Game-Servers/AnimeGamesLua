@@ -1,5 +1,7 @@
 package org.anime_game_servers.luaj_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LuaJScript implements LuaScript {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(LuaJScript.class.getName());
     private final CompiledScript compiledScript;
     private final Bindings binding;
     private final LuaJEngine engine;
@@ -38,7 +41,7 @@ public class LuaJScript implements LuaScript {
     public LuaValue callMethod(@Nonnull String methodName, Object... args) {
         val function = (org.luaj.vm2.LuaValue) binding.get(methodName);
         if (function == null || !function.isfunction()) {
-            //LuaEngine.logger.warn("Attempted to call method {} on script {} but it does not exist or is not a function", methodName, this);
+            logger.warn(() -> "Attempted to call method "+methodName+" on script "+this+" but it does not exist or is not a function");
             return BooleanLuaValue.FALSE;
         }
 

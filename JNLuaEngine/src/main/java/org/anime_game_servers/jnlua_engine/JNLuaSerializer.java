@@ -1,5 +1,7 @@
 package org.anime_game_servers.jnlua_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.jnlua.util.AbstractTableMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class JNLuaSerializer extends BaseSerializer {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(JNLuaSerializer.class.getName());
 
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -92,7 +95,7 @@ public class JNLuaSerializer extends BaseSerializer {
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.error("Exception serializing list", e);
+            logger.error(e, () -> "Exception serializing list");
         }
 
         return list;
@@ -118,7 +121,7 @@ public class JNLuaSerializer extends BaseSerializer {
                 Class<?> listType = getListType(type, field);
                 return (T) serializeList(listType, table);
             } catch (Exception e) {
-                //LuaEngine.logger.error("Exception serializing", e);
+                logger.error(e, ()->"Exception serializing");
                 return null;
             }
         }
@@ -166,11 +169,11 @@ public class JNLuaSerializer extends BaseSerializer {
                         //methodAccess.invoke(object, fieldMeta.index, keyValue);
                     }
                 } catch (Exception ex) {
-                   // LuaEngine.logger.error("Exception serializing", ex);
+                   logger.error(ex, () -> "Exception serializing");
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.error("Exception serializing", e);
+            logger.error(e, ()->"Exception serializing");
         }
 
         return object;
@@ -200,7 +203,7 @@ public class JNLuaSerializer extends BaseSerializer {
                 }
             }
         } catch (Exception e) {
-            //LuaEngine.logger.error("Exception serializing map", e);
+            logger.error(e, ()->"Exception serializing map");
         }
 
         return map;

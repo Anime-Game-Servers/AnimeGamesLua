@@ -21,6 +21,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     implementation("com.github.davidmoten:rtree-multi:0.1")
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 }
 
 tasks.test {
@@ -33,6 +34,11 @@ compileKotlin.kotlinOptions {
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "17"
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
