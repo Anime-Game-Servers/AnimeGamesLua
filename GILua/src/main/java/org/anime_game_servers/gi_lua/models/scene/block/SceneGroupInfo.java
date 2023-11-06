@@ -2,7 +2,7 @@ package org.anime_game_servers.gi_lua.models.scene.block;
 
 import lombok.Getter;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
-import org.anime_game_servers.gi_lua.models.SceneMeta;
+import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 
 import javax.annotation.Nullable;
 import java.util.List;

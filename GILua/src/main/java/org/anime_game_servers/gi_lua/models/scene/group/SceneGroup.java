@@ -5,7 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
-import org.anime_game_servers.gi_lua.models.SceneMeta;
+import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;

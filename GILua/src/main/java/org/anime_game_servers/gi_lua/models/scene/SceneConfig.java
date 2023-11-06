@@ -1,7 +1,8 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.anime_game_servers.gi_lua.models.PositionImpl;
 
 @ToString
 @Getter

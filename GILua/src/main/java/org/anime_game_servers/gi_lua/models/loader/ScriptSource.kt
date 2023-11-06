@@ -5,8 +5,9 @@ enum class ScriptSource(
     val needsId: Boolean
 ) {
     SCENE("Scene", true),
+    SCENE_REPLACEMENT("Scene", false),
     ACTIVITY("Activity", true),
     COMMON("Common", false),
     GADGET("Gadget", false),
-    SHARED_QUESTS("Quests/Shared", false),;
+    SHARED_QUESTS("Quest/Share", false),;
 }

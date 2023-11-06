@@ -39,10 +39,11 @@ public interface GIScriptLoader extends BaseScriptLoader {
     default Path getScriptPath(ScriptSource type, int typeId, String scriptName){
         val basePath = switch (type) {
             case SCENE -> "Scene/" + typeId + "/" + scriptName;
+            case SCENE_REPLACEMENT -> "Scene/" + scriptName;
             case ACTIVITY-> "Activity/" + typeId + "/" + scriptName;
             case COMMON -> "Common/" + scriptName;
             case GADGET -> "Gadget/" + scriptName;
-            case SHARED_QUESTS -> "Common/" + scriptName;
+            case SHARED_QUESTS -> "Quest/Share/" + scriptName;
         };
         return getScriptPath(basePath);
     }
@@ -90,6 +91,14 @@ public interface GIScriptLoader extends BaseScriptLoader {
         luaEngine.addGlobalStaticClass("ScriptLib", ScriptLib.class);
     }
 
+    default boolean loadSceneReplacementScript(ScriptParser parser){
+        return loadData(ScriptSource.SCENE_REPLACEMENT, 0, "groups_replacement.lua", ScriptType.DATA_STORAGE, parser);
+    }
+
+    default boolean loadSharedQuestScript(ScriptParser parser, int questId){
+        return loadData(ScriptSource.SHARED_QUESTS, questId, "Q"+questId+"ShareConfig.lua", ScriptType.DATA_STORAGE, parser);
+    }
+
     default boolean loadSceneMetaScript(int sceneId, ScriptParser parser){
         return loadData(ScriptSource.SCENE, sceneId, "scene"+sceneId+".lua", ScriptType.DATA_STORAGE, parser);
     }
@@ -98,9 +107,9 @@ public interface GIScriptLoader extends BaseScriptLoader {
     }
     default boolean loadSceneGroupScript(ScriptSource scriptSource, int targetId, int groupId, ScriptParser parser){
         if(scriptSource == ScriptSource.SCENE)
-            return loadData(scriptSource, targetId, "scene"+targetId+"_group"+groupId+".lua", ScriptType.DATA_STORAGE, parser);
+            return loadData(scriptSource, targetId, "scene"+targetId+"_group"+groupId+".lua", ScriptType.EXECUTABLE, parser);
         else
-            return loadData(scriptSource, targetId, "activity"+targetId+"_group"+groupId+".lua", ScriptType.DATA_STORAGE, parser);
+            return loadData(scriptSource, targetId, "activity"+targetId+"_group"+groupId+".lua", ScriptType.EXECUTABLE, parser);
     }
     default boolean loadSceneDummyPoints(int sceneId, ScriptParser parser){
         return loadData(ScriptSource.SCENE, sceneId, "scene"+sceneId+"_dummy_points.lua", ScriptType.DATA_STORAGE, parser);

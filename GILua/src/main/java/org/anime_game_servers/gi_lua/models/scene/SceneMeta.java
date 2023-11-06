@@ -1,4 +1,4 @@
-package org.anime_game_servers.gi_lua.models;
+package org.anime_game_servers.gi_lua.models.scene;
 
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
@@ -34,7 +34,8 @@ public class SceneMeta {
     //private RTree<SceneBlock, Geometry> sceneBlockIndex;
 
     public static SceneMeta of(int sceneId, GIScriptLoader scriptLoader) {
-        return new SceneMeta(sceneId).load(scriptLoader);
+        return new SceneMeta(sceneId)
+                .load(scriptLoader);
     }
 
     private SceneMeta(int sceneId) {
