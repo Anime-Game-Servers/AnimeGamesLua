@@ -66,11 +66,9 @@ public class JNLuaEngine implements LuaEngine {
     @Override
     public boolean addGlobalStaticClass(String name, Class<?> staticClass) {
         try {
-            bindings.put(name, staticClass.getConstructor().newInstance());
+            bindings.put(name, new StaticClassWrapper(staticClass));
             return true;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            //logger.error("Failed to add static class to lua engine: " + name, e);
+        } catch (Exception e) {
         }
         return false;
     }

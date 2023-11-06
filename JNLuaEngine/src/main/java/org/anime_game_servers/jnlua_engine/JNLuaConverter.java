@@ -1,11 +1,17 @@
 package org.anime_game_servers.jnlua_engine;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.val;
 import org.terasology.jnlua.Converter;
 import org.terasology.jnlua.DefaultConverter;
 import org.terasology.jnlua.LuaState;
+import org.terasology.jnlua.NamedJavaFunction;
 
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class JNLuaConverter implements Converter {
@@ -33,11 +39,14 @@ public class JNLuaConverter implements Converter {
                 }
                 return;
             }
-        } /*else if (o instanceof ScriptLib lib) {
+        } else if (o instanceof StaticClassWrapper staticClassWrapper) {
             luaState.newTable();
-            val methods = lib.getClass().getMethods();
-            Arrays.stream(methods).forEach(m -> {
-                    val isStatic = Modifier.isStatic(m.getModifiers());
+            val staticClass = staticClassWrapper.getStaticClass();
+            val methods = staticClass.getMethods();
+            // todo handle static variables too
+            Arrays.stream(methods)
+                .filter(method -> Modifier.isStatic(method.getModifiers()))
+                .forEach(m -> {
                     class TempFunc implements NamedJavaFunction {
                         @Override
                         public String getName() {
@@ -53,8 +62,7 @@ public class JNLuaConverter implements Converter {
                                 args.add(luaState.checkJavaObject(i + 1, Object.class));
                             }
                             try {
-                                Object caller = isStatic ? null : o;
-                                Object ret = m.invoke(caller, args.toArray());
+                                Object ret = m.invoke(null, args.toArray());
                                 luaState.pushJavaObject(ret);
                             } catch (Exception e) {
                                 //LuaEngine.logger.error("Error on invoking binding function. ", e);
@@ -70,7 +78,7 @@ public class JNLuaConverter implements Converter {
             );
 
             return;
-        }*/
+        }
         defaultConverter.convertJavaObject(luaState, o);
     }
 }
