@@ -2,9 +2,9 @@ package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.SceneMeta;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
-import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 
 @ToString
 @Getter
@@ -20,12 +20,14 @@ public abstract class SceneObject {
     protected int sight_group_index;
     // server_global_value_config, might be group only
 
-    protected Position pos;
-    protected Position rot;
+    protected PositionImpl pos;
+    protected PositionImpl rot;
     /**
      * not set by lua
      */
-    protected transient SceneGroup group;
+    protected transient int groupId;
+    protected transient int blockId;
+    protected transient SceneMeta sceneMeta;
 
     public abstract EntityType getType();
 }

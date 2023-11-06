@@ -2,6 +2,7 @@ package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
 import org.anime_game_servers.gi_lua.models.constants.ScriptRegionShape;
 
@@ -13,12 +14,12 @@ import java.util.List;
 public class SceneRegion extends SceneObject{
     private int shape;
     // for CUBIC
-    private Position size;
+    private PositionImpl size;
     // for SPHERE AND CYLINDER
     private int radius;
     // for CYLINDER and POLYGON
     private float height;
-    private List<Position> point_array;
+    private List<PositionImpl> point_array;
     private List<String> ability_group_list;
     private List<String> team_ability_group;
     private boolean is_trigger_reload_group = false;
@@ -37,10 +38,6 @@ public class SceneRegion extends SceneObject{
                 return x + y + z <= (radius*radius);
         }
         return false;
-    }
-
-    public int getGroupId() {
-        return group.getId();
     }
 
     @Override

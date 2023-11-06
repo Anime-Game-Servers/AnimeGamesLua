@@ -1,16 +1,15 @@
 package org.anime_game_servers.gi_lua.models.scene.group;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
-import org.anime_game_servers.gi_lua.models.*;
-import org.anime_game_servers.gi_lua.models.scene.block.GroupLifecycle;
-import org.anime_game_servers.gi_lua.models.scene.block.SceneBusiness;
-import org.anime_game_servers.gi_lua.models.scene.block.SceneReplaceable;
-import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
+import org.anime_game_servers.gi_lua.models.SceneMeta;
+import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
+import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
+import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 import org.anime_game_servers.lua.engine.LuaScript;
-import org.anime_game_servers.lua.models.ScriptType;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -20,36 +19,7 @@ import java.util.stream.Collectors;
 @ToString
 @Getter
 public class SceneGroup {
-    public transient int block_id; // Not an actual variable in the scripts but we will keep it here for reference
-
-    @Setter
-    private int id;
-    // from block
-    private int refresh_id;
-    private int area;
-    @Nullable
-    private Position pos;
-    @Nullable
-    private SceneReplaceable is_replaceable;
-    private final boolean dynamic_load = false;
-    @Nullable
-    private SceneBusiness business;
-    @Nullable
-    private GroupLifecycle life_cycle = GroupLifecycle.FULL_TIME__CYCLE;
-    private int activity_revise_level_grow_id;
-    private int rely_start_world_level_limit_activity_id;
-    private int vision_type;
-    private boolean across_block = false;
-    private boolean unload_when_disconnect = false;
-    private boolean ignore_world_level_revise = false;
-    private boolean force_unload_nodelay = false;
-    private boolean force_clean_sub_entity = false;
-    private boolean is_load_by_vision_type = false;
-    private int load_strategy;
-    private Set<String> forbid_monster_die; //todo find enum values
-    private List<Integer> related_level_tag_series_list;
-    private List<Integer> group_tag_list;
-    private List<Integer> weathers;
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(SceneGroup.class.getName());
 
     // from group script
     @Nullable
@@ -80,17 +50,19 @@ public class SceneGroup {
 
 
     // internal
+    private transient SceneGroupInfo groupInfo;
+    private transient SceneMeta sceneMeta;
     private transient boolean loaded; // Not an actual variable in the scripts either
     private transient LuaScript script;
 
-    public static SceneGroup of(int groupId) {
-        var group = new SceneGroup();
-        group.id = groupId;
+    public static SceneGroup of(SceneGroupInfo groupInfo) {
+        var group = new SceneGroup(groupInfo);
         return group;
     }
 
-    public int getBusinessType() {
-        return this.business == null ? 0 : this.business.getType();
+    protected SceneGroup(SceneGroupInfo groupInfo) {
+        this.groupInfo = groupInfo;
+        this.sceneMeta = groupInfo.getSceneMeta();
     }
 
     public boolean hasGarbages() {
@@ -102,9 +74,6 @@ public class SceneGroup {
         return this.garbages == null ? null : this.garbages.getGadgets();
     }
 
-    public boolean isReplaceable() {
-        return this.is_replaceable != null && this.is_replaceable.isValue();
-    }
 
     public SceneSuite getSuiteByIndex(int index) {
         if (index < 1 || index > suites.size()) {
@@ -113,46 +82,62 @@ public class SceneGroup {
         return this.suites.get(index - 1);
     }
 
-    public synchronized SceneGroup load(int sceneId, GIScriptLoader scriptLoader) {
+    public synchronized SceneGroup load(GIScriptLoader scriptLoader) {
         if (this.loaded) {
             return this;
         }
         // Set flag here so if there is no script, we don't call this function over and over again.
         this.loaded = true;
+        val sceneId = sceneMeta.getSceneId();
+        val groupId = groupInfo.getId();
+        val blockId = groupInfo.getBlockId();
+        val activityId = groupInfo.getActivityId();
 
-        val cs = scriptLoader.getSceneScript(sceneId, "scene" + sceneId + "_group" + this.id + ".lua", ScriptType.EXECUTABLE);
-
-        if (cs == null) {
-            return this;
-        }
-
-        this.script = cs;
-
-        // Eval script
-        try {
-            cs.evaluate();
-
+        val scriptType = activityId == 0 ? ScriptSource.SCENE : ScriptSource.ACTIVITY;
+        val typeId = activityId == 0 ? sceneId : activityId;
+        if (!scriptLoader.loadSceneGroupScript(scriptType, typeId, groupId, cs -> {
+            this.script = cs;
             // Set
             this.monsters = cs.getGlobalVariableList("monsters", SceneMonster.class).stream()
-                .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
-            this.monsters.values().forEach(m -> m.group = this);
+                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+            this.monsters.values().forEach(m -> {
+                m.groupId = groupId;
+                m.blockId = blockId;
+                m.sceneMeta = sceneMeta;
+            });
 
             this.npcs = cs.getGlobalVariableList("npcs", SceneNPC.class).stream()
-                .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
-            this.npcs.values().forEach(m -> m.group = this);
+                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+            this.npcs.values().forEach(m -> {
+                m.groupId = groupId;
+                m.blockId = blockId;
+                m.sceneMeta = sceneMeta;
+            });
 
             this.gadgets = cs.getGlobalVariableList("gadgets", SceneGadget.class).stream()
-                .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
-            this.gadgets.values().forEach(m -> m.group = this);
+                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+            this.gadgets.values().forEach(m -> {
+                m.groupId = groupId;
+                m.blockId = blockId;
+                m.sceneMeta = sceneMeta;
+            });
 
             this.triggers = cs.getGlobalVariableList("triggers", SceneTrigger.class).stream()
-                .collect(Collectors.toMap(SceneTrigger::getName, y -> y, (a, b) -> a));
-            this.triggers.values().forEach(t -> t.setCurrentGroup(this));
+                    .collect(Collectors.toMap(SceneTrigger::getName, y -> y, (a, b) -> a));
+            this.triggers.values().forEach(t -> {
+                t.setGroupId(groupId);
+                t.setBlockId(blockId);
+                t.setSceneMeta(sceneMeta);
+            });
 
             this.suites = cs.getGlobalVariableList("suites", SceneSuite.class);
             this.regions = cs.getGlobalVariableList("regions", SceneRegion.class).stream()
-                .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
-            this.regions.values().forEach(m -> m.group = this);
+                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+            this.regions.values().forEach(m -> {
+                m.groupId = groupId;
+                m.blockId = blockId;
+                m.sceneMeta = sceneMeta;
+            });
 
             this.init_config = cs.getGlobalVariable("init_config", SceneInitConfig.class);
 
@@ -169,14 +154,16 @@ public class SceneGroup {
             // Add variables to suite
             this.variables = cs.getGlobalVariableList("variables", SceneVar.class);
 
+            this.monster_pools = cs.getGlobalVariableList("monster_pools", SceneMonsterPool.class);
+            //this.sight_groups = cs.getGlobalVariableList("sight_groups", List<Integer>.class);
+
             // Add monsters and gadgets to suite
             this.suites.forEach(i -> i.init(this));
-
-        } catch (Exception e) {
-            //Grasscutter.getLogger().error("An error occurred while loading group " + this.id + " in scene " + sceneId + ".", e);
+        })) {
+            return null;
         }
 
-        //Grasscutter.getLogger().debug("Successfully loaded group {} in scene {}.", this.id, sceneId);
+        logger.debug(() -> "Successfully loaded group " + groupId + " in scene " + sceneId + ".");
         return this;
     }
 
@@ -202,8 +189,8 @@ public class SceneGroup {
 
     public Optional<SceneBossChest> searchBossChestInGroup() {
         return this.gadgets.values().stream().map(g -> g.getBoss_chest()).filter(Objects::nonNull)
-            .filter(bossChest -> bossChest.getMonster_config_id() > 0)
-            .findFirst();
+                .filter(bossChest -> bossChest.getMonster_config_id() > 0)
+                .findFirst();
     }
 
     /*public List<SceneGroup> getReplaceableGroups(Collection<SceneGroup> loadedGroups) {

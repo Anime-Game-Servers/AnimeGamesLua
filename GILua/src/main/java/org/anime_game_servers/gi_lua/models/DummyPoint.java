@@ -1,9 +1,11 @@
 package org.anime_game_servers.gi_lua.models;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter @EqualsAndHashCode @ToString
 public class DummyPoint {
-    private Position pos;
-    private Position rot;
+    private PositionImpl pos;
+    private PositionImpl rot;
 }

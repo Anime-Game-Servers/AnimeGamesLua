@@ -1,64 +1,71 @@
 package org.anime_game_servers.gi_lua.models.scene.block;
 
-import com.github.davidmoten.rtreemulti.RTree;
-import com.github.davidmoten.rtreemulti.geometry.Geometry;
 import com.github.davidmoten.rtreemulti.geometry.Rectangle;
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.*;
-import org.anime_game_servers.gi_lua.SceneIndexManager;
-import org.anime_game_servers.gi_lua.models.Position;
-import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
-import org.anime_game_servers.gi_lua.utils.GIScriptLoader;
-import org.anime_game_servers.lua.models.ScriptType;
+import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.SceneMeta;
+import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 
-import javax.script.ScriptException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @ToString
 @Getter
 public class SceneBlock {
-    @Setter(AccessLevel.PUBLIC)
-    private int id;
-    private Position max;
-    private Position min;
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(SceneBlock.class.getName());
 
-    private int sceneId;
-    private Map<Integer, SceneGroup> groups;
-    private RTree<SceneGroup, Geometry> sceneGroupIndex;
+    private PositionImpl max;
+    private PositionImpl min;
 
+    private Map<Integer, SceneGroupInfo> groupInfo;
+    //private RTree<SceneGroupInfo, Geometry> sceneGroupIndex;
+
+    // internal only
     private transient boolean loaded; // Not an actual variable in the scripts either
+    private transient SceneMeta meta; // Not an actual variable in the scripts either
+    private int sceneId;
+    private int activityId;
+    private int id;
+
+    public static SceneBlock of(SceneMeta sceneMeta, int activityId, int blockId, GIScriptLoader scriptLoader) {
+        val block = new SceneBlock(sceneMeta.getSceneId(), activityId, blockId, sceneMeta);
+        block.load(scriptLoader);
+        return block;
+    }
+    private SceneBlock(int sceneId, int activityId, int blockId, SceneMeta meta) {
+        this.id = blockId;
+        this.sceneId = sceneId;
+        this.activityId = activityId;
+        this.meta = meta;
+    }
 
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
     }
 
-    public SceneBlock load(int sceneId, GIScriptLoader scriptLoader) {
+    public SceneBlock load(GIScriptLoader scriptLoader) {
         if (this.loaded) {
             return this;
         }
-        this.sceneId = sceneId;
         this.setLoaded(true);
-
-        val cs = scriptLoader.getSceneScript(sceneId, "scene" + sceneId + "_block" + this.id + ".lua", ScriptType.DATA_STORAGE);
-
-        if (cs == null) {
-            return null;
-        }
-
-        // Eval script
-        try {
-            cs.evaluate();
-
+        if( !scriptLoader.loadSceneBlockScript(sceneId, id, (cs -> {
             // Set groups
-            this.groups = cs.getGlobalVariableList("groups", SceneGroup.class).stream()
+            this.groupInfo = cs.getGlobalVariableList("groups", SceneGroupInfo.class).stream()
                     .collect(Collectors.toMap(x -> x.getId(), y -> y, (a, b) -> a));
 
-            this.groups.values().forEach(g -> g.block_id = this.id);
-            this.sceneGroupIndex = SceneIndexManager.buildIndex(3, this.groups.values(), g -> g.getPos().toPoint());
-        } catch (ScriptException exception) {
-            //Grasscutter.getLogger().error("An error occurred while loading block " + this.id + " in scene " + sceneId, exception);
+            this.groupInfo.values().forEach(g -> {
+                g.blockId = this.id;
+                g.sceneMeta = meta;
+                g.activityId = activityId;
+            });
+            //this.sceneGroupIndex = SceneIndexManager.buildIndex(3, this.groupInfo.values(), g -> g.getPos().toPoint());
+        }))){
+            return null;
         }
-        //Grasscutter.getLogger().debug("Successfully loaded block {} in scene {}.", this.id, sceneId);
+        meta.getGroupsInfos().putAll(this.groupInfo);
+        logger.debug(() -> "Successfully loaded block " + this.id + " in scene "+sceneId+".");
         return this;
     }
 

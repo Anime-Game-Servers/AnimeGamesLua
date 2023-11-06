@@ -7,4 +7,5 @@ import lombok.ToString;
 @Getter
 public class SceneBusiness {
 	private int type;
+	private int sub_type;
 }

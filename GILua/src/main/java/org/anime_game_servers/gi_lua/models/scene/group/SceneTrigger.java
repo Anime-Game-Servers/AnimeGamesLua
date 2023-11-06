@@ -2,6 +2,7 @@ package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.anime_game_servers.gi_lua.models.SceneMeta;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 
 @Data
@@ -23,5 +24,7 @@ public class SceneTrigger {
     private String tlog_tag;
     private boolean forbid_guest = true;
 
-    private transient SceneGroup currentGroup;
+    private transient int groupId;
+    private transient int blockId;
+    private transient SceneMeta sceneMeta;
 }
