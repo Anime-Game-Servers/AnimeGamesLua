@@ -1,10 +1,13 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
 import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.lua.engine.LuaTable;
 
+import java.util.List;
+
 @SuppressWarnings("unused")
-public interface ScriptLibHandler {
+public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext, ControllerEventContext extends ControllerLuaContext<?>> {
 
     /**
      * Context independent functions
@@ -13,34 +16,34 @@ public interface ScriptLibHandler {
 
 
     /**
-     * GroupEventLuaContext functions
+     * GroupEventContext functions
      */
 
-    int SetGadgetStateByConfigId(GroupEventLuaContext context, int configId, int gadgetState);
-	int SetGroupGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId, int gadgetState);
-	int SetWorktopOptionsByGroupId(GroupEventLuaContext context, int groupId, int configId, LuaTable options);
-	int SetWorktopOptions(GroupEventLuaContext context, LuaTable table);
+    int SetGadgetStateByConfigId(GroupEventContext context, int configId, int gadgetState);
+    int SetGroupGadgetStateByConfigId(GroupEventContext context, int groupId, int configId, int gadgetState);
+    int SetWorktopOptionsByGroupId(GroupEventContext context, int groupId, int configId, LuaTable options);
+    int SetWorktopOptions(GroupEventContext context, LuaTable table);
 
-	int DelWorktopOptionByGroupId(GroupEventLuaContext context, int groupId, int configId, int option);
-    int DelWorktopOption(GroupEventLuaContext context, int var1);
+    int DelWorktopOptionByGroupId(GroupEventContext context, int groupId, int configId, int option);
+    int DelWorktopOption(GroupEventContext context, int var1);
 
-	// Some fields are guessed
-	int AutoMonsterTide(GroupEventLuaContext context, int challengeIndex, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
-    int GoToGroupSuite(GroupEventLuaContext context, int groupId, int suite);
+    // Some fields are guessed
+    int AutoMonsterTide(GroupEventContext context, int challengeIndex, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
+    int GoToGroupSuite(GroupEventContext context, int groupId, int suite);
 
-	int AddExtraGroupSuite(GroupEventLuaContext context, int groupId, int suite);
-	int RemoveExtraGroupSuite(GroupEventLuaContext context, int groupId, int suite);
-	int KillExtraGroupSuite(GroupEventLuaContext context, int groupId, int suite);
+    int AddExtraGroupSuite(GroupEventContext context, int groupId, int suite);
+    int RemoveExtraGroupSuite(GroupEventContext context, int groupId, int suite);
+    int KillExtraGroupSuite(GroupEventContext context, int groupId, int suite);
 
-    int AddExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy);
-    int RemoveExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy);
-    int KillExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy);
+    int AddExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, int flowSuitePolicy);
+    int RemoveExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, int flowSuitePolicy);
+    int KillExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, int flowSuitePolicy);
 
-	int ActiveChallenge(GroupEventLuaContext context, int challengeIndex, int challengeId, int timeLimitOrGroupId, int groupId, int objectiveKills, int param5);
+    int ActiveChallenge(GroupEventContext context, int challengeIndex, int challengeId, int timeLimitOrGroupId, int groupId, int objectiveKills, int param5);
 
-    int StartChallenge(GroupEventLuaContext context, int challengeIndex, int challengeId, LuaTable challengeParams);
+    int StartChallenge(GroupEventContext context, int challengeIndex, int challengeId, LuaTable challengeParams);
 
-    int StopChallenge(GroupEventLuaContext context, int challengeIndex, int result);
+    int StopChallenge(GroupEventContext context, int challengeIndex, int result);
 
     /**
      * Adds or removed time from the challenge
@@ -51,182 +54,182 @@ public interface ScriptLibHandler {
      * @return 0 if success, 1 if no challenge is active, 2 if the challenge id doesn't match the active challenge,
      * 3 if modifying the duration failed
      */
-    int AddChallengeDuration(GroupEventLuaContext context, int challengeId, int duration);
+    int AddChallengeDuration(GroupEventContext context, int challengeId, int duration);
 
-	int GetGroupMonsterCountByGroupId(GroupEventLuaContext context, int groupId);
+    int GetGroupMonsterCountByGroupId(GroupEventContext context, int groupId);
 
-	int CreateVariable(GroupEventLuaContext context, String type, LuaTable value);
-	int SetVariableValue(GroupEventLuaContext context, int var1);
-	int GetVariableValue(GroupEventLuaContext context, int var1);
+    int CreateVariable(GroupEventContext context, String type, LuaTable value);
+    int SetVariableValue(GroupEventContext context, int var1);
+    int GetVariableValue(GroupEventContext context, int var1);
 
-	int GetGroupVariableValue(GroupEventLuaContext context, String var);
+    int GetGroupVariableValue(GroupEventContext context, String var);
 
-    int GetGroupVariableValueByGroup(GroupEventLuaContext context, String name, int groupId);
+    int GetGroupVariableValueByGroup(GroupEventContext context, String name, int groupId);
 
-	int SetGroupVariableValue(GroupEventLuaContext context, String varName, int value);
+    int SetGroupVariableValue(GroupEventContext context, String varName, int value);
 
-    int SetGroupVariableValueByGroup(GroupEventLuaContext context, String key, int value, int groupId);
+    int SetGroupVariableValueByGroup(GroupEventContext context, String key, int value, int groupId);
 
-	int ChangeGroupVariableValue(GroupEventLuaContext context, String varName, int value);
+    int ChangeGroupVariableValue(GroupEventContext context, String varName, int value);
 
-    int ChangeGroupVariableValueByGroup(GroupEventLuaContext context, String name, int value, int groupId);
+    int ChangeGroupVariableValueByGroup(GroupEventContext context, String name, int value, int groupId);
 
 
-	/**
-	 * Set the actions and triggers to designated group
-	 */
-	int RefreshGroup(GroupEventLuaContext context, LuaTable table);
+    /**
+     * Set the actions and triggers to designated group
+     */
+    int RefreshGroup(GroupEventContext context, LuaTable table);
 
-	int GetRegionEntityCount(GroupEventLuaContext context, LuaTable table);
+    int GetRegionEntityCount(GroupEventContext context, LuaTable table);
 
-    int GetRegionConfigId(GroupEventLuaContext context, LuaTable table);
+    int GetRegionConfigId(GroupEventContext context, LuaTable table);
 
-	int TowerCountTimeStatus(GroupEventLuaContext context, int isDone, int var2);
-	int GetGroupMonsterCount(GroupEventLuaContext context);
+    int TowerCountTimeStatus(GroupEventContext context, int isDone, int var2);
+    int GetGroupMonsterCount(GroupEventContext context);
 
-	int SetMonsterBattleByGroup(GroupEventLuaContext context, int configId, int groupId);
+    int SetMonsterBattleByGroup(GroupEventContext context, int configId, int groupId);
 
-	int CauseDungeonFail(GroupEventLuaContext context);
+    int CauseDungeonFail(GroupEventContext context);
 
-    int SetEntityServerGlobalValueByConfigId(GroupEventLuaContext context, int cfgId, String sgvName, int value);
+    int SetEntityServerGlobalValueByConfigId(GroupEventContext context, int cfgId, String sgvName, int value);
 
-    int SetGroupLogicStateValue(GroupEventLuaContext context, String sgvName, int value);
+    int SetGroupLogicStateValue(GroupEventContext context, String sgvName, int value);
 
-	int SetIsAllowUseSkill(GroupEventLuaContext context, int canUse);
+    int SetIsAllowUseSkill(GroupEventContext context, int canUse);
 
     int KillEntityByConfigId(LuaContext context, LuaTable table);
 
-	int CreateMonster(GroupEventLuaContext context, LuaTable table);
+    int CreateMonster(GroupEventContext context, LuaTable table);
 
-	int TowerMirrorTeamSetUp(GroupEventLuaContext context, int team, int var1) ;
+    int TowerMirrorTeamSetUp(GroupEventContext context, int team, int var1) ;
 
-	int CreateGadget(GroupEventLuaContext context, LuaTable table);
+    int CreateGadget(GroupEventContext context, LuaTable table);
 
-	int CheckRemainGadgetCountByGroupId(GroupEventLuaContext context, LuaTable table);
+    int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 
-	int GetGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId);
+    int GetGadgetStateByConfigId(GroupEventContext context, int groupId, int configId);
 
-	int MarkPlayerAction(GroupEventLuaContext context, int var1, int var2, int var3);
-	int AddQuestProgress(GroupEventLuaContext context, String eventNotifyName);
+    int MarkPlayerAction(GroupEventContext context, int var1, int var2, int var3);
+    int AddQuestProgress(GroupEventContext context, String eventNotifyName);
 
-	/**
-	 * change the state of gadget
-	 */
-	int ChangeGroupGadget(GroupEventLuaContext context, LuaTable table) ;
+    /**
+     * change the state of gadget
+     */
+    int ChangeGroupGadget(GroupEventContext context, LuaTable table) ;
 
-    int GetSceneOwnerUid(GroupEventLuaContext context);
-    int GetHostQuestState(GroupEventLuaContext context, int questId);
-    int GetQuestState(GroupEventLuaContext context, int entityId, int questId);
-    int ShowReminder(GroupEventLuaContext context, int reminderId);
-    int RemoveEntityByConfigId(GroupEventLuaContext context, int groupId, int entityType, int configId);
-    int CreateGroupTimerEvent(GroupEventLuaContext context, int groupID, String source, double time);
-    int CancelGroupTimerEvent(GroupEventLuaContext context, int groupID, String source);
+    int GetSceneOwnerUid(GroupEventContext context);
+    int GetHostQuestState(GroupEventContext context, int questId);
+    int GetQuestState(GroupEventContext context, int entityId, int questId);
+    int ShowReminder(GroupEventContext context, int reminderId);
+    int RemoveEntityByConfigId(GroupEventContext context, int groupId, int entityType, int configId);
+    int CreateGroupTimerEvent(GroupEventContext context, int groupID, String source, double time);
+    int CancelGroupTimerEvent(GroupEventContext context, int groupID, String source);
 
-    int GetGroupSuite(GroupEventLuaContext context, int groupId);
-    int SetGroupReplaceable(GroupEventLuaContext context, int groupId, boolean value) ;
-    Object GetSceneUidList(GroupEventLuaContext context);
-    int GetSeaLampActivityPhase(GroupEventLuaContext context);
-    int GadgetPlayUidOp(GroupEventLuaContext context, int groupId, int gadget_crucible, int var3, int var4, String var5, int var6 );
-    long GetServerTime(GroupEventLuaContext context);
-    long GetServerTimeByWeek(GroupEventLuaContext context);
-    int GetCurTriggerCount(GroupEventLuaContext context);
-    int GetChannellerSlabLoopDungeonLimitTime(GroupEventLuaContext context);
-    boolean IsPlayerAllAvatarDie(GroupEventLuaContext context, int sceneUid);
+    int GetGroupSuite(GroupEventContext context, int groupId);
+    int SetGroupReplaceable(GroupEventContext context, int groupId, boolean value) ;
+    int[] GetSceneUidList(GroupEventContext context);
+    int GetSeaLampActivityPhase(GroupEventContext context);
+    int GadgetPlayUidOp(GroupEventContext context, int groupId, int gadget_crucible, int var3, int var4, String var5, int var6 );
+    long GetServerTime(GroupEventContext context);
+    long GetServerTimeByWeek(GroupEventContext context);
+    int GetCurTriggerCount(GroupEventContext context);
+    int GetChannellerSlabLoopDungeonLimitTime(GroupEventContext context);
+    boolean IsPlayerAllAvatarDie(GroupEventContext context, int sceneUid);
 
-    int sendShowCommonTipsToClient(GroupEventLuaContext context, String title, String content, int closeTime);
+    int sendShowCommonTipsToClient(GroupEventContext context, String title, String content, int closeTime);
 
-    int sendCloseCommonTipsToClient(GroupEventLuaContext context);
-    int CreateFatherChallenge(GroupEventLuaContext context, int challengeIndex, int challengeId, int timeLimit, LuaTable conditionTable);
-    int StartFatherChallenge(GroupEventLuaContext context, int challengeIndex);
-    int ModifyFatherChallengeProperty(GroupEventLuaContext context, int challengeId, int propertyTypeIndex, int value);
-    int AttachChildChallenge(GroupEventLuaContext context, int fatherChallengeIndex, int childChallengeIndex,
+    int sendCloseCommonTipsToClient(GroupEventContext context);
+    int CreateFatherChallenge(GroupEventContext context, int challengeIndex, int challengeId, int timeLimit, LuaTable conditionTable);
+    int StartFatherChallenge(GroupEventContext context, int challengeIndex);
+    int ModifyFatherChallengeProperty(GroupEventContext context, int challengeId, int propertyTypeIndex, int value);
+    int AttachChildChallenge(GroupEventContext context, int fatherChallengeIndex, int childChallengeIndex,
                                            int childChallengeId, LuaTable var4, LuaTable var5, LuaTable var6);
-    int CreateEffigyChallengeMonster(GroupEventLuaContext context, int var1, LuaTable var2Table);
-    int GetEffigyChallengeMonsterLevel(GroupEventLuaContext context);
-    int AddTeamEntityGlobalFloatValue(GroupEventLuaContext context, LuaTable sceneUidListTable, String var2, int var3);
-    int CreateBlossomChestByGroupId(GroupEventLuaContext context, int groupId, int chestConfigId);
-    int GetBlossomScheduleStateByGroupId(GroupEventLuaContext context, int groupId);
-    int SetBlossomScheduleStateByGroupId(GroupEventLuaContext context, int groupId, int state);
-    int RefreshBlossomGroup(GroupEventLuaContext context, LuaTable table);
-    int RefreshBlossomDropRewardByGroupId(GroupEventLuaContext context, int groupId);
-    int AddBlossomScheduleProgressByGroupId(GroupEventLuaContext context, int groupId);
-    int GetBlossomRefreshTypeByGroupId(GroupEventLuaContext context, int groupId);
-    int RefreshHuntingClueGroup(GroupEventLuaContext context);
-    int GetHuntingMonsterExtraSuiteIndexVec(GroupEventLuaContext context);
-    int SetGroupTempValue(GroupEventLuaContext context, String name, int value, LuaTable var3Table);
-    int GetGroupTempValue(GroupEventLuaContext context, String name, LuaTable var2);
+    int CreateEffigyChallengeMonster(GroupEventContext context, int var1, LuaTable var2Table);
+    int GetEffigyChallengeMonsterLevel(GroupEventContext context);
+    int AddTeamEntityGlobalFloatValue(GroupEventContext context, LuaTable sceneUidListTable, String var2, int var3);
+    int CreateBlossomChestByGroupId(GroupEventContext context, int groupId, int chestConfigId);
+    int GetBlossomScheduleStateByGroupId(GroupEventContext context, int groupId);
+    int SetBlossomScheduleStateByGroupId(GroupEventContext context, int groupId, int state);
+    int RefreshBlossomGroup(GroupEventContext context, LuaTable table);
+    int RefreshBlossomDropRewardByGroupId(GroupEventContext context, int groupId);
+    int AddBlossomScheduleProgressByGroupId(GroupEventContext context, int groupId);
+    int GetBlossomRefreshTypeByGroupId(GroupEventContext context, int groupId);
+    int RefreshHuntingClueGroup(GroupEventContext context);
+    int GetHuntingMonsterExtraSuiteIndexVec(GroupEventContext context);
+    int SetGroupTempValue(GroupEventContext context, String name, int value, LuaTable var3Table);
+    int GetGroupTempValue(GroupEventContext context, String name, LuaTable var2);
 
-    int FinishExpeditionChallenge(GroupEventLuaContext context);
-    int ExpeditionChallengeEnterRegion(GroupEventLuaContext context, boolean var1);
-    int StartSealBattle(GroupEventLuaContext context, int gadgetId, LuaTable var2);
+    int FinishExpeditionChallenge(GroupEventContext context);
+    int ExpeditionChallengeEnterRegion(GroupEventContext context, boolean var1);
+    int StartSealBattle(GroupEventContext context, int gadgetId, LuaTable var2);
 
-    int InitTimeAxis(GroupEventLuaContext context, String var1, LuaTable var2, boolean var3);
-    int EndTimeAxis(GroupEventLuaContext context, String var1);
+    int InitTimeAxis(GroupEventContext context, String var1, LuaTable var2, boolean var3);
+    int EndTimeAxis(GroupEventContext context, String var1);
 
-    int SetTeamEntityGlobalFloatValue(GroupEventLuaContext context, LuaTable sceneUidListTable, String var2, int var3);
+    int SetTeamEntityGlobalFloatValue(GroupEventContext context, LuaTable sceneUidListTable, String var2, int var3);
 
-    int SetTeamServerGlobalValue(GroupEventLuaContext context, int sceneUid, String var2, int var3);
+    int SetTeamServerGlobalValue(GroupEventContext context, int sceneUid, String var2, int var3);
 
-    int AddTeamServerGlobalValue(GroupEventLuaContext context, int ownerId, String sgvName, int value);
+    int AddTeamServerGlobalValue(GroupEventContext context, int ownerId, String sgvName, int value);
 
-    int GetTeamServerGlobalValue(GroupEventLuaContext context, int ownerId, String sgvName, int value);
+    int GetTeamServerGlobalValue(GroupEventContext context, int ownerId, String sgvName, int value);
 
-    int GetLanternRiteValue(GroupEventLuaContext context);
+    int GetLanternRiteValue(GroupEventContext context);
 
-    int CreateMonsterFaceAvatar(GroupEventLuaContext context, LuaTable table);
+    int CreateMonsterFaceAvatar(GroupEventContext context, LuaTable table);
 
-    int ChangeToTargetLevelTag(GroupEventLuaContext context, int var1);
+    int ChangeToTargetLevelTag(GroupEventContext context, int var1);
 
-    int AddSceneTag(GroupEventLuaContext context, int sceneId, int sceneTagId);
+    int AddSceneTag(GroupEventContext context, int sceneId, int sceneTagId);
 
-    int DelSceneTag(GroupEventLuaContext context, int sceneId, int sceneTagId);
+    int DelSceneTag(GroupEventContext context, int sceneId, int sceneTagId);
 
-    boolean CheckSceneTag(GroupEventLuaContext context, int sceneId, int sceneTagId);
-    int StartHomeGallery(GroupEventLuaContext context, int galleryId, int uid);
+    boolean CheckSceneTag(GroupEventContext context, int sceneId, int sceneTagId);
+    int StartHomeGallery(GroupEventContext context, int galleryId, int uid);
 
-    int StartGallery(GroupEventLuaContext context, int galleryId);
+    int StartGallery(GroupEventContext context, int galleryId);
 
-    int StopGallery(GroupEventLuaContext context, int galleryId, boolean var2);
+    int StopGallery(GroupEventContext context, int galleryId, boolean var2);
 
-    int UpdatePlayerGalleryScore(GroupEventLuaContext context, int galleryId, LuaTable var2);
-    int InitGalleryProgressScore(GroupEventLuaContext context, String name, int galleryId, LuaTable progressTable,
+    int UpdatePlayerGalleryScore(GroupEventContext context, int galleryId, LuaTable var2);
+    int InitGalleryProgressScore(GroupEventContext context, String name, int galleryId, LuaTable progressTable,
                                                int scoreUiTypeIndex, int scoreTypeIndex);
-    int InitGalleryProgressWithScore(GroupEventLuaContext context, String name, int galleryId, LuaTable progress,
+    int InitGalleryProgressWithScore(GroupEventContext context, String name, int galleryId, LuaTable progress,
                                                int maxProgress, int scoreUiTypeIndex, int scoreTypeIndex);
-    int AddGalleryProgressScore(GroupEventLuaContext context, String name, int galleryId, int score);
-    int GetGalleryProgressScore(GroupEventLuaContext context, String name, int galleryId) ;
-    int SetHandballGalleryBallPosAndRot(GroupEventLuaContext context, int galleryId, LuaTable positionTable, LuaTable rotationTable);
+    int AddGalleryProgressScore(GroupEventContext context, String name, int galleryId, int score);
+    int GetGalleryProgressScore(GroupEventContext context, String name, int galleryId) ;
+    int SetHandballGalleryBallPosAndRot(GroupEventContext context, int galleryId, LuaTable positionTable, LuaTable rotationTable);
 
-    int UnlockFloatSignal(GroupEventLuaContext context, int groupId, int gadgetSignalId);
+    int UnlockFloatSignal(GroupEventContext context, int groupId, int gadgetSignalId);
 
-    int SendServerMessageByLuaKey(GroupEventLuaContext context, String var1, LuaTable var2);
+    int SendServerMessageByLuaKey(GroupEventContext context, String var1, LuaTable var2);
 
-    int TryReallocateEntityAuthority(GroupEventLuaContext context, int uid, int endConfig, int var3);
+    int TryReallocateEntityAuthority(GroupEventContext context, int uid, int endConfig, int var3);
 
-    int ForceRefreshAuthorityByConfigId(GroupEventLuaContext context, int var1, int uid);
+    int ForceRefreshAuthorityByConfigId(GroupEventContext context, int var1, int uid);
 
-    int AddPlayerGroupVisionType(GroupEventLuaContext context, LuaTable uidsTable, LuaTable var2);
+    int AddPlayerGroupVisionType(GroupEventContext context, LuaTable uidsTable, LuaTable var2);
 
-    int DelPlayerGroupVisionType(GroupEventLuaContext context, LuaTable uidsTable, LuaTable var2);
+    int DelPlayerGroupVisionType(GroupEventContext context, LuaTable uidsTable, LuaTable var2);
 
-    int MoveAvatarByPointArray(GroupEventLuaContext context, int uid, int targetId, LuaTable var3, String var4);
+    int MoveAvatarByPointArray(GroupEventContext context, int uid, int targetId, LuaTable var3, String var4);
 
-    int MovePlayerToPos(GroupEventLuaContext context, LuaTable table);
+    int MovePlayerToPos(GroupEventContext context, LuaTable table);
 
-    int TransPlayerToPos(GroupEventLuaContext context, LuaTable table);
+    int TransPlayerToPos(GroupEventContext context, LuaTable table);
 
-    int PlayCutScene(GroupEventLuaContext context, int cutsceneId, int var2);
+    int PlayCutScene(GroupEventContext context, int cutsceneId, int var2);
 
-    int PlayCutSceneWithParam(GroupEventLuaContext context, int cutsceneId, int var2, LuaTable var3);
+    int PlayCutSceneWithParam(GroupEventContext context, int cutsceneId, int var2, LuaTable var3);
 
-    int ScenePlaySound(GroupEventLuaContext context, LuaTable soundInfoTable);
+    int ScenePlaySound(GroupEventContext context, LuaTable soundInfoTable);
 
-    int BeginCameraSceneLook(GroupEventLuaContext context, LuaTable sceneLookParamsTable);
+    int BeginCameraSceneLook(GroupEventContext context, LuaTable sceneLookParamsTable);
 
-    public int ClearPlayerEyePoint(GroupEventLuaContext context, int var1);
+    public int ClearPlayerEyePoint(GroupEventContext context, int var1);
 
-    int ShowReminderRadius(GroupEventLuaContext context, int var1, LuaTable var2, int var3);
-    int ShowClientGuide(GroupEventLuaContext context, String guideName);
+    int ShowReminderRadius(GroupEventContext context, int var1, LuaTable var2, int var3);
+    int ShowClientGuide(GroupEventContext context, String guideName);
 
     /**
      * Activates a dungeon checkpoint.
@@ -234,61 +237,61 @@ public interface ScriptLibHandler {
      * @param pointId the scene point id of the dungeon checkpoint
      * @return 0 if successful, 1 if dungeon manager is null, 2 if dungeon manager failed to activate the checkpoint
      */
-    int ActivateDungeonCheckPoint(GroupEventLuaContext context, int pointId);
+    int ActivateDungeonCheckPoint(GroupEventContext context, int pointId);
 
     //TODO check
-    int SetWeatherAreaState(GroupEventLuaContext context, int var1, int var2);
+    int SetWeatherAreaState(GroupEventContext context, int var1, int var2);
 
-    int EnterWeatherArea(GroupEventLuaContext context, int weatherAreaId);
+    int EnterWeatherArea(GroupEventContext context, int weatherAreaId);
 
     //TODO check
-    boolean CheckIsInMpMode(GroupEventLuaContext context);
+    boolean CheckIsInMpMode(GroupEventContext context);
 
     /**
      * TODO properly implement
      * var3 might contain the next point, sometimes is a single int, sometimes multiple ints as array
      * var4 has RouteType route_type, bool turn_mode
      */
-    int SetPlatformPointArray(GroupEventLuaContext context, int entityConfigId, int pointArrayId, LuaTable var3, LuaTable var4);
+    int SetPlatformPointArray(GroupEventContext context, int entityConfigId, int pointArrayId, LuaTable var3, LuaTable var4);
 
     //TODO check
-    int SetPlatformRouteId(GroupEventLuaContext context, int entityConfigId, int routeId);
+    int SetPlatformRouteId(GroupEventContext context, int entityConfigId, int routeId);
 
     //TODO check
-    int StartPlatform(GroupEventLuaContext context, int configId);
+    int StartPlatform(GroupEventContext context, int configId);
 
     //TODO check
-    int StopPlatform(GroupEventLuaContext context, int configId);
+    int StopPlatform(GroupEventContext context, int configId);
 
-    int CreateChannellerSlabCampRewardGadget(GroupEventLuaContext context, int configId);
+    int CreateChannellerSlabCampRewardGadget(GroupEventContext context, int configId);
 
-    int AssignPlayerShowTemplateReminder(GroupEventLuaContext context, int var1, LuaTable var2);
+    int AssignPlayerShowTemplateReminder(GroupEventContext context, int var1, LuaTable var2);
 
-    int RevokePlayerShowTemplateReminder(GroupEventLuaContext context, int var1, LuaTable var2);
+    int RevokePlayerShowTemplateReminder(GroupEventContext context, int var1, LuaTable var2);
 
-    int UnlockForce(GroupEventLuaContext context, int force);
+    int UnlockForce(GroupEventContext context, int force);
 
-    int LockForce(GroupEventLuaContext context, int force);
+    int LockForce(GroupEventContext context, int force);
 
-    int KillGroupEntity(GroupEventLuaContext context, LuaTable table);
-    int GetGadgetIdByEntityId(GroupEventLuaContext context, int entityId);
-    int GetMonsterIdByEntityId(GroupEventLuaContext context, int entityId);
-    int GetMonsterConfigId(GroupEventLuaContext context, int entityId);
-    int GetMonsterID(GroupEventLuaContext context, int var1);
-    int GetEntityIdByConfigId(GroupEventLuaContext context, int configId);
-    int GetAvatarEntityIdByUid(GroupEventLuaContext context, int uid);
+    int KillGroupEntity(GroupEventContext context, LuaTable table);
+    int GetGadgetIdByEntityId(GroupEventContext context, int entityId);
+    int GetMonsterIdByEntityId(GroupEventContext context, int entityId);
+    int GetMonsterConfigId(GroupEventContext context, int entityId);
+    int GetMonsterID(GroupEventContext context, int var1);
+    int GetEntityIdByConfigId(GroupEventContext context, int configId);
+    int GetAvatarEntityIdByUid(GroupEventContext context, int uid);
 
 
-    Position GetPosByEntityId(GroupEventLuaContext context, int entityId);
+    Position GetPosByEntityId(GroupEventContext context, int entityId);
 
-    Position GetRotationByEntityId(GroupEventLuaContext context, int entityId);
+    Position GetRotationByEntityId(GroupEventContext context, int entityId);
 
-    ActivityOpenAndCloseTime GetActivityOpenAndCloseTimeByScheduleId(GroupEventLuaContext context, int scheduleId);
+    ActivityOpenAndCloseTime GetActivityOpenAndCloseTimeByScheduleId(GroupEventContext context, int scheduleId);
 
-    int GetGameHour(GroupEventLuaContext context);
+    int GetGameHour(GroupEventContext context);
 
-    int ActivateGroupLinkBundle(GroupEventLuaContext context, int groupId);
-    int ActivateGroupLinkBundleByBundleId(GroupEventLuaContext context, int bundleId);
+    int ActivateGroupLinkBundle(GroupEventContext context, int groupId);
+    int ActivateGroupLinkBundleByBundleId(GroupEventContext context, int bundleId);
 
     /**
      * TODO implement
@@ -298,11 +301,11 @@ public interface ScriptLibHandler {
      * @param gadgetCfgId The gadgets target configId
      * @return 0 if success, something else if failed
      */
-    int ActiveGadgetItemGiving(GroupEventLuaContext context, int givingId, int groupId, int gadgetCfgId);
+    int ActiveGadgetItemGiving(GroupEventContext context, int givingId, int groupId, int gadgetCfgId);
 
-    int AddChessBuildingPoints(GroupEventLuaContext context, int groupId, int param2, int uid, int pointsToAdd);
+    int AddChessBuildingPoints(GroupEventContext context, int groupId, int param2, int uid, int pointsToAdd);
 
-    int AddEntityGlobalFloatValueByConfigId(GroupEventLuaContext context, Object param1Table, String param2, int param3);
+    int AddEntityGlobalFloatValueByConfigId(GroupEventContext context, LuaTable param1Table, String param2, int param3);
 
     /**
      * TODO implement
@@ -312,7 +315,7 @@ public interface ScriptLibHandler {
      * @param param3
      * @return
      */
-    int AddExhibitionAccumulableData(GroupEventLuaContext context, int uid, String param2, int param3);
+    int AddExhibitionAccumulableData(GroupEventContext context, int uid, String param2, int param3);
 
     /**
      * TODO implement
@@ -323,7 +326,7 @@ public interface ScriptLibHandler {
      * @param param4 contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id"
      * @return
      */
-    int AddExhibitionAccumulableDataAfterSuccess(GroupEventLuaContext context, int uid, String param2, int param3, LuaTable param4);
+    int AddExhibitionAccumulableDataAfterSuccess(GroupEventContext context, int uid, String param2, int param3, LuaTable param4);
 
     /**
      * TODO implement
@@ -333,7 +336,7 @@ public interface ScriptLibHandler {
      * @param param3
      * @return
      */
-    int AddExhibitionReplaceableData(GroupEventLuaContext context, int uid, String param2, int param3);
+    int AddExhibitionReplaceableData(GroupEventContext context, int uid, String param2, int param3);
 
     /**
      * TODO implement
@@ -344,21 +347,21 @@ public interface ScriptLibHandler {
      * @param param4 contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id"
      * @return
      */
-    int AddExhibitionReplaceableDataAfterSuccess(GroupEventLuaContext context, int uid, String param2, int param3, LuaTable param4);
+    int AddExhibitionReplaceableDataAfterSuccess(GroupEventContext context, int uid, String param2, int param3, LuaTable param4);
 
-    int AddFleurFairMultistagePlayBuffEnergy(GroupEventLuaContext context, int groupId, int param2, int uid, int bonusId);
+    int AddFleurFairMultistagePlayBuffEnergy(GroupEventContext context, int groupId, int param2, int uid, int bonusId);
 
-    int AddGadgetPlayProgress(GroupEventLuaContext context, int param1, int param2, int progressChange);
+    int AddGadgetPlayProgress(GroupEventContext context, int param1, int param2, int progressChange);
 
-    int AddIrodoriChessBuildingPoints(GroupEventLuaContext context, int groupId, int param2, int points);
-    int AddIrodoriChessTowerServerGlobalValue(GroupEventLuaContext context, int groupId, int param2, int param3, int delta);
-    int AddMechanicusBuildingPoints(GroupEventLuaContext context, int groupId, int param2, int uid, int delta);
+    int AddIrodoriChessBuildingPoints(GroupEventContext context, int groupId, int param2, int points);
+    int AddIrodoriChessTowerServerGlobalValue(GroupEventContext context, int groupId, int param2, int param3, int delta);
+    int AddMechanicusBuildingPoints(GroupEventContext context, int groupId, int param2, int uid, int delta);
 
-    int AddRegionRecycleProgress(GroupEventLuaContext context, int regionId, int delta);
-    int AddRegionSearchProgress(GroupEventLuaContext context, int regionId, int delta);
-    int AddRegionalPlayVarValue(GroupEventLuaContext context, int uid, int regionId, int delta);
-    int AddSceneMultiStagePlayUidValue(GroupEventLuaContext context, int groupId, int param2, String param3, int uid, int param5);
-    int AddScenePlayBattleProgress(GroupEventLuaContext context, int groupId, int progress);
+    int AddRegionRecycleProgress(GroupEventContext context, int regionId, int delta);
+    int AddRegionSearchProgress(GroupEventContext context, int regionId, int delta);
+    int AddRegionalPlayVarValue(GroupEventContext context, int uid, int regionId, int delta);
+    int AddSceneMultiStagePlayUidValue(GroupEventContext context, int groupId, int param2, String param3, int uid, int param5);
+    int AddScenePlayBattleProgress(GroupEventContext context, int groupId, int progress);
 
     /**
      * TODO implement
@@ -367,36 +370,36 @@ public interface ScriptLibHandler {
      *                    duration:int, target_uid_list:Table
      * @return
      */
-    int AssignPlayerUidOpNotify(GroupEventLuaContext context, LuaTable param1Table);
+    int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
 
 
     /**
-     * Methods used in EntityControllers/using ControllerLuaContext
+     * Methods used in EntityControllers/using ControllerEventContext
      */
 
-    int SetGadgetState(ControllerLuaContext context, int gadgetState);
+    int SetGadgetState(ControllerEventContext context, int gadgetState);
 
-    int GetGadgetState(ControllerLuaContext context);
+    int GetGadgetState(ControllerEventContext context);
 
-    int ResetGadgetState(ControllerLuaContext context, int gadgetState) ;
+    int ResetGadgetState(ControllerEventContext context, int gadgetState) ;
 
-    int SetGearStartValue(ControllerLuaContext context, int startValue);
+    int SetGearStartValue(ControllerEventContext context, int startValue);
 
-    int GetGearStartValue(ControllerLuaContext context);
+    int GetGearStartValue(ControllerEventContext context);
 
-    int SetGearStopValue(ControllerLuaContext context, int startValue);
+    int SetGearStopValue(ControllerEventContext context, int startValue);
 
-    int GetGearStopValue(ControllerLuaContext context) ;
+    int GetGearStopValue(ControllerEventContext context) ;
 
-    int GetGadgetStateBeginTime(ControllerLuaContext context);
+    int GetGadgetStateBeginTime(ControllerEventContext context);
 
-    int GetContextGadgetConfigId(ControllerLuaContext context) ;
+    int GetContextGadgetConfigId(ControllerEventContext context) ;
 
-    int GetContextGroupId(ControllerLuaContext context);
+    int GetContextGroupId(ControllerEventContext context);
 
-    int SetGadgetEnableInteract(ControllerLuaContext context, int groupId, int configId, boolean enable);
+    int SetGadgetEnableInteract(ControllerEventContext context, int groupId, int configId, boolean enable);
 
-    int DropSubfield(ControllerLuaContext context, LuaTable paramsTable);
+    int DropSubfield(ControllerEventContext context, LuaTable paramsTable);
 
-    int[] GetGatherConfigIdList(ControllerLuaContext context);
+    int[] GetGatherConfigIdList(ControllerEventContext context);
 }

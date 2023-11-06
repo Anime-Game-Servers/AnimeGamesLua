@@ -285,7 +285,14 @@ public class ScriptLib {
     }
 
     public static Object GetSceneUidList(GroupEventLuaContext context){
-        return context.getScriptLibHandler().GetSceneUidList(context);
+        val list = context.getScriptLibHandler().GetSceneUidList(context);
+
+        val result = context.getEngine().createTable();
+
+        for(int i = 0; i< list.length; i++){
+            result.set(Integer.toString(i+1), list[i]);
+        }
+        return result;
     }
 
     public static int GetSeaLampActivityPhase(GroupEventLuaContext context){
