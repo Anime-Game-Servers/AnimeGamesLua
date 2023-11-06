@@ -42,7 +42,7 @@ public class JNLuaScript implements LuaScript {
         val luaState = binding.getLuaState();
         luaState.setConverter(JNLuaConverter.getINSTANCE());
 
-        val requireFunction = JNLuaRequireCommonFunction.INSTANCE;
+        val requireFunction = JNLuaRequireCommonFunction.getInstance(engine.getScriptConfig());
         binding.put(requireFunction.getName(), requireFunction);
         scriptReader = Files.newBufferedReader(scriptPath);
         if(scriptType.getPrecompile()) {

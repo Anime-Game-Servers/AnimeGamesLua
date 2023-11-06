@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
+import org.anime_game_servers.lua.engine.ScriptConfig;
 import org.anime_game_servers.lua.models.IntValueEnum;
 import org.anime_game_servers.lua.models.ScriptType;
 import org.luaj.vm2.LuaTable;
@@ -30,12 +31,16 @@ public class LuaJEngine implements LuaEngine {
     private final ScriptEngineManager manager;
     private final LuajContext context;
 
+    @Getter(onMethod = @__(@Override))
+    private final ScriptConfig scriptConfig;
+
     @Getter
     private final ScriptEngine engine;
     @Getter(onMethod = @__(@Override))
     private final LuaJSerializer serializer;
 
-    public LuaJEngine() {
+    public LuaJEngine(ScriptConfig scriptConfig) {
+        this.scriptConfig = scriptConfig;
         manager = new ScriptEngineManager();
         engine = manager.getEngineByName("luaj");
 
@@ -46,7 +51,8 @@ public class LuaJEngine implements LuaEngine {
         context.globals.finder = new ResourceFinder() {
             @Override
             public InputStream findResource(String filename) {
-                val stream = scriptFinder.openScript(filename);
+                val scriptPath = scriptConfig.getScriptLoader().getScriptPath(filename);
+                val stream = scriptConfig.getScriptLoader().openScript(scriptPath);
                 return stream!=null ? stream : new ByteArrayInputStream(new byte[0]);
             }
 
@@ -99,8 +105,7 @@ public class LuaJEngine implements LuaEngine {
 
     @Nullable
     @Override
-    public LuaScript getScript(String scriptName, ScriptType scriptType) {
-        final Path scriptPath = scriptFinder.getScriptPath(scriptName);
+    public LuaScript getScript(Path scriptPath, ScriptType scriptType) {
         if (!Files.exists(scriptPath)) return null;
 
         try {

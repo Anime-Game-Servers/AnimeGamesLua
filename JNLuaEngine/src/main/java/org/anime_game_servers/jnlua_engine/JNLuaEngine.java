@@ -32,10 +32,13 @@ public class JNLuaEngine implements LuaEngine {
     private final JNLuaSerializer serializer;
     @Getter
     private final SimpleBindings bindings;
+    @Getter(onMethod = @__(@Override))
+    private final ScriptConfig scriptConfig;
 
-    public JNLuaEngine() {
-        manager = new ScriptEngineManager();
-        bindings = new SimpleBindings();
+    public JNLuaEngine(ScriptConfig scriptConfig) {
+        this.scriptConfig = scriptConfig;
+        this.manager = new ScriptEngineManager();
+        this.bindings = new SimpleBindings();
         this.serializer = new JNLuaSerializer();
 
         this.bindings.put("print", (JavaFunction) luaState -> {
@@ -86,8 +89,7 @@ public class JNLuaEngine implements LuaEngine {
 
     @Nullable
     @Override
-    public LuaScript getScript(String scriptName, ScriptType scriptType) {
-        final Path scriptPath = scriptFinder.getScriptPath(scriptName);
+    public LuaScript getScript(Path scriptPath, ScriptType scriptType) {
         if (!Files.exists(scriptPath)) return null;
 
         try {
