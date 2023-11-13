@@ -10,6 +10,7 @@ import org.terasology.jnlua.DefaultConverter;
 import org.terasology.jnlua.LuaState;
 import org.terasology.jnlua.NamedJavaFunction;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,11 +47,15 @@ public class JNLuaConverter implements Converter {
             luaState.newTable();
             val staticClass = staticClassWrapper.getStaticClass();
             val methods = staticClass.getMethods();
-            // todo handle static variables too
+            val fields = staticClass.getFields();
             Arrays.stream(methods)
                 .filter(method -> Modifier.isStatic(method.getModifiers()))
                 .forEach(m -> {
                     class TempFunc implements NamedJavaFunction {
+                        Method method;
+                        TempFunc(Method method){
+                            this.method = method;
+                        }
                         @Override
                         public String getName() {
                             return m.getName();
@@ -59,13 +64,20 @@ public class JNLuaConverter implements Converter {
                         @SneakyThrows
                         @Override
                         public int invoke(LuaState luaState) {
-                            var argSize = luaState.getTop();
-                            List<Object> args = new ArrayList<>();
+                            val argSize = luaState.getTop();
+                            val args = new ArrayList<Object>();
+                            val methodParameters = method.getParameters();
+                            if(argSize != methodParameters.length){
+                                // todo maybe check for and handle vararg?
+                                throw new RuntimeException("invalid argument size");
+                            }
                             for (int i = 0; i < argSize; ++i) {
-                                args.add(luaState.checkJavaObject(i + 1, Object.class));
+                                val paramter = methodParameters[i];
+                                val parameterClass = paramter.getType().isInterface() ? Object.class : paramter.getType();
+                                args.add(luaState.checkJavaObject(i + 1, parameterClass));
                             }
                             try {
-                                Object ret = m.invoke(null, args.toArray());
+                                Object ret = method.invoke(null, args.toArray());
                                 luaState.pushJavaObject(ret);
                             } catch (Exception e) {
                                 logger.error(e, ()->"Error on invoking binding function. ");
@@ -74,11 +86,34 @@ public class JNLuaConverter implements Converter {
                             return 1;
                         }
                     }
-                    val func = new TempFunc();
+                    val func = new TempFunc(m);
                     luaState.pushJavaFunction(func);
                     luaState.setField(-2, func.getName());
                 }
             );
+            Arrays.stream(fields)
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .forEach(field -> {
+                    val type = field.getType();
+                    try {
+                        val value = field.get(null);
+                        if(value instanceof Number){
+                            luaState.pushNumber(((Number) value).doubleValue());
+                        } else if(value instanceof String){
+                            luaState.pushString((String) value);
+                        } else if(value instanceof Boolean){
+                            luaState.pushBoolean((Boolean) value);
+                        } else {
+                            luaState.pushJavaObject(value);
+                        }
+                        luaState.setField(-2, field.getName());
+                    } catch (IllegalAccessException e) {
+                        logger.error(e, ()->"Error on invoking binding function. ");
+                        throw new RuntimeException(e);
+                    }
+                }
+            );
+
 
             return;
         }
