@@ -1,6 +1,14 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.constants.*;
+import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
+import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
+import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType;
+import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
+import org.anime_game_servers.lua.engine.LuaTable;
 
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.posToLua;
 
@@ -10,6 +18,7 @@ public class ScriptLib {
      * Context free functions
      */
 
+    private static KLogger scriptLogger = KotlinLogging.INSTANCE.logger(ScriptLib.class.getName());
     public static ScriptLibStaticHandler staticHandler;
     public static void PrintLog(String msg) {
         staticHandler.PrintLog(msg);
@@ -77,13 +86,28 @@ public class ScriptLib {
 	}
 
     public static int AddExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy){
-        return context.getScriptLibHandler().AddExtraFlowSuite(context, groupId, suiteId, flowSuitePolicy);
+        if(flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.values().length){
+            scriptLogger.error(() -> "[AddExtraFlowSuite] Invalid flow suite policy " + flowSuitePolicy);
+            return 1;
+        }
+        val flowSuitePolicyEnum = FlowSuiteOperatePolicy.values()[flowSuitePolicy];
+        return context.getScriptLibHandler().AddExtraFlowSuite(context, groupId, suiteId, flowSuitePolicyEnum);
     }
     public static int RemoveExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy){
-        return context.getScriptLibHandler().RemoveExtraFlowSuite(context, groupId, suiteId, flowSuitePolicy);
+        if(flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.values().length){
+            scriptLogger.error(() -> "[RemoveExtraFlowSuite] Invalid flow suite policy " + flowSuitePolicy);
+            return 1;
+        }
+        val flowSuitePolicyEnum = FlowSuiteOperatePolicy.values()[flowSuitePolicy];
+        return context.getScriptLibHandler().RemoveExtraFlowSuite(context, groupId, suiteId, flowSuitePolicyEnum);
     }
     public static int KillExtraFlowSuite(GroupEventLuaContext context, int groupId, int suiteId, int flowSuitePolicy){
-        return context.getScriptLibHandler().KillExtraFlowSuite(context, groupId, suiteId, flowSuitePolicy);
+        if(flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.values().length){
+            scriptLogger.error(() -> "[KillExtraFlowSuite] Invalid flow suite policy " + flowSuitePolicy);
+            return 1;
+        }
+        val flowSuitePolicyEnum = FlowSuiteOperatePolicy.values()[flowSuitePolicy];
+        return context.getScriptLibHandler().KillExtraFlowSuite(context, groupId, suiteId, flowSuitePolicyEnum);
     }
 
 	public static int ActiveChallenge(GroupEventLuaContext context, int challengeIndex, int challengeId, int timeLimitOrGroupId, int groupId, int objectiveKills, int param5) {
@@ -170,12 +194,23 @@ public class ScriptLib {
 
 	public static int GetRegionEntityCount(GroupEventLuaContext context, Object rawTable) {
         val table = context.getEngine().getTable(rawTable);
-		return context.getScriptLibHandler().GetRegionEntityCount(context, table);
+
+
+        int regionId = table.getInt("region_eid");
+        int entityType = table.getInt("entity_type");
+        if(entityType < 0 || entityType >= EntityType.values().length){
+            scriptLogger.error(() -> "Invalid entity type " + entityType);
+            return 0;
+        }
+        val entityTypeEnum = EntityType.values()[entityType];
+
+		return context.getScriptLibHandler().GetRegionEntityCount(context, regionId, entityTypeEnum);
 	}
 
     public int GetRegionConfigId(GroupEventLuaContext context, Object rawTable){
         val table = context.getEngine().getTable(rawTable);
-        return context.getScriptLibHandler().GetRegionConfigId(context, table);
+        val regionEid = table.getInt("region_eid");
+        return context.getScriptLibHandler().GetRegionConfigId(context, regionEid);
     }
 
 	public static int TowerCountTimeStatus(GroupEventLuaContext context, int isDone, int var2){
@@ -254,18 +289,19 @@ public class ScriptLib {
     }
 
     public static int GetHostQuestState(GroupEventLuaContext context, int questId){
-        return context.getScriptLibHandler().GetHostQuestState(context, questId);
+        return context.getScriptLibHandler().GetHostQuestState(context, questId).getValue();
     }
 
     public static int GetQuestState(GroupEventLuaContext context, int entityId, int questId){
-        return context.getScriptLibHandler().GetQuestState(context, entityId, questId);
+        return context.getScriptLibHandler().GetQuestState(context, entityId, questId).getValue();
     }
 
     public static int ShowReminder(GroupEventLuaContext context, int reminderId){
         return context.getScriptLibHandler().ShowReminder(context, reminderId);
     }
 
-    public static int RemoveEntityByConfigId(GroupEventLuaContext context, int groupId, int entityType, int configId){
+    public static int RemoveEntityByConfigId(GroupEventLuaContext context, int groupId, int entityTypeValue, int configId){
+        val entityType = EntityType.values()[entityTypeValue];
         return context.getScriptLibHandler().RemoveEntityByConfigId(context, groupId, entityType, configId);
     }
 
@@ -333,8 +369,19 @@ public class ScriptLib {
         return context.getScriptLibHandler().StartFatherChallenge(context, challengeIndex);
     }
     public static int ModifyFatherChallengeProperty(GroupEventLuaContext context, int challengeId, int propertyTypeIndex, int value){
-        return context.getScriptLibHandler().ModifyFatherChallengeProperty(context, challengeId, propertyTypeIndex, value);
+        val propertyType = FatherChallengeProperty.values()[propertyTypeIndex];
+        return context.getScriptLibHandler().ModifyFatherChallengeProperty(context, challengeId, propertyType, value);
     }
+
+    public static int SetChallengeEventMark(GroupEventLuaContext context, int challengeId, int markType){
+        if(markType < 0 || markType >= ChallengeEventMarkType.values().length){
+            scriptLogger.error(() -> "Invalid mark type " + markType);
+            return 1;
+        }
+        val markTypeEnum = ChallengeEventMarkType.values()[markType];
+        return context.getScriptLibHandler().SetChallengeEventMark(context, challengeId, markTypeEnum);
+    }
+
     public static int AttachChildChallenge(GroupEventLuaContext context, int fatherChallengeIndex, int childChallengeIndex,
                                            int childChallengeId, Object var4Table, Object var5Table, Object var6Table){
         val conditionArray = context.getEngine().getTable(var4Table);
@@ -398,9 +445,51 @@ public class ScriptLib {
         return context.getScriptLibHandler().ExpeditionChallengeEnterRegion(context, var1);
     }
 
-    public static int StartSealBattle(GroupEventLuaContext context, int gadgetId, Object var2Table) {
-        val var2 = context.getEngine().getTable(var2Table);
-        return context.getScriptLibHandler().StartSealBattle(context, gadgetId, var2);
+    public static int StartSealBattle(GroupEventLuaContext context, int gadgetId, Object battleParamsTable) {
+        val battleParams = context.getEngine().getTable(battleParamsTable);
+        val battleType = battleParams.optInt("battle_type", -1);
+        if(battleType < 0 || battleType >= SealBattleType.values().length){
+            scriptLogger.error(() -> "Invalid battle type " + battleType);
+            return -1;
+        }
+        val battleTypeEnum = SealBattleType.values()[battleType];
+        val handlerParams = switch (battleTypeEnum){
+            case NONE -> parseSealBattleNoneParams(battleParams);
+            case KILL_MONSTER -> parseSealBattleMonsterKillParams(battleParams);
+            case ENERGY_CHARGE -> parseEnergySealBattleTimeParams(battleParams);
+        };
+        return context.getScriptLibHandler().StartSealBattle(context, gadgetId, handlerParams);
+    }
+
+    private static SealBattleParams parseSealBattleNoneParams(LuaTable battleParams){
+        val radius = battleParams.optInt("radius", -1);
+        val inAdd = battleParams.optInt("in_add", -1);
+        val outSub = battleParams.optInt("out_sub", -1);
+        val failTime = battleParams.optInt("fail_time", -1);
+        val maxProgress = battleParams.optInt("max_progress", -1);
+        // TODO check params and maybe return error?
+        return new DefaultSealBattleParams(radius, inAdd, outSub, failTime, maxProgress);
+    }
+
+    private static SealBattleParams parseSealBattleMonsterKillParams(LuaTable battleParams){
+        val radius = battleParams.optInt("radius", -1);
+        val killTime = battleParams.optInt("kill_time", -1);
+        val monsterGroupId = battleParams.optInt("monster_group_id", -1);
+        val maxProgress = battleParams.optInt("max_progress", -1);
+        // TODO check params and maybe return error?
+        return new MonsterSealBattleParams(radius, killTime, monsterGroupId, maxProgress);
+    }
+
+    private static SealBattleParams parseEnergySealBattleTimeParams(LuaTable battleParams){
+        val radius = battleParams.optInt("radius", -1);
+        val battleTime = battleParams.optInt("battle_time", -1);
+        val monsterGroupId = battleParams.optInt("monster_group_id", -1);
+        val defaultKillCharge = battleParams.optInt("default_kill_charge", -1);
+        val autoCharge = battleParams.optInt("auto_charge", -1);
+        val autoDecline = battleParams.optInt("auto_decline", -1);
+        val maxEnergy = battleParams.optInt("max_energy", -1);
+        // TODO check params and maybe return error?
+        return new EnergySealBattleParams(radius, battleTime, monsterGroupId, defaultKillCharge, autoCharge, autoDecline, maxEnergy);
     }
 
     public static int InitTimeAxis(GroupEventLuaContext context, String var1, Object var2Table, boolean var3){
@@ -471,12 +560,37 @@ public class ScriptLib {
     public static int InitGalleryProgressScore(GroupEventLuaContext context, String name, int galleryId, Object progressTable,
                                                int scoreUiTypeIndex, int scoreTypeIndex) {
         val progress = context.getEngine().getTable(progressTable);
-        return context.getScriptLibHandler().InitGalleryProgressScore(context, name, galleryId, progress, scoreUiTypeIndex, scoreTypeIndex);
+
+        if(scoreUiTypeIndex < 0 || scoreUiTypeIndex >= GalleryProgressScoreUIType.values().length){
+            scriptLogger.error(() -> "[InitGalleryProgressScore] Invalid score ui type " + scoreUiTypeIndex);
+            return 1;
+        }
+        val uiScoreType = GalleryProgressScoreUIType.values()[scoreUiTypeIndex];
+
+        if(scoreTypeIndex < 0 || scoreTypeIndex >= GalleryProgressScoreType.values().length){
+            scriptLogger.error(() -> "[InitGalleryProgressScore] Invalid score type " + scoreTypeIndex);
+            return 2;
+        }
+        val scoreType = GalleryProgressScoreType.values()[scoreTypeIndex];
+        return context.getScriptLibHandler().InitGalleryProgressScore(context, name, galleryId, progress, uiScoreType, scoreType);
     }
     public static int InitGalleryProgressWithScore(GroupEventLuaContext context, String name, int galleryId, Object progressTable,
                                                int maxProgress, int scoreUiTypeIndex, int scoreTypeIndex) {
         val progress = context.getEngine().getTable(progressTable);
-        return context.getScriptLibHandler().InitGalleryProgressWithScore(context, name, galleryId, progress, maxProgress, scoreUiTypeIndex, scoreTypeIndex);
+
+        if(scoreUiTypeIndex < 0 || scoreUiTypeIndex >= GalleryProgressScoreUIType.values().length){
+            scriptLogger.error(() -> "[InitGalleryProgressWithScore] Invalid score ui type " + scoreUiTypeIndex);
+            return 1;
+        }
+        val uiScoreType = GalleryProgressScoreUIType.values()[scoreUiTypeIndex];
+
+        if(scoreTypeIndex < 0 || scoreTypeIndex >= GalleryProgressScoreType.values().length){
+            scriptLogger.error(() -> "[InitGalleryProgressWithScore] Invalid score type " + scoreTypeIndex);
+            return 2;
+        }
+        val scoreType = GalleryProgressScoreType.values()[scoreTypeIndex];
+
+        return context.getScriptLibHandler().InitGalleryProgressWithScore(context, name, galleryId, progress, maxProgress, uiScoreType, scoreType);
     }
     public static int AddGalleryProgressScore(GroupEventLuaContext context, String name, int galleryId, int score) {
         return context.getScriptLibHandler().AddGalleryProgressScore(context, name, galleryId, score);
@@ -637,7 +751,35 @@ public class ScriptLib {
 
     public static int KillGroupEntity(GroupEventLuaContext context, Object rawTable) {
         val table = context.getEngine().getTable(rawTable);
-        return context.getScriptLibHandler().KillGroupEntity(context, table);
+        val groupId = table.optInt("group_id", -1);
+        val killPolicyId = table.optInt("kill_policy", -1);
+        if(groupId == -1){
+            scriptLogger.error(() -> "KillGroupEntity: groupId not set");
+            return 1;
+        }
+        if(killPolicyId == -1){
+            scriptLogger.error(() -> "KillGroupEntity: kill_policy not set");
+            return killByCfgIds(context, groupId, table);
+        }
+        return killByGroupPolicy(context, groupId, killPolicyId);
+    }
+
+    private static int killByGroupPolicy(GroupEventLuaContext context, int groupId, int killPolicyId){
+        if(killPolicyId >= GroupKillPolicy.values().length){
+            scriptLogger.error(() -> "KillGroupEntity: kill_policy out of bounds");
+            return 2;
+        }
+        val policy = GroupKillPolicy.values()[killPolicyId];
+        return context.getScriptLibHandler().KillGroupEntityByPolicy(context, groupId, policy);
+    }
+
+    private static int killByCfgIds(GroupEventLuaContext context, int groupId, LuaTable luaTable){
+        val monsterList = luaTable.getTable("monsters");
+        val gadgetList = luaTable.getTable("gadgets");
+        val monsters = monsterList != null ? monsterList.getAsIntArray() : new int[0];
+        val gadgets = gadgetList != null ? gadgetList.getAsIntArray() : new int[0];
+
+        return context.getScriptLibHandler().KillGroupEntityByCfgIds(context, groupId, monsters, gadgets);
     }
 
     public static int GetGadgetIdByEntityId(GroupEventLuaContext context, int entityId){
@@ -738,7 +880,18 @@ public class ScriptLib {
      */
     public static int AddExhibitionAccumulableDataAfterSuccess(GroupEventLuaContext context, int uid, String param2, int param3, Object param4Table){
         val param4 = context.getEngine().getTable(param4Table);
-        return context.getScriptLibHandler().AddExhibitionAccumulableDataAfterSuccess(context, uid, param2, param3, param4);
+        val exhibitionTypeIndex = param4.optInt("play_type", -1);
+        val galleryId = param4.optInt("gallery_id", -1);
+        if(exhibitionTypeIndex < 0 || exhibitionTypeIndex >= ExhibitionPlayType.values().length){
+            scriptLogger.error(() -> "Invalid exhibition type " + exhibitionTypeIndex);
+            return 1;
+        }
+        if (galleryId == -1){
+            scriptLogger.error(() -> "Invalid gallery id " + galleryId);
+            return 2;
+        }
+        val exhibitionTypeEnum = ExhibitionPlayType.values()[exhibitionTypeIndex];
+        return context.getScriptLibHandler().AddExhibitionAccumulableDataAfterSuccess(context, uid, param2, param3, exhibitionTypeEnum, galleryId);
     }
 
     /**

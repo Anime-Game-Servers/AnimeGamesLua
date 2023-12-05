@@ -4,8 +4,8 @@ import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
 import org.anime_game_servers.gi_lua.models.constants.*;
-import org.anime_game_servers.gi_lua.models.constants.temporary.ExhibitionPlayType;
-import org.anime_game_servers.gi_lua.models.constants.temporary.FlowSuiteOperatePolicy;
+import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
+import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
 import org.anime_game_servers.gi_lua.script_lib.ScriptLib;
@@ -71,14 +71,14 @@ public interface GIScriptLoader extends BaseScriptLoader {
     }
 
     default void addDefaultsForEngine(LuaEngine luaEngine){
-        //luaEngine.addGlobalEnumByIntValue("QuestState", QuestState.values());
+        luaEngine.addGlobalEnumByIntValue("QuestState", QuestState.values());
         luaEngine.addGlobalEnumByOrdinal("EntityType", EntityType.values());
         luaEngine.addGlobalEnumByOrdinal("ElementType", ElementType.values());
 
         luaEngine.addGlobalEnumByOrdinal("GroupKillPolicy", GroupKillPolicy.values());
         luaEngine.addGlobalEnumByOrdinal("SealBattleType", SealBattleType.values());
-        //luaEngine.addGlobalEnumByOrdinal("FatherChallengeProperty", FatherChallengeProperty.values());
-        //luaEngine.addGlobalEnumByOrdinal("ChallengeEventMarkType", ChallengeEventMarkType.values());
+        luaEngine.addGlobalEnumByOrdinal("FatherChallengeProperty", FatherChallengeProperty.values());
+        luaEngine.addGlobalEnumByOrdinal("ChallengeEventMarkType", ChallengeEventMarkType.values());
         luaEngine.addGlobalEnumByOrdinal("VisionLevelType", VisionLevelType.values());
         luaEngine.addGlobalEnumByOrdinal("ExhibitionPlayType", ExhibitionPlayType.values());
         luaEngine.addGlobalEnumByOrdinal("FlowSuiteOperatePolicy", FlowSuiteOperatePolicy.values());

@@ -124,4 +124,10 @@ public class EventType {
 	public static final int EVENT_PLATFORM_ARRIVAL = 2701;
 	public static final int EVENT_PLAYER_BACK_GALLERY_REVIVE_POINT = 2800;
 	public static final int EVENT_GALLERY_CANNOT_START_AFTER_COUNTDOWN = 2801;
+	public static final int EVENT_CUSTOM_GADGET_SLOT_MAP_CHANGED = 3000;
+	public static final int EVENT_GRAVEN_PHOTO_REFRESH_GROUP = 3001;
+	public static final int EVENT_GADGET_CHAIN_LEVEL_CHANGE = 3101;
+	public static final int EVENT_GCG_TAVERN_SCENE_REFRESH = 3200;
+	public static final int EVENT_CHAR_AMUSEMENT_DUNGEON_ALL_PLAYER_ENTER = 3201;
+	public static final int EVENT_TRAINING_FUNGUS_SELECT_DONE = 3202;
 }
