@@ -24,6 +24,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * GroupEventContext functions
      */
 
+    void PrintGroupWarning(LuaContext context, String msg);
     int SetGadgetStateByConfigId(GroupEventContext context, int configId, int gadgetState);
     int SetGroupGadgetStateByConfigId(GroupEventContext context, int groupId, int configId, int gadgetState);
     int SetWorktopOptionsByGroupId(GroupEventContext context, int groupId, int configId, LuaTable options);
@@ -110,6 +111,31 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int TowerMirrorTeamSetUp(GroupEventContext context, int team, int var1) ;
 
     int CreateGadget(GroupEventContext context, LuaTable table);
+
+    /**
+     * Spawn a gadget from the caller group at the specified position
+     * @param configId The config id of the gadget in the calling group
+     * @param pos The position to spawn the gadget at
+     * @param rot The rotation of the gadget when spawned
+     */
+    int CreateGadgetByConfigIdByPos(GroupEventContext context, int configId, Position pos, Position rot);
+
+
+    /**
+     * TODO preparsed parameters
+     * Spawns a gadget based on the caller groups gadget with cfg id matching the specified id. It also applies additional parameters based on the parameters
+     * @param creationParams parameters to spawn a gadget with
+     */
+    int CreateGadgetByParamTable(GroupEventContext context, LuaTable creationParams);
+
+    /**
+     * Spawn a vehicle gadget with the given parameters
+     * @param uid The uid that will become the owner of the vehicle
+     * @param gadgetId The gadgetId of the vehicle gadget to spawn
+     * @param position The position to spawn the vehicle at
+     * @param rot The rotation to spawn the vehicle with
+     */
+    int CreateVehicle(GroupEventContext context, int uid, int gadgetId, Position position, Position rot);
 
     int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 

@@ -43,6 +43,9 @@ public class ScriptLib {
     /**
      * GroupEventLuaContext functions
      */
+    public static void PrintGroupWarning(GroupEventLuaContext context, String msg) {
+        context.getScriptLibHandler().PrintGroupWarning(context, msg);
+    }
 
     public static int SetGadgetStateByConfigId(GroupEventLuaContext context, int configId, int gadgetState) {
 		return context.getScriptLibHandler().SetGadgetStateByConfigId(context, configId, gadgetState);
@@ -264,6 +267,34 @@ public class ScriptLib {
 	public static int CreateGadget(GroupEventLuaContext context, Object rawTable){
         val table = context.getEngine().getTable(rawTable);
         return context.getScriptLibHandler().CreateGadget(context, table);
+	}
+
+    /**
+     * Spawn a gadget from the caller group at the specified position
+     * @param configId The config id of the gadget in the calling group
+     * @param posTable The position to spawn the gadget at
+     * @param rotTable The rotation of the gadget when spawned
+     */
+	public static int CreateGadgetByConfigIdByPos(GroupEventLuaContext context, int configId, Object posTable, Object rotTable){
+        val luaPos = context.getEngine().getTable(posTable);
+        val luaRot = context.getEngine().getTable(rotTable);
+        return context.getScriptLibHandler().CreateGadgetByConfigIdByPos(context, configId, luaToPos(luaPos), luaToPos(luaRot));
+	}
+
+    /**
+     * TODO parse the table before passing it to the handler
+     * Spawns a gadget based on the caller groups gadget with cfg id matching the specified id. It also applies additional parameters based on the parameters
+     * @param creationParamsTable parameters to spawn a gadget with
+     */
+	public static int CreateGadgetByParamTable(GroupEventLuaContext context, Object creationParamsTable){
+        val table = context.getEngine().getTable(creationParamsTable);
+        return context.getScriptLibHandler().CreateGadget(context, table);
+	}
+
+    public static int CreateVehicle(GroupEventLuaContext context, int uid, int gadgetId, Object posTable, Object rotTable){
+        val luaPos = context.getEngine().getTable(posTable);
+        val luaRot = context.getEngine().getTable(rotTable);
+        return context.getScriptLibHandler().CreateVehicle(context, uid, gadgetId, luaToPos(luaPos), luaToPos(luaRot));
 	}
 
 	public static int CheckRemainGadgetCountByGroupId(GroupEventLuaContext context, Object rawTable) {
