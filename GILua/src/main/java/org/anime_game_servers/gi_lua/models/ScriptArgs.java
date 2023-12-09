@@ -1,14 +1,17 @@
 package org.anime_game_servers.gi_lua.models;
 
+import lombok.Getter;
+
 public class ScriptArgs {
-    public int param1;
-    public int param2;
-    public int param3;
+    @Getter public int param1;
+    @Getter int param2;
+    @Getter int param3;
     public int source_eid; // Source entity
     public int target_eid;
     public int group_id;
     public String source; // source string, used for timers
     public int type; // lua event type, used by scripts and the ScriptManager
+    @Getter public int uid; // uid of the player triggering the event
 
     public ScriptArgs(int groupId, int eventType) {
         this(groupId, eventType, 0,0);
@@ -25,26 +28,14 @@ public class ScriptArgs {
         this.group_id = groupId;
     }
 
-    public int getParam1() {
-        return param1;
-    }
-
     public ScriptArgs setParam1(int param1) {
         this.param1 = param1;
         return this;
     }
 
-    public int getParam2() {
-        return param2;
-    }
-
     public ScriptArgs setParam2(int param2) {
         this.param2 = param2;
         return this;
-    }
-
-    public int getParam3() {
-        return param3;
     }
 
     public ScriptArgs setParam3(int param3) {
@@ -56,8 +47,8 @@ public class ScriptArgs {
         return source_eid;
     }
 
-    public ScriptArgs setSourceEntityId(int source_eid) {
-        this.source_eid = source_eid;
+    public ScriptArgs setSourceEntityId(int sourceEId) {
+        this.source_eid = sourceEId;
         return this;
     }
 
@@ -65,8 +56,8 @@ public class ScriptArgs {
         return target_eid;
     }
 
-    public ScriptArgs setTargetEntityId(int target_eid) {
-        this.target_eid = target_eid;
+    public ScriptArgs setTargetEntityId(int targetEId) {
+        this.target_eid = targetEId;
         return this;
     }
 
@@ -87,8 +78,13 @@ public class ScriptArgs {
         return group_id;
     }
 
-    public ScriptArgs setGroupId(int group_id) {
-        this.group_id = group_id;
+    public ScriptArgs setGroupId(int groupId) {
+        this.group_id = groupId;
+        return this;
+    }
+
+    public ScriptArgs setUid(int uid) {
+        this.uid = uid;
         return this;
     }
 }

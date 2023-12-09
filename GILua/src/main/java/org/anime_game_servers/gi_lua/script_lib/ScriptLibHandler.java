@@ -1,5 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
+import lombok.val;
 import org.anime_game_servers.gi_lua.models.Position;
 import org.anime_game_servers.gi_lua.models.constants.*;
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
@@ -94,6 +95,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int SetMonsterBattleByGroup(GroupEventContext context, int configId, int groupId);
 
     int CauseDungeonFail(GroupEventContext context);
+    int CauseDungeonSuccess(GroupEventContext context);
 
     int SetEntityServerGlobalValueByConfigId(GroupEventContext context, int cfgId, String sgvName, int value);
 
@@ -143,6 +145,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int sendShowCommonTipsToClient(GroupEventContext context, String title, String content, int closeTime);
 
     int sendCloseCommonTipsToClient(GroupEventContext context);
+    int updateBundleMarkShowStateByGroupId(GroupEventContext context, int groupId, boolean val2);
     int CreateFatherChallenge(GroupEventContext context, int challengeIndex, int challengeId, int timeLimit, LuaTable conditionTable);
     int StartFatherChallenge(GroupEventContext context, int challengeIndex);
     int ModifyFatherChallengeProperty(GroupEventContext context, int challengeId, FatherChallengeProperty propertyTypeIndex, int value);
@@ -207,7 +210,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int UnlockFloatSignal(GroupEventContext context, int groupId, int gadgetSignalId);
 
-    int SendServerMessageByLuaKey(GroupEventContext context, String var1, LuaTable var2);
+    int SendServerMessageByLuaKey(GroupEventContext context, String messageKey, int[] targets);
 
     int TryReallocateEntityAuthority(GroupEventContext context, int uid, int endConfig, int var3);
 
@@ -219,9 +222,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int MoveAvatarByPointArray(GroupEventContext context, int uid, int targetId, LuaTable var3, String var4);
 
-    int MovePlayerToPos(GroupEventContext context, LuaTable table);
+    int MovePlayerToPos(GroupEventContext context, int[] targetUIds, Position pos, Position rot, int radius, boolean isSkipUi);
 
-    int TransPlayerToPos(GroupEventContext context, LuaTable table);
+    int TransPlayerToPos(GroupEventContext context, int[] targetUIds, Position pos, Position rot, int radius, boolean isSkipUi);
 
     int PlayCutScene(GroupEventContext context, int cutsceneId, int var2);
 
@@ -379,6 +382,38 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      */
     int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
 
+    /**
+     * TODO better parameter handling and verify active handling
+     * Calls a lua function in the specified group if the group is active. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    int ExecuteActiveGroupLua(GroupEventLuaContext context, int groupId, String functionName, LuaTable callParamsTable);
+
+    /**
+     * TODO better parameter handling
+     * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    int ExecuteGroupLua(GroupEventLuaContext context, int groupId, String functionName, LuaTable callParamsTable);
+
+
+    /**
+     * // TODO identify unknown parameters and exact behaviour
+     * Executes a lua function on a gadgets lua controller.
+     * This seems to be used in only the Crucible activity
+     * @param groupId group to find the gadget in
+     * @param gadgetCfgId cfg id of the gadget in the group to execute lua in
+     * @param activityType seems to be an activity type
+     * @param var4 TODO
+     * @param val5 TODO
+     */
+    int ExecuteGadgetLua(GroupEventLuaContext context, int groupId, int gadgetCfgId, int activityType, int var4, int val5);
 
     /**
      * Methods used in EntityControllers/using ControllerEventContext

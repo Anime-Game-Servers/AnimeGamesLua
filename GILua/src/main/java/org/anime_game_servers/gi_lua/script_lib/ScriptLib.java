@@ -10,6 +10,9 @@ import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressS
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
 import org.anime_game_servers.lua.engine.LuaTable;
 
+import java.util.ArrayList;
+
+import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.posToLua;
 
 public class ScriptLib {
@@ -228,6 +231,10 @@ public class ScriptLib {
 		return context.getScriptLibHandler().CauseDungeonFail(context);
 	}
 
+	public static int CauseDungeonSuccess(GroupEventLuaContext context){
+		return context.getScriptLibHandler().CauseDungeonSuccess(context);
+	}
+
     public static int SetEntityServerGlobalValueByConfigId(GroupEventLuaContext context, int cfgId, String sgvName, int value){
         return context.getScriptLibHandler().SetEntityServerGlobalValueByConfigId(context, cfgId, sgvName, value);
     }
@@ -359,6 +366,10 @@ public class ScriptLib {
 
     public static int sendCloseCommonTipsToClient(GroupEventLuaContext context){
         return context.getScriptLibHandler().sendCloseCommonTipsToClient(context);
+    }
+
+    public static int updateBundleMarkShowStateByGroupId(GroupEventLuaContext context, int groupId, boolean val2){
+        return context.getScriptLibHandler().updateBundleMarkShowStateByGroupId(context, groupId, val2);
     }
 
     public static int CreateFatherChallenge(GroupEventLuaContext context, int challengeIndex, int challengeId, int timeLimit, Object conditionTable){
@@ -608,9 +619,9 @@ public class ScriptLib {
         return context.getScriptLibHandler().UnlockFloatSignal(context, groupId, gadgetSignalId);
     }
 
-    public static int SendServerMessageByLuaKey(GroupEventLuaContext context, String var1, Object var2Table){
-        var var2 = context.getEngine().getTable(var2Table);
-        return context.getScriptLibHandler().SendServerMessageByLuaKey(context, var1, var2);
+    public static int SendServerMessageByLuaKey(GroupEventLuaContext context, String stringKey, Object targetsTable){
+        var targets = context.getEngine().getTable(targetsTable);
+        return context.getScriptLibHandler().SendServerMessageByLuaKey(context, stringKey, targets.getAsIntArray());
     }
 
     public static int TryReallocateEntityAuthority(GroupEventLuaContext context, int uid, int endConfig, int var3){
@@ -638,14 +649,46 @@ public class ScriptLib {
         return context.getScriptLibHandler().MoveAvatarByPointArray(context, uid, targetId, var3, var4);
     }
 
-    public static int MovePlayerToPos(GroupEventLuaContext context, Object rawTable) {
-        val table = context.getEngine().getTable(rawTable);
-        return context.getScriptLibHandler().MovePlayerToPos(context, table);
+    public static int MovePlayerToPos(GroupEventLuaContext context, Object transportationParamsTable) {
+        val transportationParams = context.getEngine().getTable(transportationParamsTable);
+        val targetsTable = transportationParams.getTable("uid_list");
+        val luaPos = transportationParams.getTable("pos");
+        val luaRot = transportationParams.getTable("rot");
+        val radius = transportationParams.optInt("radius", -1);
+        val isSkipUi = transportationParams.optBoolean("is_skip_ui", false);
+
+
+        if(targetsTable==null || targetsTable.getSize()==0 || luaPos == null){
+            scriptLogger.error(() -> "[TransPlayerToPos] Invalid params, either missing uid_list or pos");
+            return 1;
+        }
+
+        val pos = luaToPos(luaPos);
+        val rot = luaToPos(luaRot);
+        val targets = targetsTable.getAsIntArray();
+
+        return context.getScriptLibHandler().MovePlayerToPos(context, targets, pos, rot, radius, isSkipUi);
     }
 
-    public static int TransPlayerToPos(GroupEventLuaContext context, Object rawTable) {
-        val var1 = context.getEngine().getTable(rawTable);
-        return context.getScriptLibHandler().TransPlayerToPos(context, var1);
+    public static int TransPlayerToPos(GroupEventLuaContext context, Object transportationParamsTable) {
+        val transportationParams = context.getEngine().getTable(transportationParamsTable);
+        val targetsTable = transportationParams.getTable("uid_list");
+        val luaPos = transportationParams.getTable("pos");
+        val luaRot = transportationParams.getTable("rot");
+        val radius = transportationParams.optInt("radius", -1);
+        val isSkipUi = transportationParams.optBoolean("is_skip_ui", false);
+
+
+        if(targetsTable==null || targetsTable.getSize()==0 || luaPos == null){
+            scriptLogger.error(() -> "[TransPlayerToPos] Invalid params, either missing uid_list or pos");
+            return 1;
+        }
+
+        val pos = luaToPos(luaPos);
+        val rot = luaToPos(luaRot);
+        val targets = targetsTable.getAsIntArray();
+
+        return context.getScriptLibHandler().TransPlayerToPos(context, targets, pos, rot, radius, isSkipUi);
     }
 
     public static int PlayCutScene(GroupEventLuaContext context, int cutsceneId, int var2){
@@ -964,6 +1007,47 @@ public class ScriptLib {
     public static int AssignPlayerUidOpNotify(GroupEventLuaContext context, Object param1Table){
         val param1 = context.getEngine().getTable(param1Table);
         return context.getScriptLibHandler().AssignPlayerUidOpNotify(context, param1);
+    }
+
+
+    /**
+     * TODO better parameter handling and verify active handling
+     * Calls a lua function in the specified group if the group is active. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    public static int ExecuteActiveGroupLua(GroupEventLuaContext context, int groupId, String functionName, Object callParamsTable){
+        val callParams = context.getEngine().getTable(callParamsTable);
+        return context.getScriptLibHandler().ExecuteActiveGroupLua(context, groupId, functionName, callParams);
+    }
+
+    /**
+     * TODO better parameter handling
+     * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    public static int ExecuteGroupLua(GroupEventLuaContext context, int groupId, String functionName, Object callParamsTable){
+        val callParams = context.getEngine().getTable(callParamsTable);
+        return context.getScriptLibHandler().ExecuteGroupLua(context, groupId, functionName, callParams);
+    }
+
+    /**
+     * // TODO identify unknown parameters and exact behaviour
+     * Executes a lua function on a gadgets lua controller.
+     * This seems to be used in only the Crucible activity and might also trigger OnClientExecuteReq
+     * @param groupId group to find the gadget in
+     * @param gadgetCfgId cfg id of the gadget in the group to execute lua in
+     * @param activityType seems to be an activity type
+     * @param var4 TODO
+     * @param val5 TODO
+     */
+    public static int ExecuteGadgetLua(GroupEventLuaContext context, int groupId, int gadgetCfgId, int activityType, int var4, int val5){
+        return context.getScriptLibHandler().ExecuteGadgetLua(context, groupId, gadgetCfgId, activityType, var4, val5);
     }
 
 
