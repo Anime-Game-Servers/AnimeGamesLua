@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.posToLua;
+import static org.anime_game_servers.gi_lua.script_lib.ScriptLibErrors.*;
 
 public class ScriptLib {
 
@@ -646,8 +647,19 @@ public class ScriptLib {
         return context.getScriptLibHandler().SetHandballGalleryBallPosAndRot(context, galleryId, position, rotation);
     }
 
-    public static int UnlockFloatSignal(GroupEventLuaContext context, int groupId, int gadgetSignalId){
-        return context.getScriptLibHandler().UnlockFloatSignal(context, groupId, gadgetSignalId);
+    /**
+     * This signalizes the server that it should unlock the float signal gadget with the specified id in the specified group
+     * @param context group context in which this function is called
+     * @param groupId group id of the group containing the float signal gadget that should be unlocked
+     * @param signalGadgetCfgId the config id identifying the of the float signal gadget that should be unlocked
+     * @return 0 on success, otherwise an error code
+     */
+    public static int UnlockFloatSignal(GroupEventLuaContext context, int groupId, int signalGadgetCfgId){
+        val handler = context.getScriptLibHandlerProvider().getSummerTimeScriptHandler();
+        if (handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.UnlockFloatSignal(context, groupId, gadgetSignalId);
     }
 
     public static int SendServerMessageByLuaKey(GroupEventLuaContext context, String stringKey, Object targetsTable){

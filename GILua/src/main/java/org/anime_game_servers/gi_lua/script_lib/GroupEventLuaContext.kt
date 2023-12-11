@@ -6,4 +6,6 @@ import org.anime_game_servers.gi_lua.models.ScriptArgs
 interface GroupEventLuaContext: LuaContext {
     fun getGroupInstance(): SceneGroup
     fun getArgs(): ScriptArgs
+
+    fun <T: GroupEventLuaContext> getScriptLibHandlerProvider(): ScriptLibGroupHandlerProvider<T>
 }

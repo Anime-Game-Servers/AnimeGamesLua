@@ -234,7 +234,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int GetGalleryProgressScore(GroupEventContext context, String name, int galleryId) ;
     int SetHandballGalleryBallPosAndRot(GroupEventContext context, int galleryId, LuaTable positionTable, LuaTable rotationTable);
 
-    int UnlockFloatSignal(GroupEventContext context, int groupId, int gadgetSignalId);
+
 
     int SendServerMessageByLuaKey(GroupEventContext context, String messageKey, int[] targets);
 
