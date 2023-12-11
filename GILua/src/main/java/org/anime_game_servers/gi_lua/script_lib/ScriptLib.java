@@ -659,7 +659,7 @@ public class ScriptLib {
         if (handler == null){
             return NOT_IMPLEMENTED.getValue();
         }
-        return handler.UnlockFloatSignal(context, groupId, gadgetSignalId);
+        return handler.UnlockFloatSignal(context, groupId, signalGadgetCfgId);
     }
 
     public static int SendServerMessageByLuaKey(GroupEventLuaContext context, String stringKey, Object targetsTable){
