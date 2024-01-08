@@ -12,6 +12,13 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xjvm-default=all")
+                }
+            }
+        }
     }
     js(IR) {
         browser {
@@ -22,6 +29,7 @@ kotlin {
             }
         }
     }
+
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
     val nativeTarget = when {

@@ -32,18 +32,17 @@ public class JNLuaRequireCommonFunction implements NamedJavaFunction {
     public int invoke(LuaState luaState) {
         val requiredName = luaState.checkString(1);
         luaState.remove(1);
-        val path = "Common/" + requiredName + ".lua";
-        val includePath = scriptConfig.getScriptLoader().getScriptPath(path);
-        if (!Files.exists(includePath)) {
-            logger.error(() -> "Require script not found. " + path);
+        val params = scriptConfig.getScriptLoader().getRequireScriptParams(requiredName);
+        val includeScript = scriptConfig.getScriptLoader().openScript(params);
+        if (includeScript ==  null) {
+            logger.error(() -> "Require script not found. " + params.getBasePath());
             return 1;
         }
         try {
-            val includeScript = Files.newInputStream(includePath);
             luaState.load(includeScript, requiredName, "t");
             luaState.call(0, 0);
         } catch (IOException e) {
-            logger.error(e, ()-> "Error on loading require script. " + path);
+            logger.error(e, ()-> "Error on loading require script. " + params.getBasePath());
             return 2;
         }
         return 0;

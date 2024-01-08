@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.loader.SceneGroupScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
@@ -95,7 +96,8 @@ public class SceneGroup {
 
         val scriptType = activityId == 0 ? ScriptSource.SCENE : ScriptSource.ACTIVITY;
         val typeId = activityId == 0 ? sceneId : activityId;
-        if (!scriptLoader.loadSceneGroupScript(scriptType, typeId, groupId, cs -> {
+        val groupParams = new SceneGroupScriptLoadParams(scriptType, typeId, groupId);
+        if (!scriptLoader.loadData(groupParams, cs -> {
             this.script = cs;
             // Set
             this.monsters = cs.getGlobalVariableList("monsters", SceneMonster.class).stream()

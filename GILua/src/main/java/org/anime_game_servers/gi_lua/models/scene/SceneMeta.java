@@ -5,6 +5,8 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.loader.SceneDummyPointScriptLoadParams;
+import org.anime_game_servers.gi_lua.models.loader.SceneMetaScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneBlock;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
@@ -54,7 +56,8 @@ public class SceneMeta {
     }
 
     private boolean loadSceneMeta(GIScriptLoader scriptLoader){
-        return scriptLoader.loadSceneMetaScript(sceneId, (cs -> {
+        val sceneData = new SceneMetaScriptLoadParams(sceneId);
+        return scriptLoader.loadData(sceneData, (cs -> {
             this.config = cs.getGlobalVariable("scene_config", SceneConfig.class);
 
             // TODO optimize later
@@ -69,7 +72,8 @@ public class SceneMeta {
     }
 
     private void loadDummyPoints(GIScriptLoader scriptLoader){
-        scriptLoader.loadSceneDummyPoints(sceneId, (cs -> {
+        val scriptParams = new SceneDummyPointScriptLoadParams(sceneId);
+        scriptLoader.loadData(scriptParams, (cs -> {
             this.dummyPoints = cs.getGlobalVariableMap("dummy_points", DummyPoint.class);
         }));
     }

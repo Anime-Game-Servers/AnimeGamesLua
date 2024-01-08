@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.*;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.loader.SceneBlockScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
 import org.anime_game_servers.gi_lua.models.scene.ActivityMeta;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
@@ -58,7 +59,8 @@ public class SceneBlock {
 
         val scriptType = activityId == 0 ? ScriptSource.SCENE : ScriptSource.ACTIVITY;
         val typeId = activityId == 0 ? sceneId : activityId;
-        if( !scriptLoader.loadSceneBlockScript(scriptType, typeId, id, (cs -> {
+        val sceneBlockParams = new SceneBlockScriptLoadParams(scriptType, typeId, id);
+        if( !scriptLoader.loadData(sceneBlockParams, (cs -> {
             // Set groups
             this.groupInfo = cs.getGlobalVariableList("groups", SceneGroupInfo.class).stream()
                     .collect(Collectors.toMap(x -> x.getId(), y -> y, (a, b) -> a));

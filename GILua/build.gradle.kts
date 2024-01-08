@@ -25,6 +25,11 @@ dependencies {
     implementation("com.github.davidmoten:rtree-multi:0.1")
     implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
 }
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
 
 tasks.test {
     useJUnitPlatform()

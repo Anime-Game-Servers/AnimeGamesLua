@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.gi_lua.models.loader.ActivityMetaScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneBlock;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
@@ -48,7 +49,8 @@ public class ActivityMeta {
     }
 
     private boolean loadActivityMeta(GIScriptLoader scriptLoader){
-        return scriptLoader.loadActivityMetaScript(activityId, (cs -> {
+        val metaParams = new ActivityMetaScriptLoadParams(activityId);
+        return scriptLoader.loadData(metaParams, (cs -> {
             // Create blocks
             this.blockIds = cs.getGlobalVariableList("blocks", Integer.class);
         }));

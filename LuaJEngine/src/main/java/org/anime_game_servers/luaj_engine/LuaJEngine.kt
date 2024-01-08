@@ -34,8 +34,8 @@ class LuaJEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
         // Set engine to replace require as a temporary fix to missing scripts
         context.globals.finder = object : ResourceFinder {
             override fun findResource(filename: String): InputStream {
-                val scriptPath = scriptConfig.scriptLoader.getScriptPath(filename)
-                val stream = scriptConfig.scriptLoader.openScript(scriptPath!!)
+                val params = scriptConfig.scriptLoader.getRequireScriptParams(filename)
+                val stream = scriptConfig.scriptLoader.openScript(params)
                 return stream ?: ByteArrayInputStream(ByteArray(0))
             }
 
