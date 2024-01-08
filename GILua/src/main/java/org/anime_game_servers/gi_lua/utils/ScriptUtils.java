@@ -1,14 +1,14 @@
 package org.anime_game_servers.gi_lua.utils;
 
 import lombok.val;
-import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaTable;
 
 public class ScriptUtils {
 
-    public static LuaTable posToLua(Position position, LuaEngine engine){
+    public static LuaTable posToLua(Vector position, LuaEngine engine){
         var result = engine.createTable();
         if(position != null){
             result.set("x", position.getX());
@@ -23,7 +23,7 @@ public class ScriptUtils {
         return result;
     }
 
-    public static Position luaToPos(LuaTable position){
+    public static Vector luaToPos(LuaTable position){
         val result = new PositionImpl();
         if(position != null){
             result.setX(position.optInt("x", 0));

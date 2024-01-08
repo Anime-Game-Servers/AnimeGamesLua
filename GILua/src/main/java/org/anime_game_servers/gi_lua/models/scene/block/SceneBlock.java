@@ -5,9 +5,12 @@ import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.*;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
+import org.anime_game_servers.gi_lua.models.scene.ActivityMeta;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,20 +28,22 @@ public class SceneBlock {
     // internal only
     private transient boolean loaded; // Not an actual variable in the scripts either
     private transient SceneMeta meta; // Not an actual variable in the scripts either
+    private transient ActivityMeta activityMeta; // Not an actual variable in the scripts either
     private int sceneId;
     private int activityId;
     private int id;
 
-    public static SceneBlock of(SceneMeta sceneMeta, int activityId, int blockId, GIScriptLoader scriptLoader) {
-        val block = new SceneBlock(sceneMeta.getSceneId(), activityId, blockId, sceneMeta);
+    public static SceneBlock of(SceneMeta sceneMeta, @Nullable ActivityMeta activityMeta, int blockId, GIScriptLoader scriptLoader) {
+        val block = new SceneBlock(sceneMeta.getSceneId(), activityMeta != null ? activityMeta.getActivityId() : 0, blockId, sceneMeta, activityMeta);
         block.load(scriptLoader);
         return block;
     }
-    private SceneBlock(int sceneId, int activityId, int blockId, SceneMeta meta) {
+    private SceneBlock(int sceneId, int activityId, int blockId, SceneMeta meta, ActivityMeta activityMeta) {
         this.id = blockId;
         this.sceneId = sceneId;
         this.activityId = activityId;
         this.meta = meta;
+        this.activityMeta = activityMeta;
     }
 
     public void setLoaded(boolean loaded) {
@@ -50,7 +55,10 @@ public class SceneBlock {
             return this;
         }
         this.setLoaded(true);
-        if( !scriptLoader.loadSceneBlockScript(sceneId, id, (cs -> {
+
+        val scriptType = activityId == 0 ? ScriptSource.SCENE : ScriptSource.ACTIVITY;
+        val typeId = activityId == 0 ? sceneId : activityId;
+        if( !scriptLoader.loadSceneBlockScript(scriptType, typeId, id, (cs -> {
             // Set groups
             this.groupInfo = cs.getGlobalVariableList("groups", SceneGroupInfo.class).stream()
                     .collect(Collectors.toMap(x -> x.getId(), y -> y, (a, b) -> a));
@@ -64,7 +72,12 @@ public class SceneBlock {
         }))){
             return null;
         }
-        meta.getGroupsInfos().putAll(this.groupInfo);
+        if(activityMeta!=null) {
+            activityMeta.getGroupsInfos().putAll(this.groupInfo);
+        } else {
+            meta.getGroupsInfos().putAll(this.groupInfo);
+        }
+
         logger.debug(() -> "Successfully loaded block " + this.id + " in scene "+sceneId+".");
         return this;
     }

@@ -1,6 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib
 
-import org.anime_game_servers.lua.models.IntValueEnum
+import org.anime_game_servers.core.base.interfaces.IntValueEnum
 
 enum class ScriptLibErrors(private val _value:Int): IntValueEnum {
     NOT_IMPLEMENTED(-100),

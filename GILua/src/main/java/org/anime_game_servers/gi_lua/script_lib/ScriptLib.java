@@ -3,6 +3,7 @@ package org.anime_game_servers.gi_lua.script_lib;
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
+import org.anime_game_servers.core.base.annotations.lua.LuaStatic;
 import org.anime_game_servers.gi_lua.models.constants.*;
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
 import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
@@ -10,12 +11,11 @@ import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressS
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
 import org.anime_game_servers.lua.engine.LuaTable;
 
-import java.util.ArrayList;
-
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.posToLua;
 import static org.anime_game_servers.gi_lua.script_lib.ScriptLibErrors.*;
 
+@LuaStatic
 public class ScriptLib {
 
     /**
@@ -701,7 +701,7 @@ public class ScriptLib {
         val isSkipUi = transportationParams.optBoolean("is_skip_ui", false);
 
 
-        if(targetsTable==null || targetsTable.getSize()==0 || luaPos == null){
+        if(targetsTable==null || targetsTable.getSize() ==0 || luaPos == null){
             scriptLogger.error(() -> "[TransPlayerToPos] Invalid params, either missing uid_list or pos");
             return 1;
         }
@@ -722,7 +722,7 @@ public class ScriptLib {
         val isSkipUi = transportationParams.optBoolean("is_skip_ui", false);
 
 
-        if(targetsTable==null || targetsTable.getSize()==0 || luaPos == null){
+        if(targetsTable==null || targetsTable.getSize() ==0 || luaPos == null){
             scriptLogger.error(() -> "[TransPlayerToPos] Invalid params, either missing uid_list or pos");
             return 1;
         }
@@ -841,25 +841,26 @@ public class ScriptLib {
         val killPolicyId = table.optInt("kill_policy", -1);
         if(groupId == -1){
             scriptLogger.error(() -> "KillGroupEntity: groupId not set");
-            return 1;
+            return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         if(killPolicyId == -1){
-            scriptLogger.error(() -> "KillGroupEntity: kill_policy not set");
             return killByCfgIds(context, groupId, table);
         }
         return killByGroupPolicy(context, groupId, killPolicyId);
     }
 
     private static int killByGroupPolicy(GroupEventLuaContext context, int groupId, int killPolicyId){
+        scriptLogger.debug(() -> "KillGroupEntity: kill by group policy");
         if(killPolicyId >= GroupKillPolicy.values().length){
             scriptLogger.error(() -> "KillGroupEntity: kill_policy out of bounds");
-            return 2;
+            return INVALID_PARAMETER.getValue();
         }
         val policy = GroupKillPolicy.values()[killPolicyId];
         return context.getScriptLibHandler().KillGroupEntityByPolicy(context, groupId, policy);
     }
 
     private static int killByCfgIds(GroupEventLuaContext context, int groupId, LuaTable luaTable){
+        scriptLogger.debug(() -> "KillGroupEntity: kill by cfg ids");
         val monsterList = luaTable.getTable("monsters");
         val gadgetList = luaTable.getTable("gadgets");
         val monsters = monsterList != null ? monsterList.getAsIntArray() : new int[0];
@@ -970,11 +971,11 @@ public class ScriptLib {
         val galleryId = param4.optInt("gallery_id", -1);
         if(exhibitionTypeIndex < 0 || exhibitionTypeIndex >= ExhibitionPlayType.values().length){
             scriptLogger.error(() -> "Invalid exhibition type " + exhibitionTypeIndex);
-            return 1;
+            return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         if (galleryId == -1){
             scriptLogger.error(() -> "Invalid gallery id " + galleryId);
-            return 2;
+            return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         val exhibitionTypeEnum = ExhibitionPlayType.values()[exhibitionTypeIndex];
         return context.getScriptLibHandler().AddExhibitionAccumulableDataAfterSuccess(context, uid, param2, param3, exhibitionTypeEnum, galleryId);
@@ -1098,56 +1099,109 @@ public class ScriptLib {
      * Methods used in EntityControllers/using ControllerLuaContext
      */
 
-    public static int SetGadgetState(ControllerLuaContext<?> context, int gadgetState) {
-        return context.getScriptLibHandler().SetGadgetState(context, gadgetState);
+    public static int SetGadgetState(ControllerLuaContext<Object> context, int gadgetState) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.SetGadgetState(context, gadgetState);
     }
 
-    public static int GetGadgetState(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetGadgetState(context);
+    public static int GetGadgetState(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetGadgetState(context);
     }
 
-    public static int ResetGadgetState(ControllerLuaContext<?> context, int gadgetState) {
-        return context.getScriptLibHandler().ResetGadgetState(context, gadgetState);
+    public static int ResetGadgetState(ControllerLuaContext<Object> context, int gadgetState) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.ResetGadgetState(context, gadgetState);
     }
 
-    public static int SetGearStartValue(ControllerLuaContext<?> context, int startValue) {
-        return context.getScriptLibHandler().SetGearStartValue(context, startValue);
+    public static int SetGearStartValue(ControllerLuaContext<Object> context, int startValue) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.SetGearStartValue(context, startValue);
     }
 
-    public static int GetGearStartValue(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetGearStartValue(context);
+    public static int GetGearStartValue(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetGearStartValue(context);
     }
 
-    public static int SetGearStopValue(ControllerLuaContext<?> context, int startValue) {
-        return context.getScriptLibHandler().SetGearStopValue(context, startValue);
+    public static int SetGearStopValue(ControllerLuaContext<Object> context, int startValue) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.SetGearStopValue(context, startValue);
     }
 
-    public static int GetGearStopValue(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetGearStopValue(context);
+    public static int GetGearStopValue(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetGearStopValue(context);
     }
 
-    public static int GetGadgetStateBeginTime(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetGadgetStateBeginTime(context);
+    public static int GetGadgetStateBeginTime(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetGadgetStateBeginTime(context);
     }
 
-    public static int GetContextGadgetConfigId(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetContextGadgetConfigId(context);
+    public static int GetContextGadgetConfigId(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetContextGadgetConfigId(context);
     }
 
-    public static int GetContextGroupId(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetContextGroupId(context);
+    public static int GetContextGroupId(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.GetContextGroupId(context);
     }
 
-    public static int SetGadgetEnableInteract(ControllerLuaContext<?> context, int groupId, int configId, boolean enable) {
-        return context.getScriptLibHandler().SetGadgetEnableInteract(context, groupId, configId, enable);
+    public static int SetGadgetEnableInteract(ControllerLuaContext<Object> context, int groupId, int configId, boolean enable) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return handler.SetGadgetEnableInteract(context, groupId, configId, enable);
     }
 
-    public static int DropSubfield(ControllerLuaContext<?> context, Object paramsTable) {
+    public static int DropSubfield(ControllerLuaContext<Object> context, Object paramsTable) {
         val params = context.getEngine().getTable(paramsTable);
-        return context.getScriptLibHandler().DropSubfield(context, params);
+
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGadgetControllerHandler().DropSubfield(context, params);
     }
 
-    public static int[] GetGatherConfigIdList(ControllerLuaContext<?> context) {
-        return context.getScriptLibHandler().GetGatherConfigIdList(context);
+    public static int[] GetGatherConfigIdList(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return null;
+        }
+        return handler.GetGatherConfigIdList(context);
     }
 }

@@ -5,7 +5,11 @@ import lombok.Data;
 
 import javax.annotation.Nonnull;
 
-@Data @AllArgsConstructor
+@Data
 public class StaticClassWrapper {
     @Nonnull private Class<?> staticClass;
+
+    public StaticClassWrapper(@Nonnull Class<?> staticClass){
+        this.staticClass = staticClass;
+    }
 }

@@ -1,8 +1,9 @@
 package org.anime_game_servers.gi_lua.models;
 
 import com.github.davidmoten.rtreemulti.geometry.Point;
+import org.anime_game_servers.core.gi.models.Vector;
 
-public interface Position {
+public interface Position extends Vector {
     float getX();
     float getY();
     float getZ();

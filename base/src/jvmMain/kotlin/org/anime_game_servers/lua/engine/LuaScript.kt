@@ -1,13 +1,12 @@
 package org.anime_game_servers.lua.engine
 
-import javax.annotation.Nonnull
 import javax.script.ScriptException
 
 interface LuaScript {
-    fun hasMethod(@Nonnull methodName: String): Boolean
+    fun hasMethod(methodName: String): Boolean
 
     @Throws(ScriptException::class, NoSuchMethodException::class)
-    fun callMethod(@Nonnull methodName: String, vararg args: Any?): LuaValue?
+    fun callMethod(methodName: String, vararg args: Any?): LuaValue?
 
     @Throws(ScriptException::class)
     fun evaluate()

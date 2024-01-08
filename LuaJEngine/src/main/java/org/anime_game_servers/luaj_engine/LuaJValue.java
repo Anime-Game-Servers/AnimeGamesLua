@@ -1,8 +1,8 @@
 package org.anime_game_servers.luaj_engine;
 
-import org.anime_game_servers.lua.engine.LuaValue;
+import org.anime_game_servers.lua.engine.LuaValueJvm;
 
-public class LuaJValue implements LuaValue {
+public class LuaJValue implements LuaValueJvm {
     private final org.luaj.vm2.LuaValue value;
     private final LuaJEngine engine;
 

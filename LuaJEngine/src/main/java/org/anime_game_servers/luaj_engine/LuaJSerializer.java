@@ -2,9 +2,12 @@ package org.anime_game_servers.luaj_engine;
 
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
+import kotlin.Pair;
+import lombok.val;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.ast.Str;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -31,34 +34,39 @@ public class LuaJSerializer extends BaseSerializer {
 
     @Override
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
-        return serializeMap(type, (LuaTable) obj);
+        return serializeMap(String.class, type, (LuaTable) obj);
     }
 
     @Nullable
     private <T> T valueToType(Class<T> type, LuaValue keyValue) {
-        T object = null;
+        Object object = null;
 
         if (keyValue.istable()) {
             object = serialize(type, null, keyValue.checktable());
         } else if (keyValue.isint()) {
-            object = (T) (Integer) keyValue.toint();
+            object = (Integer) keyValue.toint();
         } else if (keyValue.isnumber()) {
-            object = (T) (Float) keyValue.tofloat(); // terrible...
+            object = (Float) keyValue.tofloat(); // terrible...
         } else if (keyValue.isstring()) {
-            object = (T) keyValue.tojstring();
+            object = keyValue.tojstring();
         } else if (keyValue.isboolean()) {
-            object = (T) (Boolean) keyValue.toboolean();
+            object = (Boolean) keyValue.toboolean();
         } else {
-            object = (T) keyValue;
+            object = keyValue;
         }
         if (object == null) {
             logger.warn(() -> "Can't serialize value: "+keyValue+" to type: "+type);
         }
-        return object;
+
+        if(String.class.isAssignableFrom(type)){
+            return (T) String.valueOf(object);
+        } else {
+            return (T) object;
+        }
     }
 
-    private <T> Map<String, T> serializeMap(Class<T> type, LuaTable table) {
-        Map<String, T> map = new HashMap<>();
+    private <K,V> Map<K, V> serializeMap(Class<K> typeKey, Class<V> typeValue, LuaTable table) {
+        Map<K, V> map = new HashMap<>();
 
         if (table == null) {
             return map;
@@ -66,16 +74,24 @@ public class LuaJSerializer extends BaseSerializer {
 
         try {
             LuaValue[] keys = table.keys();
-            for (LuaValue k : keys) {
+            for (LuaValue luaKey : keys) {
                 try {
-                    LuaValue keyValue = table.get(k);
-                    T object = valueToType(type, keyValue);
-
-                    if (object != null) {
-                        map.put(String.valueOf(k), object);
+                    K key = valueToType(typeKey, luaKey);
+                    if(key == null){
+                        logger.warn(() -> "Can't serialize key: "+luaKey+" to type: "+typeKey);
+                        continue;
                     }
-                } catch (Exception ex) {
 
+                    LuaValue luaValue = table.get(luaKey);
+                    V value = valueToType(typeValue, luaValue);
+                    if(value == null){
+                        logger.warn(() -> "Can't serialize value: "+value+" to type: "+typeValue);
+                        continue;
+                    }
+
+                    map.put(key, value);
+                } catch (Exception ex) {
+                    logger.debug(ex, () -> "Exception serializing map");
                 }
             }
         } catch (Exception e) {
@@ -125,6 +141,34 @@ public class LuaJSerializer extends BaseSerializer {
 
         return null;
     }
+    private Pair<Class<?>, Class<?>> getMapTypes(Class<?> type, @Nullable Field field) {
+        Class<?> key = null;
+        Class<?> value = null;
+        if (field == null) {
+            val types = type.getTypeParameters();
+            if(types.length < 2){
+                return null;
+            }
+            key = types.getClass();
+            value = types.getClass();
+        }
+        else {
+            Type fieldType = field.getGenericType();
+            if (fieldType instanceof ParameterizedType) {
+                val types = ((ParameterizedType) fieldType).getActualTypeArguments();
+                if(types.length < 2){
+                    return null;
+                }
+                key = (Class<?>) types[0];
+                value = (Class<?>) types[1];
+            }
+        }
+        if(key!=null && value!=null){
+            return new Pair<>(key, value);
+        }
+
+        return null;
+    }
 
     public <T> T serialize(Class<T> type, @Nullable Field field, LuaTable table) {
         T object = null;
@@ -133,6 +177,18 @@ public class LuaJSerializer extends BaseSerializer {
             try {
                 Class<?> listType = getListType(type, field);
                 return (T) serializeList(listType, table);
+            } catch (Exception e) {
+                logger.error("Exception while serializing {}", type.getName(), e);
+                return null;
+            }
+        }
+        if (type == Map.class) {
+            try {
+                val mapTypes = getMapTypes(type, field);
+                if(mapTypes == null){
+                    return null;
+                }
+                return (T) serializeMap(mapTypes.component1(), mapTypes.component2(), table);
             } catch (Exception e) {
                 logger.error("Exception while serializing {}", type.getName(), e);
                 return null;

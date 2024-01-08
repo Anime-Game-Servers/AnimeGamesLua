@@ -3,12 +3,6 @@ package org.anime_game_servers.gi_lua.models.loader;
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
-import org.anime_game_servers.gi_lua.models.constants.*;
-import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
-import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
-import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType;
-import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
-import org.anime_game_servers.gi_lua.script_lib.ScriptLib;
 import org.anime_game_servers.lua.engine.BaseScriptLoader;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
@@ -16,7 +10,6 @@ import org.anime_game_servers.lua.engine.ScriptConfig;
 import org.anime_game_servers.lua.models.ScriptType;
 
 import javax.script.ScriptException;
-import java.lang.annotation.ElementType;
 import java.nio.file.Path;
 
 public interface GIScriptLoader extends BaseScriptLoader {
@@ -71,24 +64,9 @@ public interface GIScriptLoader extends BaseScriptLoader {
     }
 
     default void addDefaultsForEngine(LuaEngine luaEngine){
-        luaEngine.addGlobalEnumByIntValue("QuestState", QuestState.values());
-        luaEngine.addGlobalEnumByOrdinal("EntityType", EntityType.values());
-        luaEngine.addGlobalEnumByOrdinal("ElementType", ElementType.values());
-
-        luaEngine.addGlobalEnumByOrdinal("GroupKillPolicy", GroupKillPolicy.values());
-        luaEngine.addGlobalEnumByOrdinal("SealBattleType", SealBattleType.values());
-        luaEngine.addGlobalEnumByOrdinal("FatherChallengeProperty", FatherChallengeProperty.values());
-        luaEngine.addGlobalEnumByOrdinal("ChallengeEventMarkType", ChallengeEventMarkType.values());
-        luaEngine.addGlobalEnumByOrdinal("VisionLevelType", VisionLevelType.values());
-        luaEngine.addGlobalEnumByOrdinal("ExhibitionPlayType", ExhibitionPlayType.values());
-        luaEngine.addGlobalEnumByOrdinal("FlowSuiteOperatePolicy", FlowSuiteOperatePolicy.values());
-        luaEngine.addGlobalEnumByOrdinal("GalleryProgressScoreUIType", GalleryProgressScoreUIType.values());
-        luaEngine.addGlobalEnumByOrdinal("GalleryProgressScoreType", GalleryProgressScoreType.values());
-
-        luaEngine.addGlobalStaticClass("EventType", EventType.class);
-        luaEngine.addGlobalStaticClass("GadgetState", ScriptGadgetState.class);
-        luaEngine.addGlobalStaticClass("RegionShape", ScriptRegionShape.class);
-        luaEngine.addGlobalStaticClass("ScriptLib", ScriptLib.class);
+        LuaEngine.registerNamespace("org.anime_game_servers.core.gi");
+        LuaEngine.registerNamespace("org.anime_game_servers.gi_lua");
+        luaEngine.addGlobals();
     }
 
     default boolean loadSceneReplacementScript(ScriptParser parser){
@@ -102,8 +80,11 @@ public interface GIScriptLoader extends BaseScriptLoader {
     default boolean loadSceneMetaScript(int sceneId, ScriptParser parser){
         return loadData(ScriptSource.SCENE, sceneId, "scene"+sceneId+".lua", ScriptType.DATA_STORAGE, parser);
     }
-    default boolean loadSceneBlockScript(int sceneId, int blockId, ScriptParser parser){
-        return loadData(ScriptSource.SCENE, sceneId, "scene"+sceneId+"_block"+blockId+".lua", ScriptType.DATA_STORAGE, parser);
+    default boolean loadSceneBlockScript(ScriptSource scriptSource, int targetId, int blockId, ScriptParser parser){
+        if(scriptSource == ScriptSource.SCENE)
+            return loadData(scriptSource, targetId, "scene"+targetId+"_block"+blockId+".lua", ScriptType.DATA_STORAGE, parser);
+        else
+            return loadData(scriptSource, targetId, "activity"+targetId+"_block"+blockId+".lua", ScriptType.DATA_STORAGE, parser);
     }
     default boolean loadSceneGroupScript(ScriptSource scriptSource, int targetId, int groupId, ScriptParser parser){
         if(scriptSource == ScriptSource.SCENE)

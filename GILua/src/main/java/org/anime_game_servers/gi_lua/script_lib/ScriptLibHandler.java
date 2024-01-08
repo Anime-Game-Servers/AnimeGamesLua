@@ -1,7 +1,8 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
 import lombok.val;
-import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.core.gi.enums.QuestState;
+import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.constants.*;
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
 import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
@@ -118,7 +119,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * @param pos The position to spawn the gadget at
      * @param rot The rotation of the gadget when spawned
      */
-    int CreateGadgetByConfigIdByPos(GroupEventContext context, int configId, Position pos, Position rot);
+    int CreateGadgetByConfigIdByPos(GroupEventContext context, int configId, Vector pos, Vector rot);
 
 
     /**
@@ -135,7 +136,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * @param position The position to spawn the vehicle at
      * @param rot The rotation to spawn the vehicle with
      */
-    int CreateVehicle(GroupEventContext context, int uid, int gadgetId, Position position, Position rot);
+    int CreateVehicle(GroupEventContext context, int uid, int gadgetId, Vector position, Vector rot);
 
     int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 
@@ -150,8 +151,10 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int ChangeGroupGadget(GroupEventContext context, LuaTable table) ;
 
     int GetSceneOwnerUid(GroupEventContext context);
-    @Nonnull QuestState GetHostQuestState(GroupEventContext context, int questId);
-    @Nonnull QuestState GetQuestState(GroupEventContext context, int entityId, int questId);
+    @Nonnull
+    QuestState GetHostQuestState(GroupEventContext context, int questId);
+    @Nonnull
+    QuestState GetQuestState(GroupEventContext context, int entityId, int questId);
     int ShowReminder(GroupEventContext context, int reminderId);
     int RemoveEntityByConfigId(GroupEventContext context, int groupId, EntityType entityType, int configId);
     int CreateGroupTimerEvent(GroupEventContext context, int groupID, String source, double time);
@@ -248,9 +251,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int MoveAvatarByPointArray(GroupEventContext context, int uid, int targetId, LuaTable var3, String var4);
 
-    int MovePlayerToPos(GroupEventContext context, int[] targetUIds, Position pos, Position rot, int radius, boolean isSkipUi);
+    int MovePlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
 
-    int TransPlayerToPos(GroupEventContext context, int[] targetUIds, Position pos, Position rot, int radius, boolean isSkipUi);
+    int TransPlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
 
     int PlayCutScene(GroupEventContext context, int cutsceneId, int var2);
 
@@ -317,9 +320,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int GetAvatarEntityIdByUid(GroupEventContext context, int uid);
 
 
-    Position GetPosByEntityId(GroupEventContext context, int entityId);
+    Vector GetPosByEntityId(GroupEventContext context, int entityId);
 
-    Position GetRotationByEntityId(GroupEventContext context, int entityId);
+    Vector GetRotationByEntityId(GroupEventContext context, int entityId);
 
     ActivityOpenAndCloseTime GetActivityOpenAndCloseTimeByScheduleId(GroupEventContext context, int scheduleId);
 
@@ -440,34 +443,4 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * @param val5 TODO
      */
     int ExecuteGadgetLua(GroupEventLuaContext context, int groupId, int gadgetCfgId, int activityType, int var4, int val5);
-
-    /**
-     * Methods used in EntityControllers/using ControllerEventContext
-     */
-
-    int SetGadgetState(ControllerEventContext context, int gadgetState);
-
-    int GetGadgetState(ControllerEventContext context);
-
-    int ResetGadgetState(ControllerEventContext context, int gadgetState) ;
-
-    int SetGearStartValue(ControllerEventContext context, int startValue);
-
-    int GetGearStartValue(ControllerEventContext context);
-
-    int SetGearStopValue(ControllerEventContext context, int startValue);
-
-    int GetGearStopValue(ControllerEventContext context) ;
-
-    int GetGadgetStateBeginTime(ControllerEventContext context);
-
-    int GetContextGadgetConfigId(ControllerEventContext context) ;
-
-    int GetContextGroupId(ControllerEventContext context);
-
-    int SetGadgetEnableInteract(ControllerEventContext context, int groupId, int configId, boolean enable);
-
-    int DropSubfield(ControllerEventContext context, LuaTable paramsTable);
-
-    int[] GetGatherConfigIdList(ControllerEventContext context);
 }

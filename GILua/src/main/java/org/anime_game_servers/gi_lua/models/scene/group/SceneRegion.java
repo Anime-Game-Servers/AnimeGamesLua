@@ -1,7 +1,7 @@
 package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
-import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
 import org.anime_game_servers.gi_lua.models.constants.ScriptRegionShape;
@@ -24,7 +24,7 @@ public class SceneRegion extends SceneObject{
     private List<String> team_ability_group;
     private boolean is_trigger_reload_group = false;
 
-    public boolean contains(Position position) {
+    public boolean contains(Vector position) {
         switch (shape) {
             case ScriptRegionShape.CUBIC:
                 return (Math.abs(pos.getX() - position.getX()) <= size.getX()/2f) &&

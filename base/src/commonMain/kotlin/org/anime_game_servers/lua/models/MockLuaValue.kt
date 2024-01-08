@@ -2,7 +2,7 @@ package org.anime_game_servers.lua.models
 
 import org.anime_game_servers.lua.engine.LuaValue
 
-abstract class MockLuaValue : LuaValue {
+interface MockLuaValue : LuaValue {
     override fun isNull() = false
     override fun isBoolean() = false
     override fun isInteger() = false

@@ -1,6 +1,6 @@
 package org.anime_game_servers.gi_lua.models.constants;
 
-import org.anime_game_servers.lua.models.IntValueEnum;
+import org.anime_game_servers.core.base.interfaces.IntValueEnum;
 
 public enum GroupLoadStrategy implements IntValueEnum {
     GROUP_LOAD_NONE(0),

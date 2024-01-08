@@ -166,7 +166,6 @@ public class JNLuaSerializer extends BaseSerializer {
                         set(object, fieldMeta, methodAccess, listObj);
                     } else {
                         set(object, fieldMeta, methodAccess, serialize(fieldMeta.getType(), fieldMeta.getField(), (LuaValueProxy) keyValue));
-                        //methodAccess.invoke(object, fieldMeta.index, keyValue);
                     }
                 } catch (Exception ex) {
                    logger.error(ex, () -> "Exception serializing");

@@ -24,6 +24,7 @@ public class SceneMeta {
     private int sceneId;
     private SceneConfig config;
     private List<Integer> blockIds;
+    private Map<Integer, ActivityMeta> activities = new HashMap<>();
     private Map<Integer, SceneBlock> blocks;
     private Map<Integer, SceneGroupInfo> groupsInfos;
     private Map<Integer, SceneGroup> groups;
@@ -76,9 +77,36 @@ public class SceneMeta {
         this.blocks = new HashMap<>(blockIds.size());
         this.groupsInfos = new HashMap<>();
         for(val blockId : blockIds){
-            val block = SceneBlock.of(this, 0, blockId, scriptLoader);
+            val block = SceneBlock.of(this, null, blockId, scriptLoader);
             this.blocks.put(blockId, block);
         }
+    }
+
+    public void loadActivity(GIScriptLoader scriptLoader, int activityId){
+        if(sceneId != 3){
+            return;
+        }
+        var meta = activities.get(activityId);
+        if(meta == null){
+            meta = ActivityMeta.of(this, activityId, scriptLoader);
+            activities.put(activityId, meta);
+        }
+        this.blocks.putAll(meta.getBlocks());
+        this.groupsInfos.putAll(meta.getGroupsInfos());
+        this.groups.putAll(meta.getGroups());
+    }
+
+    private void unloadActivity(int activityId){
+        if(sceneId != 3){
+            return;
+        }
+        var meta = activities.get(activityId);
+        if(meta == null){
+            return;
+        }
+        this.blocks.keySet().removeAll(meta.getBlocks().keySet());
+        this.groupsInfos.keySet().removeAll(meta.getGroupsInfos().keySet());
+        this.groups.keySet().removeAll(meta.getGroups().keySet());
     }
 
     private void prepareGroups(){

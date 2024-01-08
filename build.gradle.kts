@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java")
     id("maven-publish")
-    kotlin("jvm") version "1.9.10"
+    kotlin("multiplatform") version "1.9.22" apply false
 }
 
 group = "org.anime_game_servers"
@@ -13,15 +13,15 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+/*dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(kotlin("stdlib-jdk8"))
-}
+}*/
 
-tasks.test {
+/*tasks.test {
     useJUnitPlatform()
-}
+}*/
 
 allprojects {
     apply(plugin ="maven-publish")
@@ -53,11 +53,11 @@ allprojects {
         }
     }
 }
-val compileKotlin: KotlinCompile by tasks
+/*val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
-}
+}*/

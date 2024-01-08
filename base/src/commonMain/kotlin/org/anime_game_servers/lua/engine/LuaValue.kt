@@ -15,5 +15,4 @@ interface LuaValue {
     fun asDouble(): Double
     fun asFloat(): Float
     fun asString(): String?
-    fun <T> asObject(type: Class<T>): T?
 }

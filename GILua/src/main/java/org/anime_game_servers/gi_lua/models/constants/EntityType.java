@@ -1,12 +1,16 @@
 package org.anime_game_servers.gi_lua.models.constants;
 
+
+import org.anime_game_servers.core.base.annotations.lua.LuaStatic;
+
+@LuaStatic
 public enum EntityType {
-    NONE,
-    AVATAR,
-    MONSTER,
+    NONE, //
+    AVATAR, //
+    MONSTER, //
     NPC,
-    GADGET,
-    REGION,
+    GADGET, //
+    REGION, //
     WEAPON,
     WEATHER,
     SCENE,
