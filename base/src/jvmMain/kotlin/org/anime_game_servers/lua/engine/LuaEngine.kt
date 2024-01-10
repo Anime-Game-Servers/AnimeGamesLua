@@ -27,7 +27,7 @@ interface LuaEngine {
 
     fun getScript(scriptPath: Path, scriptType: ScriptType): LuaScript?
 
-    fun getTable(table: Any): LuaTable?
+    fun getTable(table: Any): LuaTable
 
     fun createTable(): LuaTable
 

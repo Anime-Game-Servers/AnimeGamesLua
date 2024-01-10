@@ -1,6 +1,5 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
-import lombok.val;
 import org.anime_game_servers.core.gi.enums.QuestState;
 import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.constants.*;
@@ -8,18 +7,13 @@ import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
 import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
+import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams;
 import org.anime_game_servers.lua.engine.LuaTable;
 
 import javax.annotation.Nonnull;
 
 @SuppressWarnings("unused")
-public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext, ControllerEventContext extends ControllerLuaContext<?>> {
-
-    /**
-     * Context independent functions
-     */
-    void PrintContextLog(LuaContext context, String msg);
-
+public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext> {
 
     /**
      * GroupEventContext functions
@@ -105,7 +99,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int SetIsAllowUseSkill(GroupEventContext context, int canUse);
 
-    int KillEntityByConfigId(LuaContext context, LuaTable table);
+
 
     int CreateMonster(GroupEventContext context, LuaTable table);
 
@@ -312,6 +306,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int KillGroupEntityByCfgIds(GroupEventContext context, int groupId, int[] monsters, int[] gadgets);
     int KillGroupEntityByPolicy(GroupEventContext context, int groupId, GroupKillPolicy policy);
+    int KillEntityByConfigId(GroupEventContext context, KillByConfigIdParams params);
+
     int GetGadgetIdByEntityId(GroupEventContext context, int entityId);
     int GetMonsterIdByEntityId(GroupEventContext context, int entityId);
     int GetMonsterConfigId(GroupEventContext context, int entityId);

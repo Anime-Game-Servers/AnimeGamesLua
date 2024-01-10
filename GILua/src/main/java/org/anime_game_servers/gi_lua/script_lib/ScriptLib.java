@@ -9,6 +9,8 @@ import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
 import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType;
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType;
+import org.anime_game_servers.gi_lua.script_lib.handler.ScriptLibStaticHandler;
+import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams;
 import org.anime_game_servers.lua.engine.LuaTable;
 
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
@@ -37,9 +39,8 @@ public class ScriptLib {
      * Context independent functions
      */
     public static void PrintContextLog(LuaContext context, String msg) {
-        context.getScriptLibHandler().PrintContextLog(context, msg);
+        staticHandler.PrintContextLog(context, msg);
     }
-
 
     /**
      * GroupEventLuaContext functions
@@ -206,7 +207,7 @@ public class ScriptLib {
         int regionId = table.getInt("region_eid");
         int entityType = table.getInt("entity_type");
         if(entityType < 0 || entityType >= EntityType.values().length){
-            scriptLogger.error(() -> "Invalid entity type " + entityType);
+            scriptLogger.error(() -> "[GetRegionEntityCount] Invalid entity type " + entityType);
             return 0;
         }
         val entityTypeEnum = EntityType.values()[entityType];
@@ -253,7 +254,26 @@ public class ScriptLib {
 
     public static int KillEntityByConfigId(LuaContext context, Object rawTable) {
         val table = context.getEngine().getTable(rawTable);
-        return context.getScriptLibHandler().KillEntityByConfigId(context, table);
+        val configId = table.optInt("config_id", 0);
+        if (configId == 0){
+            scriptLogger.error(() -> "[KillEntityByConfigId] Invalid config id " + configId);
+            return INVALID_PARAMETER.getValue();
+        }
+        val groupId = table.optInt("group_id", 0);
+        val entityTypeValue = table.optInt("entity_type", 0);
+        if(entityTypeValue < 0 || entityTypeValue >= EntityType.values().length){
+            scriptLogger.error(() -> "[KillEntityByConfigId] Invalid entity type " + entityTypeValue);
+            return INVALID_PARAMETER.getValue();
+        }
+        val entityType = EntityType.values()[entityTypeValue];
+        val params = new KillByConfigIdParams(groupId, configId, entityType);
+        if (context instanceof GroupEventLuaContext gContext){
+            return gContext.getScriptLibHandlerProvider().getScriptLibHandler().KillEntityByConfigId(gContext, params);
+        } else if (context instanceof ControllerLuaContext cContext) {
+            return cContext.getScriptLibHandlerProvider().getGadgetControllerHandler().KillEntityByConfigId(cContext, params);
+        }
+        scriptLogger.error(() -> "[KillEntityByConfigId] unknown context type " + context.getClass().getName());
+        return NOT_IMPLEMENTED.getValue();
     }
 
 	public static int CreateMonster(GroupEventLuaContext context, Object rawTable){
@@ -418,7 +438,7 @@ public class ScriptLib {
 
     public static int SetChallengeEventMark(GroupEventLuaContext context, int challengeId, int markType){
         if(markType < 0 || markType >= ChallengeEventMarkType.values().length){
-            scriptLogger.error(() -> "Invalid mark type " + markType);
+            scriptLogger.error(() -> "[SetChallengeEventMark] Invalid mark type " + markType);
             return 1;
         }
         val markTypeEnum = ChallengeEventMarkType.values()[markType];
@@ -492,7 +512,7 @@ public class ScriptLib {
         val battleParams = context.getEngine().getTable(battleParamsTable);
         val battleType = battleParams.optInt("battle_type", -1);
         if(battleType < 0 || battleType >= SealBattleType.values().length){
-            scriptLogger.error(() -> "Invalid battle type " + battleType);
+            scriptLogger.error(() -> "[StartSealBattle] Invalid battle type " + battleType);
             return -1;
         }
         val battleTypeEnum = SealBattleType.values()[battleType];
@@ -840,7 +860,7 @@ public class ScriptLib {
         val groupId = table.optInt("group_id", -1);
         val killPolicyId = table.optInt("kill_policy", -1);
         if(groupId == -1){
-            scriptLogger.error(() -> "KillGroupEntity: groupId not set");
+            scriptLogger.error(() -> "[KillGroupEntity] groupId not set");
             return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         if(killPolicyId == -1){
@@ -850,9 +870,9 @@ public class ScriptLib {
     }
 
     private static int killByGroupPolicy(GroupEventLuaContext context, int groupId, int killPolicyId){
-        scriptLogger.debug(() -> "KillGroupEntity: kill by group policy");
+        scriptLogger.debug(() -> "[KillGroupEntity] kill by group policy");
         if(killPolicyId >= GroupKillPolicy.values().length){
-            scriptLogger.error(() -> "KillGroupEntity: kill_policy out of bounds");
+            scriptLogger.error(() -> "[KillGroupEntity] kill_policy out of bounds");
             return INVALID_PARAMETER.getValue();
         }
         val policy = GroupKillPolicy.values()[killPolicyId];
@@ -860,7 +880,7 @@ public class ScriptLib {
     }
 
     private static int killByCfgIds(GroupEventLuaContext context, int groupId, LuaTable luaTable){
-        scriptLogger.debug(() -> "KillGroupEntity: kill by cfg ids");
+        scriptLogger.debug(() -> "[KillGroupEntity] kill by cfg ids");
         val monsterList = luaTable.getTable("monsters");
         val gadgetList = luaTable.getTable("gadgets");
         val monsters = monsterList != null ? monsterList.getAsIntArray() : new int[0];
@@ -970,11 +990,11 @@ public class ScriptLib {
         val exhibitionTypeIndex = param4.optInt("play_type", -1);
         val galleryId = param4.optInt("gallery_id", -1);
         if(exhibitionTypeIndex < 0 || exhibitionTypeIndex >= ExhibitionPlayType.values().length){
-            scriptLogger.error(() -> "Invalid exhibition type " + exhibitionTypeIndex);
+            scriptLogger.error(() -> "[AddExhibitionAccumulableDataAfterSuccess] Invalid exhibition type " + exhibitionTypeIndex);
             return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         if (galleryId == -1){
-            scriptLogger.error(() -> "Invalid gallery id " + galleryId);
+            scriptLogger.error(() -> "[AddExhibitionAccumulableDataAfterSuccess] Invalid gallery id " + galleryId);
             return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
         val exhibitionTypeEnum = ExhibitionPlayType.values()[exhibitionTypeIndex];

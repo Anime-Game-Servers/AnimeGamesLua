@@ -1,6 +1,7 @@
 package org.anime_game_servers.gi_lua.script_lib.handler
 
 import org.anime_game_servers.gi_lua.script_lib.ControllerLuaContext
+import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
 import org.anime_game_servers.lua.engine.LuaTable
 
 /**
@@ -51,4 +52,7 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
     fun DropSubfield(context: ControllerEventContext, paramsTable: LuaTable?): Int
 
     fun GetGatherConfigIdList(context: ControllerEventContext): IntArray?
+
+
+    fun KillEntityByConfigId(context: ControllerEventContext, params: KillByConfigIdParams): Int
 }
