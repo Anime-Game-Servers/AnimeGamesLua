@@ -7,10 +7,16 @@ interface GroupEventLuaContext : LuaContext {
     fun getGroupInstance(): SceneGroup
     fun getArgs(): ScriptArgs
 
-    fun <T: GroupEventLuaContext> getScriptLibHandler(): ScriptLibHandler<T>?
-    fun <T: GroupEventLuaContext> getScriptLibHandlerProvider(): ScriptLibGroupHandlerProvider<T>
+
+    // fields used by some scripts
+    /*int uid();
+    int source_entity_id();
+    int target_entity_id();*/
     /*override fun uid() = getArgs().uid
     override fun source_entity_id() = getArgs().source_eid
     override fun target_entity_id() = getArgs().target_eid*/
+
+    fun <T: GroupEventLuaContext> getScriptLibHandler(): ScriptLibHandler<T>?
+    fun <T: GroupEventLuaContext> getScriptLibHandlerProvider(): ScriptLibGroupHandlerProvider<T>
 
 }

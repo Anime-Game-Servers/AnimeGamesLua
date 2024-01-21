@@ -194,18 +194,4 @@ public class SceneGroup {
                 .filter(bossChest -> bossChest.getMonster_config_id() > 0)
                 .findFirst();
     }
-
-    /*public List<SceneGroup> getReplaceableGroups(Collection<SceneGroup> loadedGroups) {
-        return this.is_replaceable == null ? List.of() :
-            Optional.ofNullable(GameData.getGroupReplacements().get(this.id)).stream()
-                .map(GroupReplacementData::getReplace_groups)
-                .flatMap(List::stream)
-                .map(replacementId -> loadedGroups.stream().filter(g -> g.id == replacementId).findFirst())
-                .filter(Optional::isPresent).map(Optional::get)
-                .filter(replacementGroup -> replacementGroup.is_replaceable != null)
-                .filter(replacementGroup -> (replacementGroup.is_replaceable.isValue()
-                    && replacementGroup.is_replaceable.getVersion() <= this.is_replaceable.getVersion())
-                    || replacementGroup.is_replaceable.isNew_bin_only())
-                .toList();
-    }*/
 }

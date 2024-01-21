@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java-library")
     kotlin("jvm")
+    kotlin("plugin.lombok") version "1.9.22"
+    id("io.freefair.lombok") version "8.1.0"
 }
 
 group = "org.anime_game_servers.lua"
