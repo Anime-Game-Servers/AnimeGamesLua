@@ -14,18 +14,18 @@ object GroupUtils {
         val userData = targetGroup.second
         val groupID = groupInfo.id
 
-        val replaceable = groupInfo.is_replaceable ?: return emptyList()
+        val replaceable = groupInfo.getIsReplaceable() ?: return emptyList()
         val isReplaceable = userData?.isReplaceable ?: replaceable.isValue
 
-        return replacements[groupID]?.replace_groups?.let { replaceGroups ->
+        return replacements[groupID]?.replaceGroups?.let { replaceGroups ->
             replaceGroups
                 .mapNotNull { replacementId -> loadedGroups.find { it.first.id == replacementId } }
                 .filter { replacementGroupPair ->
                     val replacementInfo = replacementGroupPair.first
                     val replacementUserData = replacementGroupPair.second
-                    val replacementReplaceable = replacementInfo.is_replaceable ?: return@filter false
+                    val replacementReplaceable = replacementInfo.getIsReplaceable() ?: return@filter false
                     val replacementIsReplaceable = replacementUserData?.isReplaceable ?: replacementReplaceable.isValue
-                    (replacementIsReplaceable && replacementReplaceable.version <= replaceable.version) || replacementReplaceable.isNew_bin_only
+                    (replacementIsReplaceable && replacementReplaceable.version <= replaceable.version) || replacementReplaceable.isNewBinOnly
                 }
                 .map { it.first }
         }?: emptyList()

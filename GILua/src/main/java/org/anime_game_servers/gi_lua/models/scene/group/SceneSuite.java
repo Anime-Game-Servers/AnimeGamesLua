@@ -3,6 +3,7 @@ package org.anime_game_servers.gi_lua.models.scene.group;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.scene.group.*;
 
 import java.util.ArrayList;
@@ -18,9 +19,10 @@ public class SceneSuite {
     private List<String> triggers = List.of();
     private List<Integer> regions = List.of();
     private List<Integer> npcs = List.of();
-    private int rand_weight;
-
-    private boolean ban_refresh = false;
+    @LuaNames("rand_weight")
+    private int randWeight;
+    @LuaNames("ban_refresh")
+    private boolean banRefresh = false;
 
     private transient List<SceneMonster> sceneMonsters = List.of();
     private transient List<SceneGadget> sceneGadgets = List.of();

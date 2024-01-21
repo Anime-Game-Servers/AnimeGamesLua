@@ -3,6 +3,7 @@ package org.anime_game_servers.lua.serialize
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.reflectasm.MethodAccess
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import java.lang.reflect.Field
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -43,13 +44,18 @@ abstract class BaseSerializer : Serializer {
         while (classtype != null) {
             Arrays.stream(classtype.declaredFields)
                 .forEach { field: Field ->
-                    if (methodNameSet.contains(getSetterName(field.name))) {
-                        val setter = getSetterName(field.name)
+                    val name = field.name
+                    val luaNames = getLuaNames(field)
+                    val fieldMeta = if (methodNameSet.contains(getSetterName(name))) {
+                        val setter = getSetterName(name)
                         val index = methodAccess.getIndex(setter)
-                        fieldMetaMap[field.name] = FieldMeta(field.name, setter, index, field.type, field)
+                        FieldMeta(name, luaNames, setter, index, field.type, field)
                     } else {
                         field.isAccessible = true
-                        fieldMetaMap[field.name] = FieldMeta(field.name, null, -1, field.type, field)
+                        FieldMeta(name, luaNames, null, -1, field.type, field)
+                    }
+                    luaNames.forEach {
+                        fieldMetaMap[it] = fieldMeta
                     }
                 }
             classtype = classtype.superclass
@@ -59,13 +65,30 @@ abstract class BaseSerializer : Serializer {
             .filter { field: Field -> !fieldMetaMap.containsKey(field.name) }
             .filter { field: Field -> methodNameSet.contains(getSetterName(field.name)) }
             .forEach { field: Field ->
-                val setter = getSetterName(field.name)
+                val name = field.name
+                val luaNames = getLuaNames(field)
+                val setter = getSetterName(name)
                 val index = methodAccess.getIndex(setter)
-                fieldMetaMap[field.name] = FieldMeta(field.name, setter, index, field.type, field)
+                val fieldMeta = FieldMeta(name, luaNames, setter, index, field.type, field)
+                luaNames.forEach {
+                    fieldMetaMap[it] = fieldMeta
+                }
             }
 
         fieldMetaCache[type] = fieldMetaMap
         return fieldMetaMap
+    }
+
+    protected fun getLuaNames(field: Field): List<String> {
+        val luaName: MutableList<String> = mutableListOf(field.name)
+        field.annotations
+            .filterIsInstance<LuaNames>()
+            .forEach { luaNames: LuaNames ->
+                if (luaNames.value.isNotEmpty()) {
+                    luaName.addAll(luaNames.value)
+                }
+            }
+        return luaName
     }
 
     protected fun set(`object`: Any?, @Nonnull fieldMeta: FieldMeta, methodAccess: MethodAccess?, value: Int) {

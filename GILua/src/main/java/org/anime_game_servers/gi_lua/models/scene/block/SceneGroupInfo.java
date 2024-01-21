@@ -1,6 +1,7 @@
 package org.anime_game_servers.gi_lua.models.scene.block;
 
 import lombok.Getter;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 
@@ -11,30 +12,45 @@ import java.util.Set;
 @Getter
 public class SceneGroupInfo {
     private int id;
-    private int refresh_id;
+    @LuaNames("refresh_id")
+    private int refreshId;
     private int area;
     @Nullable
     private PositionImpl pos;
-    @Nullable
-    private SceneReplaceable is_replaceable;
-    private final boolean dynamic_load = false;
+    @Nullable @LuaNames("is_replaceable")
+    private SceneReplaceable isReplaceable;
+    @LuaNames("dynamic_load")
+    private final boolean dynamicLoad = false;
     @Nullable
     private SceneBusiness business;
-    @Nullable
-    private GroupLifecycle life_cycle = GroupLifecycle.FULL_TIME__CYCLE;
-    private int activity_revise_level_grow_id;
-    private int rely_start_world_level_limit_activity_id; // SceneScriptConfig LuaConfigMgr
-    private int vision_type;
-    private boolean across_block = false;
-    private boolean unload_when_disconnect = false;
-    private boolean ignore_world_level_revise = false;
-    private boolean force_unload_nodelay = false;
-    private boolean force_clean_sub_entity = false;
-    private boolean is_load_by_vision_type = false;
-    private int load_strategy;
-    private Set<String> forbid_monster_die; //todo find enum values
-    private List<Integer> related_level_tag_series_list;
-    private List<Integer> group_tag_list;
+    @Nullable @LuaNames("life_cycle")
+    private GroupLifecycle lifeCycle = GroupLifecycle.FULL_TIME__CYCLE;
+    @LuaNames("activity_revise_level_grow_id")
+    private int activityReviseLevelGrowId;
+    @LuaNames("rely_start_world_level_limit_activity_id")
+    private int relyStartWorldLevelLimitActivityId; // SceneScriptConfig LuaConfigMgr
+    @LuaNames("vision_type")
+    private int visionType;
+    @LuaNames("across_block")
+    private boolean acrossBlock = false;
+    @LuaNames("unload_when_disconnect")
+    private boolean unloadWhenDisconnect = false;
+    @LuaNames("ignore_world_level_revise")
+    private boolean ignoreWorldLevelRevise = false;
+    @LuaNames("force_unload_nodelay")
+    private boolean forceUnloadNodelay = false;
+    @LuaNames("force_clean_sub_entity")
+    private boolean forceCleanSubEntity = false;
+    @LuaNames("is_load_by_vision_type")
+    private boolean isLoadByVisionType = false;
+    @LuaNames("load_strategy")
+    private int loadStrategy;
+    @LuaNames("forbid_monster_die")
+    private Set<String> forbidMonsterDie; //todo find enum values
+    @LuaNames("related_level_tag_series_list")
+    private List<Integer> relatedLevelTagSeriesList;
+    @LuaNames("group_tag_list")
+    private List<Integer> groupTagList;
     private List<Integer> weathers;
 
     // internal variables
@@ -47,6 +63,6 @@ public class SceneGroupInfo {
     }
 
     public boolean isReplaceable() {
-        return this.is_replaceable != null && this.is_replaceable.isValue();
+        return this.isReplaceable != null && this.isReplaceable.isValue();
     }
 }

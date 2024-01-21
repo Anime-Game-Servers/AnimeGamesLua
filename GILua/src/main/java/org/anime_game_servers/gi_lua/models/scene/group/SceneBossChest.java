@@ -2,12 +2,16 @@ package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 
 @Getter
 @ToString
 public class SceneBossChest {
-    private int life_time;
-    private int monster_config_id;
+    @LuaNames("life_time")
+    private int lifeTime;
+    @LuaNames("monster_config_id")
+    private int monsterConfigId;
     private int resin;
-    private int take_num;
+    @LuaNames("take_num")
+    private int takeNum;
 }

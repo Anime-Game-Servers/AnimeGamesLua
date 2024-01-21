@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.loader.SceneGroupScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
@@ -38,13 +39,15 @@ public class SceneGroup {
     @Nullable
     private List<SceneVar> variables;
 
-    @Nullable
-    private SceneInitConfig init_config;
+    @Nullable @LuaNames("init_config")
+    private SceneInitConfig initConfig;
     @Nullable
     private List<SceneSuite> suites;
 
-    private List<SceneMonsterPool> monster_pools;
-    private List<List<Integer>> sight_groups;
+    @LuaNames("monster_pools")
+    private List<SceneMonsterPool> monsterPools;
+    @LuaNames("sight_groups")
+    private List<List<Integer>> sightGroups;
 
     @Nullable
     private SceneGarbage garbages;
@@ -55,6 +58,7 @@ public class SceneGroup {
     private transient SceneMeta sceneMeta;
     private transient boolean loaded; // Not an actual variable in the scripts either
     private transient LuaScript script;
+    private static final Random random = new Random();
 
     public static SceneGroup of(SceneGroupInfo groupInfo) {
         var group = new SceneGroup(groupInfo);
@@ -101,7 +105,7 @@ public class SceneGroup {
             this.script = cs;
             // Set
             this.monsters = cs.getGlobalVariableList("monsters", SceneMonster.class).stream()
-                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+                    .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
             this.monsters.values().forEach(m -> {
                 m.groupId = groupId;
                 m.blockId = blockId;
@@ -109,7 +113,7 @@ public class SceneGroup {
             });
 
             this.npcs = cs.getGlobalVariableList("npcs", SceneNPC.class).stream()
-                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+                    .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
             this.npcs.values().forEach(m -> {
                 m.groupId = groupId;
                 m.blockId = blockId;
@@ -117,7 +121,7 @@ public class SceneGroup {
             });
 
             this.gadgets = cs.getGlobalVariableList("gadgets", SceneGadget.class).stream()
-                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+                    .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
             this.gadgets.values().forEach(m -> {
                 m.groupId = groupId;
                 m.blockId = blockId;
@@ -134,29 +138,22 @@ public class SceneGroup {
 
             this.suites = cs.getGlobalVariableList("suites", SceneSuite.class);
             this.regions = cs.getGlobalVariableList("regions", SceneRegion.class).stream()
-                    .collect(Collectors.toMap(x -> x.config_id, y -> y, (a, b) -> a));
+                    .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
             this.regions.values().forEach(m -> {
                 m.groupId = groupId;
                 m.blockId = blockId;
                 m.sceneMeta = sceneMeta;
             });
 
-            this.init_config = cs.getGlobalVariable("init_config", SceneInitConfig.class);
+            this.initConfig = cs.getGlobalVariable("init_config", SceneInitConfig.class);
 
-            // Garbages // TODO: fix properly later
-            /*Object garbagesValue = this.bindings.get("garbages");
-            if (garbagesValue instanceof LuaValue garbagesTable) {
-                this.garbages = new SceneGarbage();
-                if (garbagesTable.checktable().get("gadgets") != LuaValue.NIL) {
-                    this.garbages.gadgets = ScriptLoader.getSerializer().toList(SceneGadget.class, garbagesTable.checktable().get("gadgets").checktable());
-                    this.garbages.gadgets.forEach(m -> m.group = this);
-                }
-            }*/
+            // Garbages
+            this.garbages = cs.getGlobalVariable("init_config", SceneGarbage.class);
 
             // Add variables to suite
             this.variables = cs.getGlobalVariableList("variables", SceneVar.class);
 
-            this.monster_pools = cs.getGlobalVariableList("monster_pools", SceneMonsterPool.class);
+            this.monsterPools = cs.getGlobalVariableList("monster_pools", SceneMonsterPool.class);
             //this.sight_groups = cs.getGlobalVariableList("sight_groups", List<Integer>.class);
 
             // Add monsters and gadgets to suite
@@ -170,28 +167,28 @@ public class SceneGroup {
     }
 
     public int findInitSuiteIndex(int exclude_index) { //TODO: Investigate end index
-        if (init_config == null) return 1;
-        if (init_config.getIo_type() == 1) return init_config.getSuite(); //IO TYPE FLOW
-        if (init_config.isRand_suite()) {
+        if (initConfig == null) return 1;
+        if (initConfig.getIoType() == 1) return initConfig.getSuite(); //IO TYPE FLOW
+        if (initConfig.isRandSuite()) {
             if (suites.size() == 1) {
-                return init_config.getSuite();
+                return initConfig.getSuite();
             } else {
                 List<Integer> randSuiteList = new ArrayList<>();
                 for (int i = 0; i < suites.size(); i++) {
                     if (i == exclude_index) continue;
 
                     var suite = suites.get(i);
-                    for (int j = 0; j < suite.getRand_weight(); j++) randSuiteList.add(Integer.valueOf(i + 1));
+                    for (int j = 0; j < suite.getRandWeight(); j++) randSuiteList.add(Integer.valueOf(i + 1));
                 }
-                return randSuiteList.get(new Random().nextInt(randSuiteList.size()));
+                return randSuiteList.get(random.nextInt(randSuiteList.size()));
             }
         }
-        return init_config.getSuite();
+        return initConfig.getSuite();
     }
 
     public Optional<SceneBossChest> searchBossChestInGroup() {
-        return this.gadgets.values().stream().map(g -> g.getBoss_chest()).filter(Objects::nonNull)
-                .filter(bossChest -> bossChest.getMonster_config_id() > 0)
+        return this.gadgets.values().stream().map(g -> g.getBossChest()).filter(Objects::nonNull)
+                .filter(bossChest -> bossChest.getMonsterConfigId() > 0)
                 .findFirst();
     }
 }

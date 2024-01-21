@@ -69,7 +69,7 @@ class JNLuaEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
         }
     }
 
-    override fun getTable(table: Any): LuaTable? {
+    override fun getTable(table: Any): LuaTable {
         return JNLuaTable((table as AbstractMap<*, *>))
     }
 

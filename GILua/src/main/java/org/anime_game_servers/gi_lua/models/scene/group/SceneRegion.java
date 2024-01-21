@@ -1,6 +1,7 @@
 package org.anime_game_servers.gi_lua.models.scene.group;
 
 import lombok.Getter;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
@@ -19,10 +20,14 @@ public class SceneRegion extends SceneObject{
     private int radius;
     // for CYLINDER and POLYGON
     private float height;
-    private List<PositionImpl> point_array;
-    private List<String> ability_group_list;
-    private List<String> team_ability_group;
-    private boolean is_trigger_reload_group = false;
+    @LuaNames("point_array")
+    private List<PositionImpl> pointArray;
+    @LuaNames("ability_group_list")
+    private List<String> abilityGroupList;
+    @LuaNames("team_ability_group")
+    private List<String> teamAbilityGroup;
+    @LuaNames("is_trigger_reload_group")
+    private boolean isTriggerReloadGroup = false;
 
     public boolean contains(Vector position) {
         switch (shape) {

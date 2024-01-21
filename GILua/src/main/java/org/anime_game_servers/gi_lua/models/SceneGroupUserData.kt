@@ -7,6 +7,6 @@ interface SceneGroupUserData {
     var isReplaceable: Boolean?
 
     fun initWithSceneGroup(groupInfo: SceneGroupInfo) {
-        isReplaceable = groupInfo.is_replaceable?.isValue
+        isReplaceable = groupInfo.getIsReplaceable()?.isValue
     }
 }

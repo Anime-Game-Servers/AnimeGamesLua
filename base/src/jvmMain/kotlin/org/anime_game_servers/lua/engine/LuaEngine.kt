@@ -33,7 +33,7 @@ interface LuaEngine {
 
     fun getEnumFieldName(enumValue: Enum<*>): String {
         return enumValue::class.java.getField(enumValue.name).getAnnotation(LuaNames::class.java)?.let {
-            it.names.firstOrNull() ?: enumValue.name
+            it.value.firstOrNull() ?: enumValue.name
         } ?: enumValue.name
     }
     fun getEnumFieldValue(enumValue: Enum<*>): Int {
@@ -46,7 +46,7 @@ interface LuaEngine {
 
     private fun getLuaName(classObject: Class<*>): String {
         return classObject.getAnnotation(LuaNames::class.java)?.let {
-            it.names.firstOrNull() ?: classObject.simpleName
+            it.value.firstOrNull() ?: classObject.simpleName
         } ?: classObject.simpleName
     }
 

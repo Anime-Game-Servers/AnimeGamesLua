@@ -4,7 +4,7 @@ import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.core.base.annotations.lua.LuaStatic;
 
 @LuaStatic
-@LuaNames(names = {"GadgetState"})
+@LuaNames("GadgetState")
 public class ScriptGadgetState {
 	public static final int Default = 0;
 	public static final int GatherDrop = 1;

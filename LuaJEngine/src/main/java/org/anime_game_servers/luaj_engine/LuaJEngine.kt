@@ -90,7 +90,7 @@ class LuaJEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
         }
     }
 
-    override fun getTable(table: Any): LuaTable? {
+    override fun getTable(table: Any): LuaTable {
         if (table is org.luaj.vm2.LuaTable) return LuaJTable(this, table)
         throw IllegalArgumentException("Table must be a LuaTable")
     }

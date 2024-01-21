@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.loader.ActivityMetaScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneBlock;
@@ -24,6 +25,7 @@ public class ActivityMeta {
 
     private int activityId;
     private SceneMeta parent;
+    @LuaNames("blocks")
     private List<Integer> blockIds;
     private Map<Integer, SceneBlock> blocks;
     private Map<Integer, SceneGroupInfo> groupsInfos;

@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.loader.SceneDummyPointScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.SceneMetaScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.scene.block.SceneBlock;
@@ -24,7 +25,9 @@ public class SceneMeta {
     private static KLogger logger = KotlinLogging.INSTANCE.logger(SceneMeta.class.getName());
 
     private int sceneId;
+    @LuaNames("scene_config")
     private SceneConfig config;
+    @LuaNames("blocks")
     private List<Integer> blockIds;
     private Map<Integer, ActivityMeta> activities = new HashMap<>();
     private Map<Integer, SceneBlock> blocks;

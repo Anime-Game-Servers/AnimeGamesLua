@@ -4,6 +4,7 @@ import com.github.davidmoten.rtreemulti.geometry.Rectangle;
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.*;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.loader.SceneBlockScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
@@ -23,6 +24,7 @@ public class SceneBlock {
     private PositionImpl max;
     private PositionImpl min;
 
+    @LuaNames("groups")
     private Map<Integer, SceneGroupInfo> groupInfo;
     //private RTree<SceneGroupInfo, Geometry> sceneGroupIndex;
 

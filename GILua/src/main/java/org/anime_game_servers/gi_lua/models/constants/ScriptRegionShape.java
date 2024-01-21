@@ -4,7 +4,7 @@ import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.core.base.annotations.lua.LuaStatic;
 
 @LuaStatic
-@LuaNames(names = {"RegionShape"})
+@LuaNames("RegionShape")
 public class ScriptRegionShape {
 	public static final int NONE = 0;
 	public static final int SPHERE = 1;
