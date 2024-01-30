@@ -1,9 +1,10 @@
 plugins {
+    `version-catalog`
     kotlin("multiplatform")
 }
 
 group = "org.anime_game_servers.lua"
-version = "0.1"
+version = libs.versions.anime.game.lua.get()
 
 kotlin {
     jvm {
@@ -43,20 +44,19 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("org.anime_game_servers.core:base:0.1")
-                implementation(kotlin("reflect"))
+                implementation(libs.ags.core.base)
+                implementation(libs.kotlin.reflect)
+                implementation(libs.logging)
             }
         }
         val commonTest by getting {
         }
         val jvmMain by getting {
             dependencies {
-                api("org.anime_game_servers.core:base-jvm:0.1")
-                implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
-                implementation("com.esotericsoftware:reflectasm:1.11.9")
-                implementation("com.google.code.findbugs:jsr305:3.0.2")
-                implementation(kotlin("reflect"))
-                implementation ("org.reflections:reflections:0.10.2")
+                implementation(libs.jvm.ags.core.base)
+                implementation(libs.bundles.jvm.reflection)
+                implementation(libs.findbugs.jsr305)
+                implementation(libs.jvm.logging)
             }
         }
         val jvmTest by getting

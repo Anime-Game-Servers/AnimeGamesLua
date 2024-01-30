@@ -1,13 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    `version-catalog`
     id("java")
     id("maven-publish")
-    kotlin("multiplatform") version "1.9.22" apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
 }
 
 group = "org.anime_game_servers"
-version = "0.1"
+version = libs.versions.anime.game.lua
 
 repositories {
     mavenCentral()

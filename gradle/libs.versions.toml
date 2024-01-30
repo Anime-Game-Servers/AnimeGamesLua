@@ -1,0 +1,66 @@
+[versions]
+# https://kotlinlang.org/docs/releases.html#release-details
+kotlin = "1.9.22"
+# https://github.com/Kotlin/kotlinx-io/releases
+kx_io = "0.3.0"
+# https://github.com/oshai/kotlin-logging/releases
+logger = "6.0.3"
+# https://mvnrepository.com/artifact/com.esotericsoftware/reflectasm/1.11.9  // TODO not maintained anymore
+reflectasm = "1.11.9"
+# https://github.com/ronmamo/reflections/releases // TODO not maintained anymore
+reflections = "0.10.2"
+# https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
+jsr305 = "3.0.2"
+# https://projectlombok.org/download
+lombok_libs = "1.18.30"
+# https://plugins.gradle.org/plugin/io.freefair.lombok
+lombok_plugin = "8.4"
+# https://github.com/davidmoten/rtree-multi/releases
+rtree_multi = "0.1"
+
+## testing libs
+# https://github.com/junit-team/junit5/releases
+junit = "5.10.1"
+
+## ags libs
+# https://github.com/Hartie95/JNLua_GC
+luaEngine_jnlua = "0.1.0"
+# https://github.com/Hartie95/luaj
+luaEngine_luaj = "3.0.3"
+# https://github.com/Hartie95/Core
+ags_core = "0.1"
+anime_game_lua = "0.1"
+
+[libraries]
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+jvm-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kx_io" }
+logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logger" }
+jvm-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logger" }
+reflectasm = { module = "com.esotericsoftware:reflectasm", version.ref = "reflectasm" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+jvm-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok_libs" }
+jvm-rtree-multi = { module = "com.github.davidmoten:rtree-multi", version.ref = "rtree_multi" }
+
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+
+jvm-jnlua = { module = "org.anime_game_servers:JNLua_GC", version.ref = "luaEngine_jnlua" }
+jvm-luaj = { module = "org.anime_game_servers:luaj", version.ref = "luaEngine_luaj" }
+ags-core-base = { module = "org.anime_game_servers.core:base", version.ref = "ags_core" }
+jvm-ags-core-base = { module = "org.anime_game_servers.core:base-jvm", version.ref = "ags_core" }
+ags-core-gi = { module = "org.anime_game_servers.core:gi", version.ref = "ags_core" }
+jvm-ags-core-gi = { module = "org.anime_game_servers.core:gi-jvm", version.ref = "ags_core" }
+jvm-ags-lua-base = { module = "org.anime_game_servers.lua:base-jvm", version.ref = "anime_game_lua" }
+
+
+[bundles]
+jvm-reflection = ["kotlin-reflect", "reflectasm", "reflections"]
+jvm-ags-lua-gi = ["jvm-ags-core-base", "jvm-ags-core-gi", "jvm-ags-lua-base"]
+jvm-ags-lua-engine = ["jvm-ags-core-base", "jvm-ags-core-gi", "jvm-ags-lua-base"]
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-lombok = { id = "org.jetbrains.kotlin.plugin.lombok", version.ref = "kotlin" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombok_plugin" }
