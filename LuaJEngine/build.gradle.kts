@@ -24,6 +24,7 @@ dependencies {
     annotationProcessor(libs.jvm.lombok)
     implementation(libs.bundles.jvm.reflection)
     implementation(libs.jvm.logging)
+    implementation(libs.jvm.kotlinx.io.core)
 }
 
 tasks.test {
@@ -32,7 +33,7 @@ tasks.test {
 
 java {
     withSourcesJar()
-    withJavadocJar()
+    //withJavadocJar()
 }
 
 publishing {

@@ -41,7 +41,7 @@ compileTestKotlin.kotlinOptions {
 
 java {
     withSourcesJar()
-    withJavadocJar()
+    //withJavadocJar()
 }
 
 publishing {
