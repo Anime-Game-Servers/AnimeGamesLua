@@ -5,6 +5,8 @@ import com.esotericsoftware.reflectasm.MethodAccess
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.TypeVariable
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.Nonnull
@@ -161,6 +163,47 @@ abstract class BaseSerializer : Serializer {
         } catch (ex: Exception) {
             logger.warn(ex) { "Failed to set field " + fieldMeta.name + " of type " + fieldMeta.type + " to value " + value }
         }
+    }
+
+    protected fun getCollectionType(type: Class<*>, field: Field?): Class<*>? {
+        if (field == null) {
+            return type.typeParameters[0].javaClass
+        }
+        val fieldType = field.genericType
+        if (fieldType is ParameterizedType) {
+            return (fieldType as ParameterizedType).actualTypeArguments[0] as Class<*>
+        }
+
+        return null
+    }
+
+    protected fun getMapTypes(type: Class<*>, field: Field?): Pair<Class<*>, Class<*>>? {
+        var key: Class<*>? = null
+        var value: Class<*>? = null
+        if (field == null) {
+            val types = type.getTypeParameters()
+            if (types.size < 2) {
+                return null
+            }
+            key = types.javaClass
+            value = types.javaClass
+        } else {
+            val fieldType = field.genericType
+            if (fieldType is ParameterizedType) {
+                val types = fieldType.actualTypeArguments
+                if (types.size < 2) {
+                    return null
+                }
+                key = types[0] as Class<*>
+                value = types[1] as Class<*>
+            }
+        }
+
+        if (key != null && value != null) {
+            return Pair(key, value)
+        }
+
+        return null
     }
 
     companion object {

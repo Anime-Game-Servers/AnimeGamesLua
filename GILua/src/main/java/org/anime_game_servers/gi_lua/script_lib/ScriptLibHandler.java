@@ -22,6 +22,11 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     void PrintGroupWarning(LuaContext context, String msg);
     int SetGadgetStateByConfigId(GroupEventContext context, int configId, int gadgetState);
     int SetGroupGadgetStateByConfigId(GroupEventContext context, int groupId, int configId, int gadgetState);
+
+    /**
+     * Sets a gadget interacteable based on the config id and group id.
+     */
+    int SetGadgetEnableInteract(GroupEventContext context, int groupId, int configId, boolean enable);
     int SetWorktopOptionsByGroupId(GroupEventContext context, int groupId, int configId, LuaTable options);
     int SetWorktopOptions(GroupEventContext context, LuaTable table);
 
@@ -257,7 +262,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int BeginCameraSceneLook(GroupEventContext context, LuaTable sceneLookParamsTable);
 
-    public int ClearPlayerEyePoint(GroupEventContext context, int var1);
+    int SetPlayerEyePointStream(GroupEventContext context, int var1, int var2, boolean var3);
+    int ClearPlayerEyePoint(GroupEventContext context, int var1);
 
     int ShowReminderRadius(GroupEventContext context, int var1, LuaTable var2, int var3);
     int ShowClientGuide(GroupEventContext context, String guideName);
@@ -406,6 +412,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * @return
      */
     int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
+
+    int CreateTreasureMapSpotRewardGadget(GroupEventContext context, int gadgetCfgId);
 
     /**
      * TODO better parameter handling and verify active handling

@@ -20,7 +20,7 @@ public class SceneGroupInfo {
     @Nullable @LuaNames("is_replaceable")
     private SceneReplaceable isReplaceable;
     @LuaNames("dynamic_load")
-    private final boolean dynamicLoad = false;
+    private boolean dynamicLoad = false;
     @Nullable
     private SceneBusiness business;
     @Nullable @LuaNames("life_cycle")

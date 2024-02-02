@@ -13,10 +13,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LuaJSerializer extends BaseSerializer {
     private static KLogger logger = KotlinLogging.INSTANCE.logger(LuaJEngine.class.getName());
@@ -101,11 +98,19 @@ public class LuaJSerializer extends BaseSerializer {
         return map;
     }
 
-    public <T> List<T> serializeList(Class<T> type, LuaTable table) {
-        List<T> list = new ArrayList<>();
+    private <T> List<T> serializeList(Class<T> type, LuaTable table) {
+        val startSize = table != null ? table.length() : 0;
+        return serializeCollection(type, new ArrayList<>(startSize), table);
+    }
+    private <T> Set<T> serializeSet(Class<T> type, LuaTable table) {
+        val startSize = table != null ? table.length() : 0;
+        return serializeCollection(type, new HashSet<>(startSize), table);
+    }
+
+    public <T, Y extends Collection<T>> Y serializeCollection(Class<T> type, Y target, LuaTable table) {
 
         if (table == null) {
-            return list;
+            return target;
         }
 
         try {
@@ -117,7 +122,7 @@ public class LuaJSerializer extends BaseSerializer {
                     T object = valueToType(type, keyValue);
 
                     if (object != null) {
-                        list.add(object);
+                        target.add(object);
                     }
                 } catch (Exception ex) {
 
@@ -127,47 +132,7 @@ public class LuaJSerializer extends BaseSerializer {
             logger.error(e, () -> "Exception while serializing list");
         }
 
-        return list;
-    }
-
-    private Class<?> getListType(Class<?> type, @Nullable Field field) {
-        if (field == null) {
-            return type.getTypeParameters()[0].getClass();
-        }
-        Type fieldType = field.getGenericType();
-        if (fieldType instanceof ParameterizedType) {
-            return (Class<?>) ((ParameterizedType) fieldType).getActualTypeArguments()[0];
-        }
-
-        return null;
-    }
-    private Pair<Class<?>, Class<?>> getMapTypes(Class<?> type, @Nullable Field field) {
-        Class<?> key = null;
-        Class<?> value = null;
-        if (field == null) {
-            val types = type.getTypeParameters();
-            if(types.length < 2){
-                return null;
-            }
-            key = types.getClass();
-            value = types.getClass();
-        }
-        else {
-            Type fieldType = field.getGenericType();
-            if (fieldType instanceof ParameterizedType) {
-                val types = ((ParameterizedType) fieldType).getActualTypeArguments();
-                if(types.length < 2){
-                    return null;
-                }
-                key = (Class<?>) types[0];
-                value = (Class<?>) types[1];
-            }
-        }
-        if(key!=null && value!=null){
-            return new Pair<>(key, value);
-        }
-
-        return null;
+        return target;
     }
 
     public <T> T serialize(Class<T> type, @Nullable Field field, LuaTable table) {
@@ -175,8 +140,17 @@ public class LuaJSerializer extends BaseSerializer {
 
         if (type == List.class) {
             try {
-                Class<?> listType = getListType(type, field);
+                Class<?> listType = getCollectionType(type, field);
                 return (T) serializeList(listType, table);
+            } catch (Exception e) {
+                logger.error("Exception while serializing {}", type.getName(), e);
+                return null;
+            }
+        }
+        if (type == Set.class) {
+            try {
+                Class<?> listType = getCollectionType(type, field);
+                return (T) serializeSet(listType, table);
             } catch (Exception e) {
                 logger.error("Exception while serializing {}", type.getName(), e);
                 return null;

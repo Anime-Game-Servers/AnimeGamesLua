@@ -1,10 +1,9 @@
 package org.anime_game_servers.luaj_engine
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.anime_game_servers.lua.engine.LuaEngine
-import org.anime_game_servers.lua.engine.LuaScript
-import org.anime_game_servers.lua.engine.LuaTable
-import org.anime_game_servers.lua.engine.ScriptConfig
+import kotlinx.io.asInputStream
+import kotlinx.io.buffered
+import org.anime_game_servers.lua.engine.*
 import org.anime_game_servers.lua.models.ScriptType
 import org.luaj.vm2.lib.ResourceFinder
 import org.luaj.vm2.lib.jse.CoerceJavaToLua
@@ -34,8 +33,11 @@ class LuaJEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
         // Set engine to replace require as a temporary fix to missing scripts
         context.globals.finder = object : ResourceFinder {
             override fun findResource(filename: String): InputStream {
+                if (scriptConfig.enableIncludeWorkaround == RequireMode.DISABLED)
+                    return ByteArrayInputStream(ByteArray(0))
+
                 val params = scriptConfig.scriptLoader.getRequireScriptParams(filename)
-                val stream = scriptConfig.scriptLoader.openScript(params)
+                val stream = scriptConfig.scriptLoader.openScript(params)?.buffered()?.asInputStream()
                 return stream ?: ByteArrayInputStream(ByteArray(0))
             }
 
@@ -82,7 +84,7 @@ class LuaJEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
         if (!Files.exists(scriptPath)) return null
 
         try {
-            return LuaJScript(this, scriptPath)
+            return LuaJScript(this, scriptPath, scriptType)
         } catch (e: IOException) {
             throw RuntimeException(e)
         } catch (e: ScriptException) {

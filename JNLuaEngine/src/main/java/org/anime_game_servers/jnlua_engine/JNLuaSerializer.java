@@ -2,6 +2,7 @@ package org.anime_game_servers.jnlua_engine;
 
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
+import lombok.val;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.jnlua.util.AbstractTableMap;
@@ -10,10 +11,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class JNLuaSerializer extends BaseSerializer {
@@ -52,11 +50,11 @@ public class JNLuaSerializer extends BaseSerializer {
 
     @Override
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
-        return serializeMap(type, (LuaValueProxy) obj);
+        return serializeMap(String.class, type, (LuaValueProxy) obj);
     }
 
     private <T> T objectToClass(Class<T> type, Object value) {
-        T object = null;
+        Object object = null;
 
         if (value instanceof Integer) {
             object = (T) getInt(value);
@@ -69,14 +67,24 @@ public class JNLuaSerializer extends BaseSerializer {
         } else {
             object = serialize(type, null, (LuaValueProxy) value);
         }
-        return object;
+        if(String.class.isAssignableFrom(type)){
+            return (T) String.valueOf(object);
+        } else {
+            return (T) object;
+        }
     }
 
-    public <T> List<T> serializeList(Class<T> type, LuaValueProxy table) {
-        List<T> list = new ArrayList<>();
+    private <T> List<T> serializeList(Class<T> type, LuaValueProxy table) {
+        return serializeCollection(type, new ArrayList<>(), table);
+    }
+    private <T> Set<T> serializeSet(Class<T> type, LuaValueProxy table) {
+        return serializeCollection(type, new HashSet<>(), table);
+    }
+
+    public <T, Y extends Collection<T>> Y serializeCollection(Class<T> type, Y target, LuaValueProxy table) {
 
         if (table == null) {
-            return list;
+            return target;
         }
 
         var tableObj = (Map<String, Object>) table;
@@ -88,7 +96,7 @@ public class JNLuaSerializer extends BaseSerializer {
                     T object = objectToClass(type, keyValue);
 
                     if (object != null) {
-                        list.add(object);
+                        target.add(object);
                     }
                 } catch (Exception ex) {
 
@@ -98,19 +106,7 @@ public class JNLuaSerializer extends BaseSerializer {
             logger.error(e, () -> "Exception serializing list");
         }
 
-        return list;
-    }
-
-    private Class<?> getListType(Class<?> type, @Nullable Field field){
-        if(field == null){
-            return type.getTypeParameters()[0].getClass();
-        }
-        Type fieldType = field.getGenericType();
-        if(fieldType instanceof ParameterizedType){
-            return (Class<?>) ((ParameterizedType) fieldType).getActualTypeArguments()[0];
-        }
-
-        return null;
+        return target;
     }
 
     public <T> T serialize(Class<T> type, @Nullable Field field, LuaValueProxy table) {
@@ -118,10 +114,31 @@ public class JNLuaSerializer extends BaseSerializer {
 
         if (type == List.class) {
             try {
-                Class<?> listType = getListType(type, field);
+                Class<?> listType = getCollectionType(type, field);
                 return (T) serializeList(listType, table);
             } catch (Exception e) {
                 logger.error(e, ()->"Exception serializing");
+                return null;
+            }
+        }
+        if (type == Set.class) {
+            try {
+                Class<?> listType = getCollectionType(type, field);
+                return (T) serializeSet(listType, table);
+            } catch (Exception e) {
+                logger.error("Exception while serializing {}", type.getName(), e);
+                return null;
+            }
+        }
+        if (type == Map.class) {
+            try {
+                val mapTypes = getMapTypes(type, field);
+                if(mapTypes == null){
+                    return null;
+                }
+                return (T) serializeMap(mapTypes.component1(), mapTypes.component2(), table);
+            } catch (Exception e) {
+                logger.error("Exception while serializing {}", type.getName(), e);
                 return null;
             }
         }
@@ -161,7 +178,7 @@ public class JNLuaSerializer extends BaseSerializer {
                         set(object, fieldMeta, methodAccess, (boolean) keyValue);
                     } else if (fieldMeta.getType().equals(List.class)) {
                         LuaValueProxy objTable = (LuaValueProxy) tableObj.get(k.getKey());
-                        Class<?> listType = getListType(type, fieldMeta.getField());
+                        Class<?> listType = getCollectionType(type, fieldMeta.getField());
                         List<?> listObj = serializeList(listType, objTable);
                         set(object, fieldMeta, methodAccess, listObj);
                     } else {
@@ -178,25 +195,31 @@ public class JNLuaSerializer extends BaseSerializer {
         return object;
     }
 
-    public <T> Map<String, T> serializeMap(Class<T> type, LuaValueProxy table) {
-        Map<String, T> map = new HashMap<>();
+    public <K,V> Map<K, V> serializeMap(Class<K> typeKey, Class<V> typeValue, LuaValueProxy table) {
+        Map<K, V> map = new HashMap<>();
 
         if (table == null) {
             return map;
         }
 
-        var tableObj = (Map<String, Object>) table;
+        var tableObj = (Map<Object, Object>) table;
 
         try {
             for (var k : tableObj.entrySet()) {
                 try {
-                    var keyValue = k.getValue();
-
-                    T object = objectToClass(type, keyValue);
-
-                    if (object != null) {
-                        map.put(k.getKey(), object);
+                    K key = objectToClass(typeKey, k.getKey());
+                    if(key == null){
+                        logger.warn(() -> "Can't serialize key: "+key+" to type: "+typeKey);
+                        continue;
                     }
+
+                    V value = objectToClass(typeValue, k.getValue());
+                    if(value == null){
+                        logger.warn(() -> "Can't serialize value: "+value+" to type: "+typeValue);
+                        continue;
+                    }
+
+                    map.put(key, value);
                 } catch (Exception ex) {
 
                 }

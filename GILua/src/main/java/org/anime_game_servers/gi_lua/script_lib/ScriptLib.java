@@ -215,7 +215,7 @@ public class ScriptLib {
 		return context.getScriptLibHandler().GetRegionEntityCount(context, regionId, entityTypeEnum);
 	}
 
-    public int GetRegionConfigId(GroupEventLuaContext context, Object rawTable){
+    public static int GetRegionConfigId(GroupEventLuaContext context, Object rawTable){
         val table = context.getEngine().getTable(rawTable);
         val regionEid = table.getInt("region_eid");
         return context.getScriptLibHandler().GetRegionConfigId(context, regionEid);
@@ -773,7 +773,11 @@ public class ScriptLib {
         return context.getScriptLibHandler().BeginCameraSceneLook(context, sceneLookParams);
     }
 
-    public int ClearPlayerEyePoint(GroupEventLuaContext context, int var1){
+    public static int SetPlayerEyePointStream(GroupEventLuaContext context, int var1, int var2, boolean var3){
+        return context.getScriptLibHandler().SetPlayerEyePointStream(context, var1, var2, var3);
+    }
+
+    public static int ClearPlayerEyePoint(GroupEventLuaContext context, int var1){
         return context.getScriptLibHandler().ClearPlayerEyePoint(context, var1);
     }
 
@@ -1073,6 +1077,10 @@ public class ScriptLib {
         return context.getScriptLibHandler().AssignPlayerUidOpNotify(context, param1);
     }
 
+    public static int CreateTreasureMapSpotRewardGadget(GroupEventLuaContext context, int gadgetCfgId){
+        return context.getScriptLibHandler().CreateTreasureMapSpotRewardGadget(context, gadgetCfgId);
+    }
+
 
     /**
      * TODO better parameter handling and verify active handling
@@ -1199,12 +1207,21 @@ public class ScriptLib {
         return handler.GetContextGroupId(context);
     }
 
-    public static int SetGadgetEnableInteract(ControllerLuaContext<Object> context, int groupId, int configId, boolean enable) {
-        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
-        if(handler == null){
-            return NOT_IMPLEMENTED.getValue();
+    public static int SetGadgetEnableInteract(LuaContext context, int groupId, int configId, boolean enable) {
+        if(context instanceof ControllerLuaContext cContext){
+            val handler = cContext.getScriptLibHandlerProvider().getGadgetControllerHandler();
+            if(handler == null){
+                return NOT_IMPLEMENTED.getValue();
+            }
+            return handler.SetGadgetEnableInteract(cContext, groupId, configId, enable);
+        } else if(context instanceof GroupEventLuaContext gContext){
+            val handler = gContext.getScriptLibHandlerProvider().getScriptLibHandler();
+            if(handler == null){
+                return NOT_IMPLEMENTED.getValue();
+            }
+            return handler.SetGadgetEnableInteract(gContext, groupId, configId, enable);
         }
-        return handler.SetGadgetEnableInteract(context, groupId, configId, enable);
+        return NOT_IMPLEMENTED.getValue();
     }
 
     public static int DropSubfield(ControllerLuaContext<Object> context, Object paramsTable) {

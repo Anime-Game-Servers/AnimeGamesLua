@@ -2,8 +2,8 @@ package org.anime_game_servers.lua.engine
 
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.io.Source
 import org.anime_game_servers.lua.models.ScriptType
-import java.io.InputStream
 import java.nio.file.Path
 import javax.script.ScriptException
 
@@ -11,7 +11,7 @@ import javax.script.ScriptException
 interface BaseScriptLoader {
     fun getScriptPath(scriptName: String): Path?
     fun getRequireScriptParams(scriptName: String): ScriptLoadParams
-    fun openScript(params: ScriptLoadParams): InputStream?
+    fun openScript(params: ScriptLoadParams): Source?
     fun getScript(
         scriptLoadParams: ScriptLoadParams
     ): LuaScript?

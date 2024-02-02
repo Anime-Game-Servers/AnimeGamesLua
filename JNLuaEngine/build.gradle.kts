@@ -24,6 +24,7 @@ dependencies {
     annotationProcessor(libs.jvm.lombok)
     implementation(libs.bundles.jvm.reflection)
     implementation(libs.jvm.logging)
+    implementation(libs.jvm.kotlinx.io.core)
 }
 
 tasks.test {
@@ -46,7 +47,7 @@ java {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            from(components["kotlin"])
+            from(components["java"])
             artifactId = "JNLuaEngine"
         }
     }

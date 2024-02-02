@@ -47,6 +47,7 @@ kotlin {
                 implementation(libs.ags.core.base)
                 implementation(libs.kotlin.reflect)
                 implementation(libs.logging)
+                api(libs.kotlinx.io.core)
             }
         }
         val commonTest by getting {
@@ -57,6 +58,7 @@ kotlin {
                 implementation(libs.bundles.jvm.reflection)
                 implementation(libs.findbugs.jsr305)
                 implementation(libs.jvm.logging)
+                api(libs.kotlinx.io.core)
             }
         }
         val jvmTest by getting

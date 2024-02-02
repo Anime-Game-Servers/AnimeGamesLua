@@ -53,7 +53,7 @@ java {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            from(components["kotlin"])
+            from(components["java"])
             groupId = "org.anime_game_servers.lua"
             artifactId = "GIlua"
         }

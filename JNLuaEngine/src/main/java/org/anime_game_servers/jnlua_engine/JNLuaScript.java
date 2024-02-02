@@ -1,11 +1,16 @@
 package org.anime_game_servers.jnlua_engine;
 
+import io.github.oshai.kotlinlogging.KLogger;
+import io.github.oshai.kotlinlogging.KotlinLogging;
+import kotlin.Pair;
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.engine.LuaValue;
+import org.anime_game_servers.lua.engine.RequireMode;
 import org.anime_game_servers.lua.models.BooleanLuaValue;
 import org.anime_game_servers.lua.models.IntLuaValue;
+import org.anime_game_servers.lua.models.MutableBoolean;
 import org.anime_game_servers.lua.models.ScriptType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,18 +19,23 @@ import org.terasology.jnlua.script.LuaBindings;
 import org.terasology.jnlua.script.LuaScriptEngine;
 
 import javax.script.*;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 public class JNLuaScript implements LuaScript {
+    private static KLogger logger = KotlinLogging.INSTANCE.logger(JNLuaScript.class.getName());
 
     final Reader scriptReader;
     @Nullable
     private final CompiledLuaScript compiledScript;
+    private final String modifiedScript;
     private final LuaBindings binding;
     private final JNLuaEngine engine;
     private final LuaScriptEngine scriptEngine;
@@ -44,11 +54,57 @@ public class JNLuaScript implements LuaScript {
 
         val requireFunction = JNLuaRequireCommonFunction.getInstance(engine.getScriptConfig());
         binding.put(requireFunction.getName(), requireFunction);
-        scriptReader = Files.newBufferedReader(scriptPath);
+        val reader = Files.newBufferedReader(scriptPath);
+        this.scriptReader = reader;
+        if (engine.getScriptConfig().getEnableIncludeWorkaround() == RequireMode.ENABLED_WITH_WORKAROUND &&
+                (scriptType == ScriptType.EXECUTABLE || scriptType == ScriptType.STATIC_EXECUTABLE || scriptType == ScriptType.ONE_TIME_EXECUTABLE)) {
+            this.modifiedScript = compileScriptWithWorkaround(reader, scriptPath);
+        } else {
+            this.modifiedScript = null;
+        }
+
         if(scriptType.getPrecompile()) {
-            this.compiledScript = (CompiledLuaScript) ((Compilable) scriptEngine).compile(scriptReader);
+             if(modifiedScript != null) {
+                this.compiledScript = (CompiledLuaScript) ((Compilable) scriptEngine).compile(modifiedScript);
+            } else {
+                 this.compiledScript = (CompiledLuaScript) ((Compilable) scriptEngine).compile(scriptReader);
+             }
         } else {
             this.compiledScript = null;
+        }
+    }
+
+    // todo maybe caching?
+    private String compileScriptWithWorkaround(BufferedReader reader, Path path) throws IOException,ScriptException {
+        val requireRegex = Pattern.compile("\\s*require\\s+\"(.*)\"");
+        val changed = new MutableBoolean(false);
+        try {
+            val script = reader.lines().map(line -> {
+                val result = requireRegex.matcher(line);
+                if (result.matches()) {
+                    val requireBasePath = engine.getScriptConfig().getScriptLoader().getRequireScriptParams(result.group(1)).getBasePath();
+                    val requirePath = engine.getScriptConfig().getScriptLoader().getScriptPath(requireBasePath);
+                    if(requirePath == null){
+                        logger.warn(()->"Could not find require script "+result.group(1)+" for script "+ path);
+                        return line;
+                    }
+                    try {
+                        try (val requireReader = Files.newBufferedReader(requirePath)){
+                            val requireScript = requireReader.lines().reduce((a, b) -> a + "\n" + b).orElse(line);
+                            changed.setValue(true);
+                            return requireScript;
+                        }
+                    } catch (IOException e) {
+                        return line;
+                    }
+                } else {
+                    return line;
+                }
+            }).reduce((a, b) -> a + "\n" + b).orElse("");
+            return changed.getValue() ? script : null;
+        }
+        catch (Exception e) {
+            return null;
         }
     }
 
@@ -75,7 +131,11 @@ public class JNLuaScript implements LuaScript {
         if(compiledScript != null) {
             compiledScript.eval(context);
         } else {
-            scriptEngine.eval(scriptReader, context);
+            if(modifiedScript != null) {
+                scriptEngine.eval(modifiedScript, context);
+            } else {
+                scriptEngine.eval(scriptReader, context);
+            }
         }
     }
 

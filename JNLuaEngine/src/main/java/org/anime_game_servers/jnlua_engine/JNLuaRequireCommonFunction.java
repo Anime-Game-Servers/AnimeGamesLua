@@ -2,7 +2,9 @@ package org.anime_game_servers.jnlua_engine;
 
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
+import kotlinx.io.SourcesJvmKt;
 import lombok.val;
+import org.anime_game_servers.lua.engine.RequireMode;
 import org.anime_game_servers.lua.engine.ScriptConfig;
 import org.terasology.jnlua.LuaState;
 import org.terasology.jnlua.NamedJavaFunction;
@@ -30,21 +32,26 @@ public class JNLuaRequireCommonFunction implements NamedJavaFunction {
 
     @Override
     public int invoke(LuaState luaState) {
+        if(scriptConfig.getEnableIncludeWorkaround() == RequireMode.DISABLED){
+            return 0;
+        }
+
         val requiredName = luaState.checkString(1);
         luaState.remove(1);
         val params = scriptConfig.getScriptLoader().getRequireScriptParams(requiredName);
-        val includeScript = scriptConfig.getScriptLoader().openScript(params);
-        if (includeScript ==  null) {
-            logger.error(() -> "Require script not found. " + params.getBasePath());
-            return 1;
-        }
-        try {
-            luaState.load(includeScript, requiredName, "t");
+        try (val includeScript = scriptConfig.getScriptLoader().openScript(params);) {
+            if (includeScript ==  null) {
+                logger.error(() -> "Require script not found. " + params.getBasePath());
+                return 1;
+            }
+            val stream = SourcesJvmKt.asInputStream(includeScript);
+            luaState.load(stream, requiredName, "t");
             luaState.call(0, 0);
         } catch (IOException e) {
             logger.error(e, ()-> "Error on loading require script. " + params.getBasePath());
             return 2;
         }
+
         return 0;
     }
 
