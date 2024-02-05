@@ -53,6 +53,8 @@ jvm-ags-core-base = { module = "org.anime_game_servers.core:base-jvm", version.r
 ags-core-gi = { module = "org.anime_game_servers.core:gi", version.ref = "ags_core" }
 jvm-ags-core-gi = { module = "org.anime_game_servers.core:gi-jvm", version.ref = "ags_core" }
 jvm-ags-lua-base = { module = "org.anime_game_servers.lua:base-jvm", version.ref = "anime_game_lua" }
+jvm-ags-lua-luaj = { module = "org.anime_game_servers.lua:luaj", version.ref = "anime_game_lua" }
+jvm-ags-lua-jnlua = { module = "org.anime_game_servers.lua:jnlua", version.ref = "anime_game_lua" }
 
 
 [bundles]

@@ -61,7 +61,15 @@ kotlin {
                 api(libs.kotlinx.io.core)
             }
         }
-        val jvmTest by getting
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.junit)
+                implementation(project(":base"))
+                implementation(project(":LuaJEngine"))
+                implementation(project(":JNLuaEngine"))
+            }
+
+        }
         val jsMain by getting
         val jsTest by getting
         val nativeMain by getting

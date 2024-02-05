@@ -3,6 +3,7 @@ package org.anime_game_servers.jnlua_engine;
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import lombok.val;
+import org.anime_game_servers.core.base.interfaces.IntValueEnum;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.jnlua.util.AbstractTableMap;
@@ -19,22 +20,102 @@ public class JNLuaSerializer extends BaseSerializer {
 
     private final ReentrantLock lock = new ReentrantLock();
 
-    public static Integer getInt(Object value) {
-        if (value instanceof Integer l) {
-            return l.intValue();
-        } else if (value instanceof Double d) {
-            return d.intValue();
+    public static Number getNumber(Object value) {
+        if (value instanceof Number l) {
+            return l;
+        } else if (value instanceof String s) {
+            try {
+                return Double.parseDouble(s);
+            } catch (Exception e) {
+                logger.error(e, () -> "Exception parsing double "+s);
+            }
         }
         return 0;
     }
 
+    public static Integer getInt(Object value) {
+        if (value instanceof Number l) {
+            return l.intValue();
+        } else if (value instanceof String s) {
+            try {
+                return Integer.parseInt(s);
+            } catch (Exception e) {
+                logger.error(e, () -> "Exception parsing int "+s);
+            }
+        }
+        return 0;
+    }
+    @Nullable
+    public static <T extends Enum<T>> T getEnum(Object value, Class<?> type) {
+        try {
+            if(value instanceof String){
+                return  (T) Enum.valueOf((Class<? extends Enum>) type, (String) value);
+            } else if(value instanceof Number){
+                val intVal = getInt(value);
+                val enumConstants = type.getEnumConstants();
+                if(IntValueEnum.class.isAssignableFrom(type)){
+                    for (val enumConstant : enumConstants) {
+                        if(((IntValueEnum) enumConstant).getValue() == intVal){
+                            return (T) enumConstant;
+                        }
+                    }
+                }
+                return (T) enumConstants[intVal];
+            }
+        } catch (Exception e) {
+            logger.error(e, () -> "Exception serializing enum "+value);
+        }
+        return null;
+    }
+
+    public static Long getLong(Object value) {
+        if (value instanceof Number l) {
+            return l.longValue();
+        } else if (value instanceof String s) {
+            try {
+                return Long.parseLong(s);
+            } catch (Exception e) {
+                logger.warn(e, () -> "Exception parsing long "+s);
+            }
+        }
+        return 0L;
+    }
+
     public static Float getFloat(Object value) {
-        if (value instanceof Double l) {
+        if (value instanceof Number l) {
             return l.floatValue();
-        } else if (value instanceof Integer l) {
-            return l.floatValue();
+        } else if (value instanceof String s) {
+            try {
+                return Float.parseFloat(s);
+            } catch (Exception e) {
+                logger.warn(e, () -> "Exception parsing float "+s);
+            }
         }
         return 0f;
+    }
+    public static Double getDouble(Object value) {
+        if (value instanceof Number l) {
+            return l.doubleValue();
+        } else if (value instanceof String s) {
+            try {
+                return Double.parseDouble(s);
+            } catch (Exception e) {
+                logger.warn(e, () -> "Exception parsing double "+s);
+            }
+        }
+        return 0.0;
+    }
+    public static Boolean getBoolean(Object value) {
+        if (value instanceof Number l) {
+            return l.doubleValue()!=0.0;
+        } else if (value instanceof String s) {
+            try {
+                return Boolean.parseBoolean(s);
+            } catch (Exception e) {
+                logger.warn(e, () -> "Exception parsing double "+s);
+            }
+        }
+        return false;
     }
 
     // ...
@@ -56,22 +137,28 @@ public class JNLuaSerializer extends BaseSerializer {
     private <T> T objectToClass(Class<T> type, Object value) {
         Object object = null;
 
-        if (value instanceof Integer) {
+        if(type.equals(int.class) || type.equals(Integer.class)){
             object = (T) getInt(value);
-        } else if (value instanceof Double) {
+        } else if(type.equals(long.class) || type.equals(Long.class)){
+            object = (T) getLong(value);
+        } else if(type.equals(float.class) || type.equals(Float.class)){
             object = (T) getFloat(value);
-        } else if (value instanceof String) {
-            object = (T) value;
-        } else if (value instanceof Boolean) {
-            object = (T) value;
+        } else if(type.equals(double.class) || type.equals(Double.class)){
+            object = (T) getDouble(value);
+        } else if(type.equals(String.class)){
+            object = (T) String.valueOf(value);
+        } else if(type.equals(boolean.class) || type.equals(Boolean.class)){
+            object = (T) getBoolean(value);
+        } else if(Enum.class.isAssignableFrom(type)){
+            getEnum(value, type);
         } else {
             object = serialize(type, null, (LuaValueProxy) value);
+            if(String.class.isAssignableFrom(type)){
+                return (T) String.valueOf(object);
+            }
         }
-        if(String.class.isAssignableFrom(type)){
-            return (T) String.valueOf(object);
-        } else {
-            return (T) object;
-        }
+
+        return (T) object;
     }
 
     private <T> List<T> serializeList(Class<T> type, LuaValueProxy table) {
@@ -169,9 +256,11 @@ public class JNLuaSerializer extends BaseSerializer {
                     if (fieldMeta.getType().equals(float.class)) {
                         set(object, fieldMeta, methodAccess, getFloat(keyValue));
                     } else if (fieldMeta.getType().equals(double.class)) {
-                        set(object, fieldMeta, methodAccess, (double) keyValue);
+                        set(object, fieldMeta, methodAccess, getDouble(keyValue));
                     } else if (fieldMeta.getType().equals(int.class)) {
                         set(object, fieldMeta, methodAccess, getInt(keyValue));
+                    }  else if (fieldMeta.getType().equals(long.class)) {
+                        set(object, fieldMeta, methodAccess, getLong(keyValue));
                     } else if (fieldMeta.getType().equals(String.class)) {
                         set(object, fieldMeta, methodAccess, keyValue);
                     } else if (fieldMeta.getType().equals(boolean.class)) {
@@ -181,6 +270,16 @@ public class JNLuaSerializer extends BaseSerializer {
                         Class<?> listType = getCollectionType(type, fieldMeta.getField());
                         List<?> listObj = serializeList(listType, objTable);
                         set(object, fieldMeta, methodAccess, listObj);
+                    } else if (fieldMeta.getType().equals(Set.class)) {
+                        LuaValueProxy objTable = (LuaValueProxy) tableObj.get(k.getKey());
+                        Class<?> listType = getCollectionType(type, fieldMeta.getField());
+                        Set<?> listObj = serializeSet(listType, objTable);
+                        set(object, fieldMeta, methodAccess, listObj);
+                    } else if(Enum.class.isAssignableFrom(fieldMeta.getType())){
+                        val enumValue = getEnum(keyValue, fieldMeta.getType());
+                        if(enumValue != null){
+                            set(object, fieldMeta, methodAccess, enumValue);
+                        }
                     } else {
                         set(object, fieldMeta, methodAccess, serialize(fieldMeta.getType(), fieldMeta.getField(), (LuaValueProxy) keyValue));
                     }

@@ -148,7 +148,7 @@ public class SceneGroup {
             this.initConfig = cs.getGlobalVariable("init_config", SceneInitConfig.class);
 
             // Garbages
-            this.garbages = cs.getGlobalVariable("init_config", SceneGarbage.class);
+            this.garbages = cs.getGlobalVariable("garbages", SceneGarbage.class);
 
             // Add variables to suite
             this.variables = cs.getGlobalVariableList("variables", SceneVar.class);

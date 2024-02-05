@@ -1,6 +1,7 @@
 package org.anime_game_servers.lua.engine
 
 import javax.script.ScriptException
+import java.lang.Class
 
 interface LuaScript {
     fun hasMethod(methodName: String): Boolean
@@ -14,4 +15,6 @@ interface LuaScript {
     fun <T> getGlobalVariableList(name: String, type: Class<T>): List<T>
     fun <T> getGlobalVariableMap(name: String, type: Class<T>): Map<String, T>
     val engine: LuaEngine?
+
+
 }

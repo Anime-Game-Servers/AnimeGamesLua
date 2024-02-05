@@ -1,5 +1,6 @@
 package org.anime_game_servers.lua.models
 
+import org.anime_game_servers.lua.engine.Class
 import kotlin.jvm.JvmField
 
 open class IntLuaValue(protected val value: Int) : MockLuaValue {
@@ -11,6 +12,8 @@ open class IntLuaValue(protected val value: Int) : MockLuaValue {
     override fun asDouble() = value.toDouble()
     override fun asFloat() = value.toFloat()
     override fun asString() = value.toString()
+
+    override fun <T> asObject(type: Class<T>): T? = null
 
     companion object {
         @JvmField

@@ -1,5 +1,6 @@
 package org.anime_game_servers.lua.models
 
+import org.anime_game_servers.lua.engine.Class
 import kotlin.jvm.JvmField
 
 open class BooleanLuaValue(private val value: Boolean) : MockLuaValue {
@@ -11,6 +12,8 @@ open class BooleanLuaValue(private val value: Boolean) : MockLuaValue {
     override fun asDouble() = if (value) 1.0 else 0.0
     override fun asFloat() = if (value) 1f else 0f
     override fun asString() = value.toString()
+
+    override fun <T> asObject(type: Class<T>): T? = null
 
     companion object {
         @JvmField

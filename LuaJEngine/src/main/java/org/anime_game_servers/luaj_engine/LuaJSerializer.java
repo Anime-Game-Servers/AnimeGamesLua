@@ -4,7 +4,10 @@ import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import kotlin.Pair;
 import lombok.val;
+import org.anime_game_servers.core.base.interfaces.IntValueEnum;
 import org.anime_game_servers.lua.serialize.BaseSerializer;
+import org.luaj.vm2.LuaNumber;
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.ast.Str;
@@ -18,6 +21,33 @@ import java.util.*;
 public class LuaJSerializer extends BaseSerializer {
     private static KLogger logger = KotlinLogging.INSTANCE.logger(LuaJEngine.class.getName());
 
+    @Nullable
+    public static <T extends Enum<T>> T getEnum(Object value, Class<?> type) {
+        val originalValue = value;
+        try {
+            if(value instanceof LuaNumber){
+                value = ((LuaNumber) value).toint();
+            } else if(value instanceof LuaString){
+                value = ((LuaValue) value).tojstring();
+            }
+            if(value instanceof String){
+                return  (T) Enum.valueOf((Class<? extends Enum>) type, (String) value);
+            } else if(value instanceof Number){
+                val enumConstants = type.getEnumConstants();
+                if(IntValueEnum.class.isAssignableFrom(type)){
+                    for (val enumConstant : enumConstants) {
+                        if(((IntValueEnum) enumConstant).getValue() == ((Number) value).intValue()){
+                            return (T) enumConstant;
+                        }
+                    }
+                }
+                return (T) enumConstants[((Number) value).intValue()];
+            }
+        } catch (Exception e) {
+            logger.error(e, () -> "Exception serializing enum "+originalValue);
+        }
+        return null;
+    }
 
     @Override
     public <T> List<T> toList(Class<T> type, Object obj) {
@@ -196,12 +226,21 @@ public class LuaJSerializer extends BaseSerializer {
                         set(object, fieldMeta, methodAccess, serialize(fieldMeta.getType(), fieldMeta.getField(), keyValue.checktable()));
                     } else if (fieldMeta.getType().equals(float.class)) {
                         set(object, fieldMeta, methodAccess, keyValue.tofloat());
+                    } else if (fieldMeta.getType().equals(double.class)) {
+                        set(object, fieldMeta, methodAccess, keyValue.todouble());
                     } else if (fieldMeta.getType().equals(int.class)) {
                         set(object, fieldMeta, methodAccess, keyValue.toint());
+                    } else if (fieldMeta.getType().equals(long.class)) {
+                        set(object, fieldMeta, methodAccess, keyValue.tolong());
                     } else if (fieldMeta.getType().equals(String.class)) {
                         set(object, fieldMeta, methodAccess, keyValue.tojstring());
                     } else if (fieldMeta.getType().equals(boolean.class)) {
                         set(object, fieldMeta, methodAccess, keyValue.toboolean());
+                    } else if(Enum.class.isAssignableFrom(fieldMeta.getType())){
+                        val enumValue = getEnum(keyValue, fieldMeta.getType());
+                        if(enumValue != null){
+                            set(object, fieldMeta, methodAccess, enumValue);
+                        }
                     } else {
                         set(object, fieldMeta, methodAccess, keyValue.tojstring());
                     }

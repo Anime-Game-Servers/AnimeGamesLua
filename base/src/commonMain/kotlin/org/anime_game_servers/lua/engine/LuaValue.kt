@@ -1,5 +1,7 @@
 package org.anime_game_servers.lua.engine
 
+expect class Class<T>{}
+
 interface LuaValue {
     fun isNull() : Boolean
     fun isBoolean() : Boolean
@@ -15,4 +17,6 @@ interface LuaValue {
     fun asDouble(): Double
     fun asFloat(): Float
     fun asString(): String?
+    fun <T> asObject(type: Class<T>): T?
+
 }
