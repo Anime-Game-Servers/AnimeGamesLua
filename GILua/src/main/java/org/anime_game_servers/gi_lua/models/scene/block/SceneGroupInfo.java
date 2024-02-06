@@ -3,6 +3,7 @@ package org.anime_game_servers.gi_lua.models.scene.block;
 import lombok.Getter;
 import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.constants.GroupLoadStrategy;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 
 import javax.annotation.Nullable;
@@ -29,6 +30,9 @@ public class SceneGroupInfo {
     private int activityReviseLevelGrowId;
     @LuaNames("rely_start_world_level_limit_activity_id")
     private int relyStartWorldLevelLimitActivityId; // SceneScriptConfig LuaConfigMgr
+    /**
+     * seems to be linked to SceneRegion.visionTypeList
+     */
     @LuaNames("vision_type")
     private int visionType;
     @LuaNames("across_block")
@@ -44,7 +48,7 @@ public class SceneGroupInfo {
     @LuaNames("is_load_by_vision_type")
     private boolean isLoadByVisionType = false;
     @LuaNames("load_strategy")
-    private int loadStrategy;
+    private GroupLoadStrategy loadStrategy;
     @LuaNames("forbid_monster_die")
     private Set<String> forbidMonsterDie; //todo find enum values
     @LuaNames("related_level_tag_series_list")

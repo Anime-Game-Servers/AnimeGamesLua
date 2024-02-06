@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
 import org.anime_game_servers.core.base.annotations.lua.LuaNames;
+import org.anime_game_servers.gi_lua.models.constants.IOType;
 import org.anime_game_servers.gi_lua.models.loader.SceneGroupScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.loader.ScriptSource;
@@ -168,7 +169,7 @@ public class SceneGroup {
 
     public int findInitSuiteIndex(int exclude_index) { //TODO: Investigate end index
         if (initConfig == null) return 1;
-        if (initConfig.getIoType() == 1) return initConfig.getSuite(); //IO TYPE FLOW
+        if (initConfig.getIoType() == IOType.GROUP_IO_TYPE_FLOW) return initConfig.getSuite();
         if (initConfig.isRandSuite()) {
             if (suites.size() == 1) {
                 return initConfig.getSuite();

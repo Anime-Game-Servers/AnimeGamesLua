@@ -37,6 +37,13 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int AutoMonsterTide(GroupEventContext context, int challengeIndex, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
     int GoToGroupSuite(GroupEventContext context, int groupId, int suite);
 
+    /**
+     *
+     * @param context
+     * @param groupId either 0 for the current group, or a group id
+     * @param suite
+     * @return
+     */
     int AddExtraGroupSuite(GroupEventContext context, int groupId, int suite);
     int RemoveExtraGroupSuite(GroupEventContext context, int groupId, int suite);
     int KillExtraGroupSuite(GroupEventContext context, int groupId, int suite);

@@ -9,7 +9,6 @@ import org.anime_game_servers.gi_lua.models.constants.ScriptRegionShape;
 
 import java.util.List;
 
-
 @SuppressWarnings("FieldMayBeFinal")
 @Getter
 public class SceneRegion extends SceneObject{
@@ -28,6 +27,11 @@ public class SceneRegion extends SceneObject{
     private List<String> teamAbilityGroup;
     @LuaNames("is_trigger_reload_group")
     private boolean isTriggerReloadGroup = false;
+    /**
+     * seems to be linked to SceneGroupInfo.visionType
+     */
+    @LuaNames("vision_type_list")
+    private List<Integer> visionTypeList;
 
     public boolean contains(Vector position) {
         switch (shape) {

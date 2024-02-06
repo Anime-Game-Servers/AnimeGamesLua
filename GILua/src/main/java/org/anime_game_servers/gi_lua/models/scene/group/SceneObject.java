@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
+import org.anime_game_servers.gi_lua.models.constants.VisionLevelType;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
 import org.anime_game_servers.gi_lua.models.constants.EntityType;
 
@@ -16,7 +17,7 @@ public abstract class SceneObject {
     @LuaNames("area_id")
     protected int areaId;
     @LuaNames("vision_level")
-    protected int visionLevel = 0;
+    protected VisionLevelType visionLevel = VisionLevelType.VISION_LEVEL_NORMAL;
     @LuaNames("mark_flag")
     protected int markFlag;
     @LuaNames("drop_tag")
