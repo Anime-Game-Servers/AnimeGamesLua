@@ -266,7 +266,7 @@ public class ScriptLib {
             return INVALID_PARAMETER.getValue();
         }
         val entityType = EntityType.values()[entityTypeValue];
-        val params = new KillByConfigIdParams(groupId, configId, entityType);
+        val params = new KillByConfigIdParams(configId, groupId, entityType);
         if (context instanceof GroupEventLuaContext gContext){
             return gContext.getScriptLibHandlerProvider().getScriptLibHandler().KillEntityByConfigId(gContext, params);
         } else if (context instanceof ControllerLuaContext cContext) {

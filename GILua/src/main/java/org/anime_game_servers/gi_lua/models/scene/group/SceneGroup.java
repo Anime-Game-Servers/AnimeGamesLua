@@ -139,12 +139,12 @@ public class SceneGroup {
 
             this.suites = cs.getGlobalVariableList("suites", SceneSuite.class);
             this.regions = cs.getGlobalVariableList("regions", SceneRegion.class).stream()
+                    .peek(group -> {
+                        group.groupId = groupId;
+                        group.blockId = blockId;
+                        group.sceneMeta = sceneMeta;
+                    })
                     .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
-            this.regions.values().forEach(m -> {
-                m.groupId = groupId;
-                m.blockId = blockId;
-                m.sceneMeta = sceneMeta;
-            });
 
             this.initConfig = cs.getGlobalVariable("init_config", SceneInitConfig.class);
 
