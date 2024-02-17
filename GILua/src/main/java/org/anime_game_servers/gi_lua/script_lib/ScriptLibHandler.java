@@ -20,8 +20,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      */
 
     void PrintGroupWarning(LuaContext context, String msg);
-    int SetGadgetStateByConfigId(GroupEventContext context, int configId, int gadgetState);
-    int SetGroupGadgetStateByConfigId(GroupEventContext context, int groupId, int configId, int gadgetState);
 
     /**
      * Sets a gadget interacteable based on the config id and group id.
@@ -146,15 +144,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 
-    int GetGadgetStateByConfigId(GroupEventContext context, int groupId, int configId);
-
     int MarkPlayerAction(GroupEventContext context, int var1, int var2, int var3);
     int AddQuestProgress(GroupEventContext context, String eventNotifyName);
-
-    /**
-     * change the state of gadget
-     */
-    int ChangeGroupGadget(GroupEventContext context, LuaTable table) ;
 
     int GetSceneOwnerUid(GroupEventContext context);
     @Nonnull
@@ -321,7 +312,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int KillGroupEntityByPolicy(GroupEventContext context, int groupId, GroupKillPolicy policy);
     int KillEntityByConfigId(GroupEventContext context, KillByConfigIdParams params);
 
-    int GetGadgetIdByEntityId(GroupEventContext context, int entityId);
     int GetMonsterIdByEntityId(GroupEventContext context, int entityId);
     int GetMonsterConfigId(GroupEventContext context, int entityId);
     int GetMonsterID(GroupEventContext context, int var1);
@@ -443,15 +433,4 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int ExecuteGroupLua(GroupEventLuaContext context, int groupId, String functionName, LuaTable callParamsTable);
 
 
-    /**
-     * // TODO identify unknown parameters and exact behaviour
-     * Executes a lua function on a gadgets lua controller.
-     * This seems to be used in only the Crucible activity
-     * @param groupId group to find the gadget in
-     * @param gadgetCfgId cfg id of the gadget in the group to execute lua in
-     * @param activityType seems to be an activity type
-     * @param var4 TODO
-     * @param val5 TODO
-     */
-    int ExecuteGadgetLua(GroupEventLuaContext context, int groupId, int gadgetCfgId, int activityType, int var4, int val5);
 }

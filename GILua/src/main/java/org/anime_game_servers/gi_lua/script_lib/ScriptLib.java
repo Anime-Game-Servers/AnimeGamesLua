@@ -13,6 +13,9 @@ import org.anime_game_servers.gi_lua.script_lib.handler.ScriptLibStaticHandler;
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams;
 import org.anime_game_servers.lua.engine.LuaTable;
 
+import javax.annotation.Nullable;
+import java.util.Arrays;
+
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 import static org.anime_game_servers.gi_lua.utils.ScriptUtils.posToLua;
 import static org.anime_game_servers.gi_lua.script_lib.ScriptLibErrors.*;
@@ -48,14 +51,6 @@ public class ScriptLib {
     public static void PrintGroupWarning(GroupEventLuaContext context, String msg) {
         context.getScriptLibHandler().PrintGroupWarning(context, msg);
     }
-
-    public static int SetGadgetStateByConfigId(GroupEventLuaContext context, int configId, int gadgetState) {
-		return context.getScriptLibHandler().SetGadgetStateByConfigId(context, configId, gadgetState);
-	}
-
-	public static int SetGroupGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId, int gadgetState) {
-		return context.getScriptLibHandler().SetGroupGadgetStateByConfigId(context, groupId, configId, gadgetState);
-	}
 
 	public static int SetWorktopOptionsByGroupId(GroupEventLuaContext context, int groupId, int configId, Object optionsTable) {
         val options = context.getEngine().getTable(optionsTable);
@@ -323,10 +318,6 @@ public class ScriptLib {
 		return context.getScriptLibHandler().CheckRemainGadgetCountByGroupId(context, table);
 	}
 
-	public static int GetGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId){
-		return context.getScriptLibHandler().GetGadgetStateByConfigId(context, groupId, configId);
-	}
-
 	public static int MarkPlayerAction(GroupEventLuaContext context, int var1, int var2, int var3){
         return context.getScriptLibHandler().MarkPlayerAction(context, var1, var2, var3);
 	}
@@ -335,13 +326,7 @@ public class ScriptLib {
         return context.getScriptLibHandler().AddQuestProgress(context, eventNotifyName);
 	}
 
-	/**
-	 * change the state of gadget
-	 */
-	public static int ChangeGroupGadget(GroupEventLuaContext context, Object rawTable) {
-        val table = context.getEngine().getTable(rawTable);
-		return context.getScriptLibHandler().ChangeGroupGadget(context, table);
-	}
+
 
     public static int GetSceneOwnerUid(GroupEventLuaContext context){
         return context.getScriptLibHandler().GetSceneOwnerUid(context);
@@ -893,9 +878,6 @@ public class ScriptLib {
         return context.getScriptLibHandler().KillGroupEntityByCfgIds(context, groupId, monsters, gadgets);
     }
 
-    public static int GetGadgetIdByEntityId(GroupEventLuaContext context, int entityId){
-        return context.getScriptLibHandler().GetGadgetIdByEntityId(context, entityId);
-    }
     public static int GetMonsterIdByEntityId(GroupEventLuaContext context, int entityId){
         return context.getScriptLibHandler().GetMonsterIdByEntityId(context, entityId);
     }
@@ -1108,6 +1090,83 @@ public class ScriptLib {
         return context.getScriptLibHandler().ExecuteGroupLua(context, groupId, functionName, callParams);
     }
 
+
+    /* GroupGadgetHandler methods */
+
+    /**
+     * Change the state of a gadget in the current group
+     * @param context The context of the group event
+     * @param configId config id of a gadget in the current caller group
+     * @param gadgetState target state for the gadget
+     */
+    public static int SetGadgetStateByConfigId(GroupEventLuaContext context, int configId, int gadgetState) {
+        if(configId <= 0){
+            scriptLogger.error(() -> "[SetGadgetStateByConfigId] Invalid configId (" + configId + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().SetGadgetStateByConfigId(context, configId, gadgetState);
+    }
+
+
+    /**
+     * Change the state of a gadget in the defined group
+     * @param context The context of the group event
+     * @param groupId The group containing the target gadget or the caller group if 0
+     * @param configId config id of a gadget in the target group
+     * @param gadgetState target state for the gadget
+     */
+    public static int SetGroupGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId, int gadgetState) {
+        if(groupId < 0 || configId <= 0){
+            scriptLogger.error(() -> "[SetGroupGadgetStateByConfigId] Invalid groupId (" + groupId + ") or configId (" + configId + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().SetGroupGadgetStateByConfigId(context, groupId, configId, gadgetState);
+    }
+
+    /**
+     * Returns the state of a gadget based on the group id and config id
+     * @param context The context of the group event
+     * @param groupId group to search for the gadget in, 0 for the caller group.
+     * @param configId config id of the gadget in the group.
+     */
+    public static int GetGadgetStateByConfigId(GroupEventLuaContext context, int groupId, int configId){
+        if(groupId < 0 || configId <= 0){
+            scriptLogger.error(() -> "[GetGadgetStateByConfigId] Invalid groupId (" + groupId + ") or configId (" + configId + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetStateByConfigId(context, groupId, configId);
+    }
+
+
+    /**
+     * Change the state if a gadget in the current group, based in the parametersTable
+     * @param context The context of the group event
+     * @param parametersTable The parameter table, contains the following fields: config_id:int, state:int
+     */
+    public static int ChangeGroupGadget(GroupEventLuaContext context, Object parametersTable) {
+        val table = context.getEngine().getTable(parametersTable);
+        val configId = table.optInt("config_id", -1);
+        val state = table.optInt("state", -1);
+        if(configId <= 0 || state <= 0){
+            scriptLogger.error(() -> "[ChangeGroupGadget] Invalid configId (" + configId + ") or state (" + state + ")");
+            return INVALID_PARAMETER_TABLE_CONTENT.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().ChangeGroupGadget(context, configId, state);
+    }
+
+    /**
+     * Retrieves and returns the gadget id of a gadget entity based on the entity id.
+     * @param context The context of the group event
+     * @param entityId The entity id of the gadget requested.
+     */
+    public static int GetGadgetIdByEntityId(GroupEventLuaContext context, int entityId){
+        if(entityId <= 0){
+            scriptLogger.error(() -> "[GetGadgetIdByEntityId] Invalid or missing group_eid " + entityId);
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetIdByEntityId(context, entityId);
+    }
+
     /**
      * // TODO identify unknown parameters and exact behaviour
      * Executes a lua function on a gadgets lua controller.
@@ -1119,10 +1178,60 @@ public class ScriptLib {
      * @param val5 TODO
      */
     public static int ExecuteGadgetLua(GroupEventLuaContext context, int groupId, int gadgetCfgId, int activityType, int var4, int val5){
-        return context.getScriptLibHandler().ExecuteGadgetLua(context, groupId, gadgetCfgId, activityType, var4, val5);
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().ExecuteGadgetLua(context, groupId, gadgetCfgId, activityType, var4, val5);
+    }
+
+    /**
+     * Returns the config id of the gadget with the eid (gadget_eid)
+     * @param context The context of the group event
+     * @param paramsTable The parameter table, contains only `gadget_eid`, which contains the entity id of the gadget requested.
+     */
+    public static int GetGadgetConfigId(GroupEventLuaContext context, Object paramsTable){
+        val params = context.getEngine().getTable(paramsTable);
+        val groupEid = params.optInt("group_eid", -1);
+        if(groupEid <= 0){
+            scriptLogger.error(() -> "[GetGadgetConfigId] Invalid or missing group_eid " + groupEid);
+            return INVALID_PARAMETER_TABLE_CONTENT.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetConfigId(context, groupEid);
+    }
+
+    /**
+     * Returns the hp in percent of a gadget based on the group id and config id
+     * @param context The context of the group event
+     * @param groupId group to search for the gadget entity in.
+     * @param configId config id of the gadget in the group.
+     */
+    public static int GetGadgetHpPercent(GroupEventLuaContext context, int groupId, int configId){
+        if(groupId < 0 || configId <= 0){
+            scriptLogger.error(() -> "[GetGadgetHpPercent] Invalid groupId (" + groupId + ") or configId (" + configId + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetHpPercent(context, groupId, configId);
     }
 
 
+    /**
+     * Returns a float global value from the gadgets ability definitions.
+     * @param context The context of the group event
+     * @param groupId group to search for the gadget entity in.
+     * @param configId config id of the gadget in the group.
+     * @param abilitySGVName name of the abilities svg value to get the float value from.
+     * */
+    public static float GetGadgetAbilityFloatValue(GroupEventLuaContext context, int groupId, int configId, String abilitySGVName) {
+        if(groupId < 0 || configId <= 0){
+            scriptLogger.error(() -> "[GetGadgetAbilityFloatValue] Invalid groupId (" + groupId + ") or configId (" + configId + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        if(abilitySGVName == null || abilitySGVName.isEmpty()){
+            scriptLogger.error(() -> "[GetGadgetAbilityFloatValue] Invalid ability SGV name (" + abilitySGVName + ")");
+            return INVALID_PARAMETER.getValue();
+        }
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetAbilityFloatValue(context, groupId, configId, abilitySGVName);
+    }
+
+
+    /* GadgetControllerHandler methods */
     /**
      * Methods used in EntityControllers/using ControllerLuaContext
      */
@@ -1141,6 +1250,15 @@ public class ScriptLib {
             return NOT_IMPLEMENTED.getValue();
         }
         return handler.GetGadgetState(context);
+    }
+
+    @Nullable
+    public static int[] GetGadgetArguments(ControllerLuaContext<Object> context) {
+        val handler = context.getScriptLibHandlerProvider().getGadgetControllerHandler();
+        if(handler == null){
+            return null;
+        }
+        return handler.GetGadgetArguments(context);
     }
 
     public static int ResetGadgetState(ControllerLuaContext<Object> context, int gadgetState) {

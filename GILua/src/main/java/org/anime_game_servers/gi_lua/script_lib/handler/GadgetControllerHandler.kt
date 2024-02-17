@@ -20,6 +20,11 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
     fun GetGadgetState(context: ControllerEventContext): Int
 
     /**
+     * Return the arguments passed to the calling gadget in the script definition.
+     */
+    fun GetGadgetArguments(context: ControllerEventContext):IntArray?
+
+    /**
      * Resets the gadgets state to its state when born state.
      */
     fun ResetGadgetState(context: ControllerEventContext, gadgetState: Int): Int
