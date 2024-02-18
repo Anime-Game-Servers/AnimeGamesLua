@@ -364,15 +364,8 @@ public class ScriptLib {
         return context.getScriptLibHandler().SetGroupReplaceable(context, groupId, value);
     }
 
-    public static Object GetSceneUidList(GroupEventLuaContext context){
-        val list = context.getScriptLibHandler().GetSceneUidList(context);
-
-        val result = context.getEngine().createTable();
-
-        for(int i = 0; i< list.length; i++){
-            result.set(Integer.toString(i+1), list[i]);
-        }
-        return result;
+    public static int[] GetSceneUidList(GroupEventLuaContext context){
+        return context.getScriptLibHandler().GetSceneUidList(context);
     }
 
     public static int GetSeaLampActivityPhase(GroupEventLuaContext context){
@@ -902,7 +895,7 @@ public class ScriptLib {
     }
 
     public static Object GetRotationByEntityId(GroupEventLuaContext context, int entityId){
-        val rot = context.getScriptLibHandler().GetPosByEntityId(context, entityId);
+        val rot = context.getScriptLibHandler().GetRotationByEntityId(context, entityId);
         return posToLua(rot, context.getEngine()).getRawTable();
     }
 
