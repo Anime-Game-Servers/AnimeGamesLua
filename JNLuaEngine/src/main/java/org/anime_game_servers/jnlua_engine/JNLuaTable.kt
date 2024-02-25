@@ -86,6 +86,14 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
         return (value as? Number)?.toFloat() ?: defaultValue
     }
 
+    override fun set(key: Int, value: Float) {
+        table[key] = value
+    }
+
+    override fun set(key: String, value: Float) {
+        table[key] = value
+    }
+
     override fun set(key: Int, value: Double) {
         table[key] = value
     }

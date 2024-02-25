@@ -2,6 +2,7 @@ package org.anime_game_servers.luaj_engine;
 
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaTable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -107,6 +108,16 @@ public class LuaJTable implements LuaTable {
 
     @Override
     public void set(String key, double value) {
+        table.set(key, org.luaj.vm2.LuaValue.valueOf(value));
+    }
+
+    @Override
+    public void set(int index, float value) {
+        table.set(index, org.luaj.vm2.LuaValue.valueOf(value));
+    }
+
+    @Override
+    public void set(@NotNull String key, float value) {
         table.set(key, org.luaj.vm2.LuaValue.valueOf(value));
     }
 

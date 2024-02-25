@@ -27,6 +27,10 @@ interface LuaTable {
 
     fun optDouble(key: Int, defaultValue: Double): Double
 
+    fun set(key: Int, value: Double)
+
+    fun set(key: String, value: Double)
+
     fun getFloat(key: String): Float
 
     fun optFloat(key: String, defaultValue: Float): Float
@@ -35,9 +39,9 @@ interface LuaTable {
 
     fun optFloat(key: Int, defaultValue: Float): Float
 
-    fun set(key: Int, value: Double)
+    fun set(key: Int, value: Float)
 
-    fun set(key: String, value: Double)
+    fun set(key: String, value: Float)
 
     fun getBoolean(key: String): Boolean
 
@@ -77,5 +81,5 @@ interface LuaTable {
 
     fun getSize(): Int
 
-    fun getRawTable(): Any?
+    fun getRawTable(): Any
 }

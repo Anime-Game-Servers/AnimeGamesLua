@@ -372,7 +372,7 @@ public class ScriptLib {
         for(int i = 0; i< list.length; i++){
             result.set(Integer.toString(i+1), list[i]);
         }
-        return result;
+        return result.getRawTable();
     }
 
     public static int GetSeaLampActivityPhase(GroupEventLuaContext context){

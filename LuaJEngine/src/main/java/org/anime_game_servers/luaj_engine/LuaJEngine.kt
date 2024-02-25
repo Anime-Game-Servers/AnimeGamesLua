@@ -61,7 +61,11 @@ class LuaJEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
 
     override fun addGlobalStaticClass(name: String, staticClass: Class<*>): Boolean {
         try {
-            context.globals[name] = CoerceJavaToLua.coerce(staticClass.getConstructor().newInstance())
+            var instance = staticClass.kotlin.objectInstance
+            if (instance == null) {
+                instance = staticClass.getConstructor().newInstance()
+            }
+            context.globals[name] = CoerceJavaToLua.coerce(instance)
             return true
         } catch (e: InstantiationException) {
             logger.error(e) { "Failed to add static class to lua engine: $name" }
