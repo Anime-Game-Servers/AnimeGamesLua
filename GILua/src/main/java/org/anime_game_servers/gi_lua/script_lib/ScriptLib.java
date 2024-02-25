@@ -1144,14 +1144,18 @@ public class ScriptLib {
      * @param parametersTable The parameter table, contains the following fields: config_id:int, state:int
      */
     public static int ChangeGroupGadget(GroupEventLuaContext context, Object parametersTable) {
+        val handler = context.getScriptLibHandlerProvider().getGroupGadgetHandler();
+        if(handler == null){
+            return NOT_IMPLEMENTED.getValue();
+        }
         val table = context.getEngine().getTable(parametersTable);
         val configId = table.optInt("config_id", -1);
         val state = table.optInt("state", -1);
-        if(configId <= 0 || state <= 0){
+        if(configId <= 0 || state < 0){
             scriptLogger.error(() -> "[ChangeGroupGadget] Invalid configId (" + configId + ") or state (" + state + ")");
             return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
-        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().ChangeGroupGadget(context, configId, state);
+        return handler.ChangeGroupGadget(context, configId, state);
     }
 
     /**
