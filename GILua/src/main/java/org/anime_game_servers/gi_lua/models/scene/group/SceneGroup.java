@@ -157,6 +157,14 @@ public class SceneGroup {
             this.monsterPools = cs.getGlobalVariableList("monster_pools", SceneMonsterPool.class);
             //this.sight_groups = cs.getGlobalVariableList("sight_groups", List<Integer>.class);
 
+            this.points = cs.getGlobalVariableList("points", ScenePoint.class).stream()
+                    .peek(point -> {
+                        point.groupId = groupId;
+                        point.blockId = blockId;
+                        point.sceneMeta = sceneMeta;
+                    })
+                    .collect(Collectors.toMap(x -> x.configId, y -> y, (a, b) -> a));
+
             // Add monsters and gadgets to suite
             this.suites.forEach(i -> i.init(this));
         })) {
