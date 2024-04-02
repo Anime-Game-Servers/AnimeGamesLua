@@ -42,11 +42,11 @@ public class JNLuaConverter implements Converter {
                 }
                 convertJavaObject(luaState, entry.getValue());
                 if(key instanceof String stringKey){
-                    luaState.pushString(stringKey);
+                    luaState.setField(-2, stringKey);
                 } else if (key instanceof Integer intKey){
                     luaState.pushInteger(intKey+1);
+                    luaState.setTable(-3);
                 }
-                luaState.setTable(-3);
             }
             return;
         }

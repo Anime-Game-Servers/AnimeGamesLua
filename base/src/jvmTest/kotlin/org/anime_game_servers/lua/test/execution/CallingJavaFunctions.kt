@@ -38,9 +38,9 @@ object KotlinFunctions{
     fun expectObjectTable(context:LuaContext, luaTable:Any) : Any{
         // retrieve the int array as lua table from the lua side
         val table = context.engine.getTable(luaTable)
-        val x = table.optFloat("x",0.0f)
-        val y = table.optFloat("y",0.0f)
-        val z = table.optFloat("z",0.0f)
+        val x = table.optInt("x",0)
+        val y = table.optInt("y",0)
+        val z = table.optInt("z",0)
 
         val result = context.engine.createTable()
         result.set("x", x)
@@ -135,5 +135,11 @@ abstract class ParsingTest{
         assert(script.hasMethod("expectIntArray"))
         val luaValue = script.callMethod("expectIntArray", context)
         luaValue?.isLong()
+        assert(script.hasMethod("expectObjectTable"))
+        val objectTableResult = script.callMethod("expectObjectTable", context)
+        objectTableResult?.isLong()
+
+        // TODO test nested tables
+        // TODO test mixed tables (int+string keys)
     }
 }

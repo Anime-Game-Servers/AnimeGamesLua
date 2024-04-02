@@ -12,9 +12,9 @@ function expectIntArray(context)
 end
 
 function expectObjectTable(context)
-    local x = 1.1
-    local y = 2.4
-    local z = 3.6
+    local x = 1
+    local y = 2
+    local z = 3
     local result = KotlinFunctions.expectObjectTable(context, {x=x, y=y, z=z})
 
     if(result.x ~= x) then
@@ -27,5 +27,5 @@ function expectObjectTable(context)
         return Nil
     end
 
-    return array
+    return result
 end
