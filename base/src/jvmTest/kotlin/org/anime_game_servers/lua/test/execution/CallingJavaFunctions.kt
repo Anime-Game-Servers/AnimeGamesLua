@@ -29,6 +29,7 @@ object KotlinFunctions{
             assert(index+1 == value)
             result.set(index, value)
         }
+
         // convert the int array back to a luaTable for lua and return it
         return result.getRawTable()
     }

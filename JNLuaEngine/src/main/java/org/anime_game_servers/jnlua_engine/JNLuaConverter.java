@@ -33,6 +33,24 @@ public class JNLuaConverter implements Converter {
 
     @Override
     public void convertJavaObject(LuaState luaState, Object o) {
+        if(o instanceof JNLuaTableMap<?,?> tableMap){
+            luaState.newTable();
+            for (var entry : tableMap.entrySet()) {
+                val key = entry.getKey();
+                if (!(key instanceof Integer) && !(key instanceof String)) {
+                    continue;
+                }
+                convertJavaObject(luaState, entry.getValue());
+                if(key instanceof String stringKey){
+                    luaState.pushString(stringKey);
+                } else if (key instanceof Integer intKey){
+                    luaState.pushInteger(intKey+1);
+                }
+                luaState.setTable(-3);
+            }
+            return;
+        }
+
         if (o instanceof Map<?, ?> fields) {
             val first = fields.entrySet().stream().findFirst();
             if (first.isPresent() && first.get().getKey() instanceof String && first.get().getValue() instanceof Integer) {

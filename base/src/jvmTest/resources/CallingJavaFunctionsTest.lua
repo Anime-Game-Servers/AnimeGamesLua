@@ -1,7 +1,8 @@
 
 
 function expectIntArray(context)
-    local array = KotlinFunctions.expectIntArray(context, {1, 2, 3, 4, 5})
+    local param = {1, 2, 3, 4, 5}
+    local array = KotlinFunctions.expectIntArray(context, param)
     for i,v in ipairs(array) do
         if v == Nil then
             return Nil

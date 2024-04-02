@@ -74,7 +74,7 @@ class JNLuaEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
     }
 
     override fun createTable(): LuaTable {
-        return JNLuaTable(HashMap<Any, Any>())
+        return JNLuaTable(JNLuaTableMap<Any, Any>())
     }
 
     companion object {

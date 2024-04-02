@@ -1,6 +1,8 @@
 package org.anime_game_servers.jnlua_engine
 
 import org.anime_game_servers.lua.engine.LuaTable
+import org.terasology.jnlua.LuaState
+import org.terasology.jnlua.util.AbstractTableMap
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
@@ -179,11 +181,13 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
     }
 
     override fun getAsIntArray(): IntArray {
-        val result = IntArray(table.size)
+        val result = mutableListOf<Int>()
         for (i in 0 until table.size) {
-            result[i] = (table[i + 1] as Int)
+            (table[i + 1] as Int?)?.let {
+                result.add(i,it)
+            }
         }
-        return result
+        return result.toIntArray()
     }
 
     override fun getSize(): Int {
