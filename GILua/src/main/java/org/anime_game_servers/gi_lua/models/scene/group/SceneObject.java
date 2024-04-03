@@ -34,7 +34,7 @@ public abstract class SceneObject {
     /**
      * not set by lua
      */
-    protected transient int groupId;
+    protected int groupId;
     protected transient int blockId;
     protected transient SceneMeta sceneMeta;
 

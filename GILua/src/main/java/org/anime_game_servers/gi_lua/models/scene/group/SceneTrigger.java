@@ -28,7 +28,8 @@ public class SceneTrigger {
     @LuaNames("forbid_guest")
     private boolean forbid_guest = true;
 
-    private transient int groupId;
+    // not directly part of the lua table
+    private int groupId;
     private transient int blockId;
     private transient SceneMeta sceneMeta;
 }
