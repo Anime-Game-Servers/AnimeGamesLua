@@ -680,17 +680,24 @@ public class ScriptLib {
         return context.getScriptLibHandler().ForceRefreshAuthorityByConfigId(context, var1, uid);
     }
 
-    public static int AddPlayerGroupVisionType(GroupEventLuaContext context, Object uidsTable, Object var2Table){
-        val uids = context.getEngine().getTable(uidsTable);
-        val var2 = context.getEngine().getTable(var2Table);
-        return context.getScriptLibHandler().AddPlayerGroupVisionType(context, uids, var2);
+    public static int AddPlayerGroupVisionType(GroupEventLuaContext context, Object uidsTable, Object visionTypesTable){
+        val uids = context.getEngine().getTable(uidsTable).getAsIntArray();
+        val visionTypes = context.getEngine().getTable(visionTypesTable).getAsIntArray();
+        return context.getScriptLibHandler().AddPlayerGroupVisionType(context, uids, visionTypes);
     }
 
-    public static int DelPlayerGroupVisionType(GroupEventLuaContext context, Object uidsTable, Object var2Table){
-        val uids = context.getEngine().getTable(uidsTable);
-        val var2 = context.getEngine().getTable(var2Table);
-        return context.getScriptLibHandler().DelPlayerGroupVisionType(context, uids, var2);
+    public static int DelPlayerGroupVisionType(GroupEventLuaContext context, Object uidsTable, Object visionTypesTable){
+        val uids = context.getEngine().getTable(uidsTable).getAsIntArray();
+        val visionTypes = context.getEngine().getTable(visionTypesTable).getAsIntArray();
+        return context.getScriptLibHandler().DelPlayerGroupVisionType(context, uids, visionTypes);
     }
+
+    public static int SetPlayerGroupVisionType(GroupEventLuaContext context, Object uidsTable, Object visionTypesTable){
+        val uids = context.getEngine().getTable(uidsTable).getAsIntArray();
+        val visionTypes = context.getEngine().getTable(visionTypesTable).getAsIntArray();
+        return context.getScriptLibHandler().SetPlayerGroupVisionType(context, uids, visionTypes);
+    }
+
 
     public static int MoveAvatarByPointArray(GroupEventLuaContext context, int uid, int targetId, Object var3Table, String var4){
         val var3 = context.getEngine().getTable(var3Table);

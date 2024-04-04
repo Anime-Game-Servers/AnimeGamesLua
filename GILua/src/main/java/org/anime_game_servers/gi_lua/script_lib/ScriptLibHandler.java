@@ -242,9 +242,10 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int ForceRefreshAuthorityByConfigId(GroupEventContext context, int var1, int uid);
 
-    int AddPlayerGroupVisionType(GroupEventContext context, LuaTable uidsTable, LuaTable var2);
+    int AddPlayerGroupVisionType(GroupEventContext context, int[] uids, int[] visionTypeList);
 
-    int DelPlayerGroupVisionType(GroupEventContext context, LuaTable uidsTable, LuaTable var2);
+    int DelPlayerGroupVisionType(GroupEventContext context, int[] uids, int[] visionTypeList);
+    int SetPlayerGroupVisionType(GroupEventContext context, int[] uids, int[] visionTypeList);
 
     int MoveAvatarByPointArray(GroupEventContext context, int uid, int targetId, LuaTable var3, String var4);
 
