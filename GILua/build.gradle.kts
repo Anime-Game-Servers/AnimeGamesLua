@@ -26,6 +26,9 @@ dependencies {
     compileOnly(libs.jvm.lombok)
     annotationProcessor(libs.jvm.lombok)
     implementation(libs.jvm.rtree.multi)
+    testImplementation(project(":base"))
+    testImplementation(project(":LuaJEngine"))
+    testImplementation(project(":JNLuaEngine"))
 }
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {

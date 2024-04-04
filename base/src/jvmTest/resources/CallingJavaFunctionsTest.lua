@@ -5,7 +5,7 @@ function expectIntArray(context)
     local array = KotlinFunctions.expectIntArray(context, param)
     for i,v in ipairs(array) do
         if v == Nil then
-            return Nil
+            return i
         end
     end
     return array
@@ -17,14 +17,14 @@ function expectObjectTable(context)
     local z = 3
     local result = KotlinFunctions.expectObjectTable(context, {x=x, y=y, z=z})
 
-    if(result.x ~= x) then
-        return Nil
+    if result.x ~= x then
+        return "X"
     end
-    if(result.y ~= y) then
-        return Nil
+    if result.y ~= y then
+        return "Y"
     end
-    if(result.z ~= z) then
-        return Nil
+    if result.z ~= z then
+        return "Z"
     end
 
     return result

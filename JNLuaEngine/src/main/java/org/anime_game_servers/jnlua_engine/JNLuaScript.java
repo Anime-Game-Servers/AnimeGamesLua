@@ -8,10 +8,7 @@ import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
 import org.anime_game_servers.lua.engine.LuaValue;
 import org.anime_game_servers.lua.engine.RequireMode;
-import org.anime_game_servers.lua.models.BooleanLuaValue;
-import org.anime_game_servers.lua.models.IntLuaValue;
-import org.anime_game_servers.lua.models.MutableBoolean;
-import org.anime_game_servers.lua.models.ScriptType;
+import org.anime_game_servers.lua.models.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.terasology.jnlua.script.CompiledLuaScript;
@@ -51,6 +48,7 @@ public class JNLuaScript implements LuaScript {
         context.setBindings(binding, ScriptContext.ENGINE_SCOPE);
         val luaState = binding.getLuaState();
         luaState.setConverter(JNLuaConverter.getINSTANCE());
+        luaState.setJavaReflector(JNLuaReflector.getINSTANCE());
 
         val requireFunction = JNLuaRequireCommonFunction.getInstance(engine.getScriptConfig());
         binding.put(requireFunction.getName(), requireFunction);
@@ -121,13 +119,11 @@ public class JNLuaScript implements LuaScript {
     @Override
     public LuaValue callMethod(@NotNull String methodName, Object... args) throws ScriptException, NoSuchMethodException {
         val result = ((Invocable) scriptEngine).invokeFunction(methodName, args);
-        if (result instanceof Boolean) {
-            return ((Boolean) result) ? BooleanLuaValue.TRUE : BooleanLuaValue.FALSE;
-        } else if (result instanceof Integer) {
-            return new IntLuaValue((Integer) result);
+        if (result instanceof Boolean boolVal) {
+            return boolVal ? BooleanLuaValue.TRUE : BooleanLuaValue.FALSE;
         }
-        //TODO
-        return null;
+
+        return new JNLuaValue(engine, result);
     }
 
     @Override

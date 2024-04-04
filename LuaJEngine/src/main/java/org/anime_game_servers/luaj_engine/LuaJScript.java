@@ -3,7 +3,6 @@ package org.anime_game_servers.luaj_engine;
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
 import kotlin.Pair;
-import kotlin.text.Regex;
 import lombok.val;
 import org.anime_game_servers.lua.engine.LuaEngine;
 import org.anime_game_servers.lua.engine.LuaScript;
@@ -12,7 +11,7 @@ import org.anime_game_servers.lua.engine.RequireMode;
 import org.anime_game_servers.lua.models.BooleanLuaValue;
 import org.anime_game_servers.lua.models.MutableBoolean;
 import org.anime_game_servers.lua.models.ScriptType;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import org.anime_game_servers.luaj_engine.coerse.CoerceJavaToLua;
 
 import javax.annotation.Nonnull;
 import javax.script.Bindings;
@@ -24,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 public class LuaJScript implements LuaScript {

@@ -6,6 +6,7 @@ import org.anime_game_servers.core.base.interfaces.IntKey
 import org.anime_game_servers.core.base.interfaces.IntValueEnum
 import org.anime_game_servers.lua.models.ScriptType
 import org.anime_game_servers.lua.serialize.Serializer
+import org.anime_game_servers.lua.utils.getLuaName
 import org.reflections.Reflections
 import java.nio.file.Path
 
@@ -44,19 +45,13 @@ interface LuaEngine {
         }
     }
 
-    private fun getLuaName(classObject: Class<*>): String {
-        return classObject.getAnnotation(LuaNames::class.java)?.let {
-            it.value.firstOrNull() ?: classObject.simpleName
-        } ?: classObject.simpleName
-    }
-
     fun addGlobals() {
         registeredEnums.forEach { enumClass ->
             val enumArray = enumClass.enumConstants
-            addGlobalEnum(getLuaName(enumClass), enumArray)
+            addGlobalEnum(enumClass.getLuaName(), enumArray)
         }
         registeredStaticClasses.forEach { staticClass ->
-            addGlobalStaticClass(getLuaName(staticClass), staticClass)
+            addGlobalStaticClass(staticClass.getLuaName(), staticClass)
         }
     }
 

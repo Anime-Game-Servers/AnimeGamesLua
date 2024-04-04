@@ -5,8 +5,8 @@ import kotlinx.io.asInputStream
 import kotlinx.io.buffered
 import org.anime_game_servers.lua.engine.*
 import org.anime_game_servers.lua.models.ScriptType
+import org.anime_game_servers.luaj_engine.coerse.CoerceJavaToLua
 import org.luaj.vm2.lib.ResourceFinder
-import org.luaj.vm2.lib.jse.CoerceJavaToLua
 import org.luaj.vm2.script.LuajContext
 import java.io.ByteArrayInputStream
 import java.io.IOException

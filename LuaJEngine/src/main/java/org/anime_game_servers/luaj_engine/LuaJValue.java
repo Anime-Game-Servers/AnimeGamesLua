@@ -48,7 +48,7 @@ public class LuaJValue implements LuaValue {
 
     @Override
     public boolean isTable() {
-        return value.istable();
+        return value.istable() || value.isuserdata();
     }
 
     @Override
@@ -83,8 +83,12 @@ public class LuaJValue implements LuaValue {
 
     @Override
     public <T> T asObject(Class<T> type) {
-        if (!value.istable()) {
+        if (!value.istable() && !value.isuserdata()) {
             return null;
+        }
+
+        if(value.isuserdata()) {
+            return (T) value.checkuserdata(type);
         }
 
         return engine.getSerializer().toObject(type, value.checktable());
