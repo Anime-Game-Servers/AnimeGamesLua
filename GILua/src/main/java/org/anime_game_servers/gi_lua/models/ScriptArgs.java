@@ -3,15 +3,24 @@ package org.anime_game_servers.gi_lua.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 
 @Accessors(chain = true)
 public class ScriptArgs {
-    @Setter @Getter public int param1;
-    @Setter @Getter public int param2;
-    @Setter @Getter public int param3;
-    public int source_eid; // Source entity
-    public int target_eid;
-    public int group_id;
+    @Getter public int param1;
+    @Getter public int param2;
+    @Getter public int param3;
+    @Getter public int param4;
+    
+    @LuaNames("param_str1")
+    @Getter public String paramString1;
+    @LuaNames("source_eid")
+    public int sourceEid; // Source entity
+    @LuaNames("target_eid")
+    public int targetEid;
+    @LuaNames("group_id")
+    public int groupId;
+    @LuaNames("source_name")
     public String source; // source string, used for timers
     public int type; // lua event type, used by scripts and the ScriptManager
     @Setter @Getter public int uid; // uid of the player triggering the event
@@ -28,24 +37,44 @@ public class ScriptArgs {
         this.type = eventType;
         this.param1 = param1;
         this.param2 = param2;
-        this.group_id = groupId;
+        this.groupId = groupId;
+    }
+
+    public ScriptArgs setParam1(int param1) {
+        this.param1 = param1;
+        return this;
+    }
+
+    public ScriptArgs setParam2(int param2) {
+        this.param2 = param2;
+        return this;
+    }
+
+    public ScriptArgs setParam3(int param3) {
+        this.param3 = param3;
+        return this;
+    }
+
+    public ScriptArgs setParam4(int param4) {
+        this.param4 = param4;
+        return this;
     }
 
     public int getSourceEntityId() {
-        return source_eid;
+        return sourceEid;
     }
 
     public ScriptArgs setSourceEntityId(int sourceEId) {
-        this.source_eid = sourceEId;
+        this.sourceEid = sourceEId;
         return this;
     }
 
     public int getTargetEntityId() {
-        return target_eid;
+        return targetEid;
     }
 
     public ScriptArgs setTargetEntityId(int targetEId) {
-        this.target_eid = targetEId;
+        this.targetEid = targetEId;
         return this;
     }
 
@@ -63,11 +92,11 @@ public class ScriptArgs {
     }
 
     public int getGroupId() {
-        return group_id;
+        return groupId;
     }
 
     public ScriptArgs setGroupId(int groupId) {
-        this.group_id = groupId;
+        this.groupId = groupId;
         return this;
     }
 }
