@@ -70,8 +70,11 @@ public class ScriptLib {
     }
 
 	// Some fields are guessed
-	public static int AutoMonsterTide(GroupEventLuaContext context, int challengeIndex, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6) {
-        return context.getScriptLibHandler().AutoMonsterTide(context, challengeIndex, groupId, ordersConfigId, tideCount, sceneLimit, param6);
+	public static int AutoMonsterTide(GroupEventLuaContext context, int tideId, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6) {
+        return context.getScriptLibHandler().AutoMonsterTide(context, tideId, groupId, ordersConfigId, tideCount, sceneLimit, param6);
+	}
+	public static int KillMonsterTide(GroupEventLuaContext context, int groupId, int tideId) {
+        return context.getScriptLibHandler().KillMonsterTide(context, groupId, tideId);
 	}
 
     public static int GoToGroupSuite(GroupEventLuaContext context, int groupId, int suite) {

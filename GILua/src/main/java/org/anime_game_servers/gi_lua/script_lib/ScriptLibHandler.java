@@ -32,7 +32,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int DelWorktopOption(GroupEventContext context, int var1);
 
     // Some fields are guessed
-    int AutoMonsterTide(GroupEventContext context, int challengeIndex, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
+    int AutoMonsterTide(GroupEventContext context, int tideId, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
+    int KillMonsterTide(GroupEventContext context, int groupId, int tideId);
     int GoToGroupSuite(GroupEventContext context, int groupId, int suite);
 
     /**
