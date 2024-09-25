@@ -1175,7 +1175,7 @@ public class ScriptLib {
      */
     public static int GetGadgetIdByEntityId(GroupEventLuaContext context, int entityId){
         if(entityId <= 0){
-            scriptLogger.error(() -> "[GetGadgetIdByEntityId] Invalid or missing group_eid " + entityId);
+            scriptLogger.error(() -> "[GetGadgetIdByEntityId] Invalid or missing entityId " + entityId);
             return INVALID_PARAMETER.getValue();
         }
         return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetIdByEntityId(context, entityId);
@@ -1202,12 +1202,12 @@ public class ScriptLib {
      */
     public static int GetGadgetConfigId(GroupEventLuaContext context, Object paramsTable){
         val params = context.getEngine().getTable(paramsTable);
-        val groupEid = params.optInt("group_eid", -1);
-        if(groupEid <= 0){
-            scriptLogger.error(() -> "[GetGadgetConfigId] Invalid or missing group_eid " + groupEid);
+        val gadgetEid = params.optInt("gadget_eid", -1);
+        if(gadgetEid <= 0){
+            scriptLogger.error(() -> "[GetGadgetConfigId] Invalid or missing gadget_eid " + gadgetEid);
             return INVALID_PARAMETER_TABLE_CONTENT.getValue();
         }
-        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetConfigId(context, groupEid);
+        return context.getScriptLibHandlerProvider().getGroupGadgetHandler().GetGadgetConfigId(context, gadgetEid);
     }
 
     /**
