@@ -134,4 +134,6 @@ public class EventType {
 	public static final int EVENT_GCG_TAVERN_SCENE_REFRESH = 3200;
 	public static final int EVENT_CHAR_AMUSEMENT_DUNGEON_ALL_PLAYER_ENTER = 3201;
 	public static final int EVENT_TRAINING_FUNGUS_SELECT_DONE = 3202;
+	public static final int EVENT_GALLERY_PRE_START = 3300;
+	public static final int EVENT_PLATFORM_DEPART = 3301;
 }
