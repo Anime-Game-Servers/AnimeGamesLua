@@ -728,6 +728,19 @@ public class ScriptLib {
         return context.getScriptLibHandler().MovePlayerToPos(context, targets, pos, rot, radius, isSkipUi);
     }
 
+    /**
+     * Signalises that the server should transport the players with the specified uids to the specified position
+     * @param context the Group Lua context
+     * @param transportationParamsTable the table containing the parameters for the transportation. This includes
+     *                                  `uid_list` - the list of uids of the players to transport
+     *                                  `pos` - table with the position to transport the players to
+     *                                  `rot` - table with the rotation the players should be placed in
+     *                                  `radius` - the radius around the position the players should be placed in
+     *                                  `is_skip_ui` - 
+     *                                  `scene_id` - the scene id to transport the players to, if not specified the current scene is used
+     *
+     * @return
+     */
     public static int TransPlayerToPos(GroupEventLuaContext context, Object transportationParamsTable) {
         val transportationParams = context.getEngine().getTable(transportationParamsTable);
         val targetsTable = transportationParams.getTable("uid_list");
@@ -735,6 +748,7 @@ public class ScriptLib {
         val luaRot = transportationParams.getTable("rot");
         val radius = transportationParams.optInt("radius", -1);
         val isSkipUi = transportationParams.optBoolean("is_skip_ui", false);
+        val sceneId = transportationParams.optInt("scene_id", -1);
 
 
         if(targetsTable==null || targetsTable.getSize() ==0 || luaPos == null){
@@ -746,7 +760,7 @@ public class ScriptLib {
         val rot = luaToPos(luaRot);
         val targets = targetsTable.getAsIntArray();
 
-        return context.getScriptLibHandler().TransPlayerToPos(context, targets, pos, rot, radius, isSkipUi);
+        return context.getScriptLibHandler().TransPlayerToPos(context, targets, pos, rot, radius, isSkipUi, sceneId);
     }
 
     public static int PlayCutScene(GroupEventLuaContext context, int cutsceneId, int var2){

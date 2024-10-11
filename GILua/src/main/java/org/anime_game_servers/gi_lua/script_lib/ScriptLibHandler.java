@@ -252,7 +252,18 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int MovePlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
 
-    int TransPlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
+    /**
+     * This teleports the player to another position.
+     * @param context a group event lua context
+     * @param targetUIds the uids of the players to teleport
+     * @param pos the position to teleport to
+     * @param rot the rotation to teleport with
+     * @param radius The radius around the target to place the target players in. -1 if the players should be placed at the exact position
+     * @param isSkipUi
+     * @param sceneId if this -1, the sceneId was not set, and the teleport target is in the same Scene the target is in
+     * @return
+     */
+    int TransPlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi, int sceneId);
 
     int PlayCutScene(GroupEventContext context, int cutsceneId, int var2);
 
