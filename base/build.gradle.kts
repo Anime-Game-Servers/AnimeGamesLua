@@ -7,8 +7,8 @@ group = "org.anime_game_servers.lua"
 version = libs.versions.anime.game.lua.get()
 
 kotlin {
+    jvmToolchain(17)
     jvm {
-        jvmToolchain(17)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()

@@ -1,6 +1,6 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "1.9.22"
+kotlin = "2.1.0"
 # https://github.com/Kotlin/kotlinx-io/releases
 kx_io = "0.3.0"
 # https://github.com/oshai/kotlin-logging/releases
