@@ -2,7 +2,9 @@ package org.anime_game_servers.jnlua_engine;
 
 import io.github.oshai.kotlinlogging.KLogger;
 import io.github.oshai.kotlinlogging.KotlinLogging;
+import kotlin.reflect.jvm.ReflectJvmMapping;
 import lombok.Getter;
+import lombok.val;
 import org.anime_game_servers.lua.utils.LuaHelpersJvmKt;
 import org.terasology.jnlua.*;
 
@@ -109,44 +111,57 @@ public class JNLuaReflector extends DefaultJavaReflector {
         }
         PropertyDescriptor[] propertyDescriptors = beanInfo
                 .getPropertyDescriptors();
-        for (int i = 0; i < propertyDescriptors.length; i++) {
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             // Do not overwrite fields or methods
-            if (result.containsKey(propertyDescriptors[i].getName())) {
+            if (result.containsKey(propertyDescriptor.getName())) {
                 continue;
             }
 
             // Attempt to find the read/write methods in a public class if the
             // declaring class is not public
-            Method method = propertyDescriptors[i].getReadMethod();
+            Method method = propertyDescriptor.getReadMethod();
             if (method != null
                     && !Modifier.isPublic(method.getDeclaringClass()
                     .getModifiers())) {
                 method = getPublicClassMethod(clazz, method.getName(),
                         method.getParameterTypes());
                 try {
-                    propertyDescriptors[i].setReadMethod(method);
+                    propertyDescriptor.setReadMethod(method);
                 } catch (IntrospectionException e) {
                 }
             }
-            method = propertyDescriptors[i].getWriteMethod();
+            method = propertyDescriptor.getWriteMethod();
             if (method != null
                     && !Modifier.isPublic(method.getDeclaringClass()
                     .getModifiers())) {
                 method = getPublicClassMethod(clazz, method.getName(),
                         method.getParameterTypes());
                 try {
-                    propertyDescriptors[i].setWriteMethod(method);
+                    propertyDescriptor.setWriteMethod(method);
                 } catch (IntrospectionException e) {
                 }
             }
 
-            // Do not process properties without a read and a write method
-            if (propertyDescriptors[i].getReadMethod() == null
-                    && propertyDescriptors[i].getWriteMethod() == null) {
+            // Do not process properties without either a read or a write method
+            if (propertyDescriptor.getReadMethod() == null
+                    && propertyDescriptor.getWriteMethod() == null) {
                 continue;
             }
-            result.put(propertyDescriptors[i].getName(), new PropertyAccessor(
-                    clazz, propertyDescriptors[i]));
+            var name = propertyDescriptor.getName();
+            val accessor = new PropertyAccessor(clazz, propertyDescriptor);
+            try {
+                val declaredField = clazz.getDeclaredField(name);
+                val ktProperty = ReflectJvmMapping.getKotlinProperty(declaredField);
+                if(ktProperty != null){
+                    val luaNames = LuaHelpersJvmKt.getLuaNames(ktProperty.getAnnotations(), name);
+                    for (var luaName : luaNames) {
+                        result.put(luaName, accessor);
+                    }
+                }
+            } catch (NoSuchFieldException e) {
+            }
+
+            result.put(name, accessor);
         }
         return result;
     }

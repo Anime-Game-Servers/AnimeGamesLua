@@ -6,6 +6,7 @@ enum class ScriptLibErrors(private val _value:Int): IntValueEnum {
     NOT_IMPLEMENTED(-100),
     INVALID_PARAMETER(-101),
     INVALID_PARAMETER_TABLE_CONTENT(-102),
+    INVALID_CONTEXT_TYPE(-200),
     ;
 
     override fun getValue() = _value

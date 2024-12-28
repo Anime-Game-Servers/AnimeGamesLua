@@ -52,6 +52,32 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
         table[key] = value
     }
 
+    override fun getLong(key: String): Long {
+        return (table[key] as Number).toLong()
+    }
+
+    override fun optLong(key: String, defaultValue: Long): Long {
+        val value = table[key]
+        return (value as? Number)?.toLong() ?: defaultValue
+    }
+
+    override fun getLong(key: Int): Long {
+        return (table[key] as Number).toLong()
+    }
+
+    override fun optLong(key: Int, defaultValue: Long): Long {
+        val value = table[key]
+        return (value as? Number)?.toLong() ?: defaultValue
+    }
+
+    override fun set(key: Int, value: Long) {
+        table[key] = value
+    }
+
+    override fun set(key: String, value: Long) {
+        table[key] = value
+    }
+
     override fun getDouble(key: String): Double {
         return (table[key] as Number).toDouble()
     }

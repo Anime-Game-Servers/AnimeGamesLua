@@ -1,13 +1,32 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.entites
 
+import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
+import org.anime_game_servers.lua.engine.LuaTable
 
 /**
  * Handler for scriptlib functions used in GroupScripts related to Gadgets.
- * These are only callable from a gadget controller context.
+ * These are only callable from a lua group context.
  */
 interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
 
+    fun createGadget(context: GroupEventContext, table: LuaTable?): Int
+
+    /**
+     * Spawn a gadget from the caller group at the specified position
+     * @param configId The config id of the gadget in the calling group
+     * @param pos The position to spawn the gadget at
+     * @param rot The rotation of the gadget when spawned
+     */
+    fun createGadgetByConfigIdByPos(context: GroupEventContext, configId: Int, pos: Vector?, rot: Vector?): Int
+
+
+    /**
+     * TODO preparsed parameters
+     * Spawns a gadget based on the caller groups gadget with cfg id matching the specified id. It also applies additional parameters based on the parameters
+     * @param creationParams parameters to spawn a gadget with
+     */
+    fun createGadgetByParamTable(context: GroupEventContext, creationParams: LuaTable?): Int
 
     /**
      * Returns the state of a gadget based on the group id and config id
@@ -15,7 +34,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param groupId group to search for the gadget in, 0 for the caller group.
      * @param configId config id of the gadget in the group.
      */
-    fun GetGadgetStateByConfigId(context: GroupEventContext, groupId: Int, configId: Int): Int
+    fun getGadgetStateByConfigId(context: GroupEventContext, groupId: Int, configId: Int): Int
 
     /**
      * Returns the hp in percent of a gadget based on the group id and config id
@@ -23,21 +42,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param groupId group to search for the gadget entity in, 0 for the caller group.
      * @param configId config id of the gadget in the group.
      */
-    fun GetGadgetHpPercent(context: GroupEventContext, groupId: Int, configId: Int): Int
-
-    /**
-     * Returns a float global value from the gadgets ability definitions.
-     * @param context The context of the group event
-     * @param groupId group to search for the gadget entity in, 0 for the caller group.
-     * @param configId config id of the gadget in the group.
-     * @param abilitySGVName name of the abilities svg value to get the float value from.
-     * */
-    fun GetGadgetAbilityFloatValue(
-        context: GroupEventContext,
-        groupId: Int,
-        configId: Int,
-        abilitySGVName: String
-    ): Float
+    fun getGadgetHpPercent(context: GroupEventContext, groupId: Int, configId: Int): Int
 
 
     /**
@@ -45,7 +50,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param context The context of the group event
      * @param entityId The entity id of the gadget requested.
      */
-    fun GetGadgetIdByEntityId(context: GroupEventContext, entityId: Int): Int
+    fun getGadgetIdByEntityId(context: GroupEventContext, entityId: Int): Int
 
 
     /**
@@ -53,7 +58,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param context The context of the group event
      * @param gadgetEid The entity id of the gadget requested. Table with `gadget_eid` in lua.
      */
-    fun GetGadgetConfigId(context: GroupEventContext, gadgetEid: Int): Int
+    fun getGadgetConfigId(context: GroupEventContext, gadgetEid: Int): Int
 
     /**
      * Change the state of a gadget in the defined group
@@ -62,7 +67,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param configId config id of a gadget in the target group
      * @param gadgetState target state for the gadget
      */
-    fun SetGroupGadgetStateByConfigId(context: GroupEventContext, groupId: Int, configId: Int, gadgetState: Int): Int
+    fun setGroupGadgetStateByConfigId(context: GroupEventContext, groupId: Int, configId: Int, gadgetState: Int): Int
 
     /**
      * Change the state of a gadget in the current group
@@ -70,7 +75,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param configId config id of a gadget in the current caller group
      * @param gadgetState target state for the gadget
      */
-    fun SetGadgetStateByConfigId(context: GroupEventContext, configId: Int, gadgetState: Int): Int
+    fun setGadgetStateByConfigId(context: GroupEventContext, configId: Int, gadgetState: Int): Int
 
     /**
      * Change the state of a gadget in the current group, based in the parametersTable
@@ -78,9 +83,25 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param configId config id of a gadget in the current caller group
      * @param gadgetState target state for the gadget
      */
-    fun ChangeGroupGadget(context: GroupEventContext, configId: Int, gadgetState: Int): Int
+    fun changeGroupGadget(context: GroupEventContext, configId: Int, gadgetState: Int): Int
 
+    /**
+     * Sets a gadget interacteable based on the config id and group id.
+     */
+    fun setGadgetEnableInteract(context: GroupEventContext, groupId: Int, configId: Int, enable: Boolean): Int
 
+    fun setGadgetTalkByConfigId(context: GroupEventContext, groupId: Int, configId: Int, talkId: Int): Int
+
+    /* Stats */
+    fun setGadgetHp(context: GroupEventContext, groupId: Int, configId: Int, hpPercent: Int): Int
+
+    /* Worktop */
+    fun setWorktopOptionsByGroupId(context: GroupEventContext, groupId: Int, configId: Int, options: LuaTable?): Int
+    fun setWorktopOptions(context: GroupEventContext, table: LuaTable?): Int
+    fun delWorktopOptionByGroupId(context: GroupEventContext, groupId: Int, configId: Int, option: Int): Int
+    fun delWorktopOption(context: GroupEventContext, var1: Int): Int
+
+    /* Lua */
     /**
      * // TODO identify unknown parameters and exact behaviour
      * Executes a lua function on a gadgets lua controller.
@@ -91,8 +112,9 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param var4 TODO
      * @param val5 TODO
      */
-    fun ExecuteGadgetLua(
+    fun executeGadgetLua(
         context: GroupEventContext, groupId: Int, gadgetCfgId: Int,
         activityType: Int, var4: Int, val5: Int
     ): Int
+
 }

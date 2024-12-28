@@ -6,7 +6,8 @@ public interface LuaContext {
     LuaEngine getEngine();
 
     // fields used by some scripts
-    /*int uid();
-    int source_entity_id();
-    int target_entity_id();*/
+    int uid();
+    int sourceEntityId();
+    int targetEntityId();
+    int ownerUid();
 }
