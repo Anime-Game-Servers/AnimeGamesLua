@@ -23,16 +23,29 @@ fun Path.asSource(): Source {
 }
 
 fun Member.getLuaNames(): List<String> {
-    val luaName: MutableList<String> = mutableListOf(name)
-    (this as? AnnotatedElement)?.let {
-        annotations
-            .filterIsInstance<LuaNames>()
-            .forEach { luaNames: LuaNames ->
-                if (luaNames.value.isNotEmpty()) {
-                    luaName.addAll(luaNames.value)
-                }
+    return (this as? AnnotatedElement)?.let {
+        annotations.getLuaNames(name)
+    } ?: mutableListOf(name)
+}
+
+fun Array<Annotation>.getLuaNames(fallback: String): List<String> {
+    val luaName: MutableList<String> = mutableListOf(fallback)
+    this.filterIsInstance<LuaNames>()
+        .forEach { luaNames: LuaNames ->
+            if (luaNames.value.isNotEmpty()) {
+                luaName.addAll(luaNames.value)
             }
-    }
+        }
+    return luaName
+}
+fun List<Annotation>.getLuaNames(fallback: String): List<String> {
+    val luaName: MutableList<String> = mutableListOf(fallback)
+    this.filterIsInstance<LuaNames>()
+        .forEach { luaNames: LuaNames ->
+            if (luaNames.value.isNotEmpty()) {
+                luaName.addAll(luaNames.value)
+            }
+        }
     return luaName
 }
 

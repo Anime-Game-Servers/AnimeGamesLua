@@ -26,8 +26,10 @@ object KotlinFunctions{
 
         assert(array.size == 5)
         array.forEachIndexed { index, value ->
-            assert(index+1 == value)
-            result.set(index, value)
+            val luaIndex = index+1
+            assert(luaIndex == value)
+            assert(table.getInt(luaIndex) == value)
+            result.set(luaIndex, value)
         }
 
         // convert the int array back to a luaTable for lua and return it
@@ -135,10 +137,23 @@ abstract class ParsingTest{
         assert(script.hasMethod("expectIntArray"))
         val luaValue = script.callMethod("expectIntArray", context)!!
         assert(luaValue.isTable())
+        val intArrayMap = luaValue.asObject(Map::class.java)
+        assert(intArrayMap != null)
+        assert(intArrayMap!!.size == 5)
+        intArrayMap.forEach { (key, value) ->
+            val key = if(key is String) key.toInt() else key
+            assert(key == value)
+        }
 
         assert(script.hasMethod("expectObjectTable"))
         val objectTableResult = script.callMethod("expectObjectTable", context)!!
         assert(objectTableResult.isTable())
+        val objectMap = objectTableResult.asObject(Map::class.java)
+        assert(objectMap != null)
+        assert(objectMap!!.size == 3)
+        assert(objectMap["x"] == 1)
+        assert(objectMap["y"] == 2)
+        assert(objectMap["z"] == 3)
 
         // TODO test nested tables
         // TODO test mixed tables (int+string keys)

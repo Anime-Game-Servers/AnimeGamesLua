@@ -60,6 +60,35 @@ public class LuaJTable implements LuaTable {
     public void set(String key, int value) {
         table.set(key, org.luaj.vm2.LuaValue.valueOf(value));
     }
+    @Override
+    public long getLong(String key) {
+        return table.get(key).checklong();
+    }
+
+    @Override
+    public long optLong(String key, long defaultValue) {
+        return table.get(key).optlong(defaultValue);
+    }
+
+    @Override
+    public long getLong(int key) {
+        return table.get(key).checklong();
+    }
+
+    @Override
+    public long optLong(int key, long defaultValue) {
+        return table.get(key).optlong(defaultValue);
+    }
+
+    @Override
+    public void set(int key, long value) {
+        table.set(key, org.luaj.vm2.LuaValue.valueOf(value));
+    }
+
+    @Override
+    public void set(String key, long value) {
+        table.set(key, org.luaj.vm2.LuaValue.valueOf(value));
+    }
 
     @Override
     public double getDouble(String key) {

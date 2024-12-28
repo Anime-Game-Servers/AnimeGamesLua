@@ -4,6 +4,7 @@ import kotlinx.io.Source
 import org.anime_game_servers.core.base.annotations.lua.LuaStatic
 import org.anime_game_servers.gi_lua.models.ScriptArgs
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader
+import org.anime_game_servers.gi_lua.script_lib.LuaContext
 import org.anime_game_servers.jnlua_engine.JNLuaEngine
 import org.anime_game_servers.lua.engine.*
 import org.anime_game_servers.lua.models.ScriptType
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 
-data class LuaContext(val engine: LuaEngine)
+data class LuaContextImpl(val engine: LuaEngine)
 
 @LuaStatic
 object KotlinFunctions{
@@ -117,7 +118,7 @@ abstract class ScriptArgsTest{
         assert(script != null)
 
         script!!.evaluate()
-        val context = LuaContext(engine)
+        val context = LuaContextImpl(engine)
         val args = ScriptArgs(7,8).apply {
             param1 = 1
             param2 = 2

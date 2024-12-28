@@ -44,8 +44,7 @@ public class JNLuaConverter implements Converter {
                 if(key instanceof String stringKey){
                     luaState.setField(-2, stringKey);
                 } else if (key instanceof Integer intKey){
-                    luaState.pushInteger(intKey+1);
-                    luaState.setTable(-3);
+                    luaState.rawSet(-2, intKey);
                 }
             }
             return;

@@ -19,6 +19,18 @@ interface LuaTable {
 
     fun set(key: String, value: Int)
 
+    fun getLong(key: String): Long
+
+    fun optLong(key: String, defaultValue: Long): Long
+
+    fun getLong(key: Int): Long
+
+    fun optLong(key: Int, defaultValue: Long): Long
+
+    fun set(key: Int, value: Long)
+
+    fun set(key: String, value: Long)
+
     fun getDouble(key: String): Double
 
     fun optDouble(key: String, defaultValue: Double): Double

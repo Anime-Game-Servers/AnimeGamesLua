@@ -10,5 +10,5 @@ interface SummerTimeScriptHandler <GroupEventContext : GroupEventLuaContext> {
     /**
      * Unlocks a float signal gadget with the specified config id in the specified group.
      */
-    fun UnlockFloatSignal(context: GroupEventContext, groupId: Int, signalGadgetConfigId: Int): Int
+    fun unlockFloatSignal(context: GroupEventContext, groupId: Int, signalGadgetConfigId: Int): Int
 }

@@ -1,0 +1,46 @@
+package org.anime_game_servers.gi_lua.script_lib.handler.activity
+
+import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType
+import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType
+import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
+import org.anime_game_servers.lua.engine.LuaTable
+
+/**
+ * This handles script lib functions that are specific to the gallery system used in mini games.
+ * These are only callable from a group context.
+ */
+interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
+    fun getGalleryTransaction(context: GroupEventContext, galleryId: Int): Int
+    fun getGalleryUidList(context: GroupEventContext, galleryId: Int): List<Int>
+    fun isGalleryStart(context: GroupEventContext, galleryId: Int): Boolean
+    fun setGalleryRevivePoint(context: GroupEventContext, galleryId: Int, groupId: Int, pointId: Int): Int
+    fun setPlayerStartGallery(context: GroupEventContext, galleryId: Int, uidList: List<Int>): Int
+
+    fun startGallery(context: GroupEventContext, galleryId: Int): Int
+
+    fun stopGallery(context: GroupEventContext, galleryId: Int, var2: Boolean): Int
+    fun stopGalleryByReason(context: GroupEventContext, galleryId: Int, stopReason: Int): Int
+
+    fun updatePlayerGalleryScore(context: GroupEventContext, galleryId: Int, var2: LuaTable?): Int
+
+    // progress
+    fun initGalleryProgressScore(
+        context: GroupEventContext, name: String, galleryId: Int, progressTable: LuaTable,
+        scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType?
+    ): Int
+
+    fun initGalleryProgressWithScore(
+        context: GroupEventContext, name: String, galleryId: Int, progress: LuaTable,
+        maxProgress: Int, scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType?
+    ): Int
+
+    fun getGalleryProgressScore(context: GroupEventContext, name: String, galleryId: Int): Int
+
+    fun addGalleryProgressScore(context: GroupEventContext, name: String, galleryId: Int, score: Int): Int
+
+
+    // gallery ability
+    fun attachGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
+    fun attachGalleryTeamAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
+    fun delGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
+}
