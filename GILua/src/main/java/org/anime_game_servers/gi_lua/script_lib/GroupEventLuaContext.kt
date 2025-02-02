@@ -7,9 +7,8 @@ import org.anime_game_servers.gi_lua.script_lib.handler.entites.AbilityScriptHan
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupEntityHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupGadgetHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupMonsterHandler
-import org.anime_game_servers.gi_lua.script_lib.handler.scene.ChallengeScriptHandler
-import org.anime_game_servers.gi_lua.script_lib.handler.scene.DungeonScriptHandler
-import org.anime_game_servers.gi_lua.script_lib.handler.scene.SceneStateScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.player.QuestScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.*
 
 interface GroupEventLuaContext : LuaContext {
     fun getGroupInstance(): SceneGroup
@@ -51,9 +50,31 @@ interface GroupEventLuaContext : LuaContext {
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
 
+    /* player */
+    fun <T> onQuestHandler(block: QuestScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getQuestHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+
     /* scene */
+    fun <T> onChallengeHandler(block: ChallengeScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getChallengeHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onDeathZoneHandler(block: DeathZoneScriptHandler<GroupEventLuaContext>.() -> T): T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getDeathZoneHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
     fun <T> onDungeonHandler(block: DungeonScriptHandler<GroupEventLuaContext>.() -> T) : T {
         return getScriptLibHandlerProvider<GroupEventLuaContext>().getDungeonHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onGroupManagementHandler(block: GroupManagementScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getGroupManagementHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
@@ -62,8 +83,8 @@ interface GroupEventLuaContext : LuaContext {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
-    fun <T> onChallengeHandler(block: ChallengeScriptHandler<GroupEventLuaContext>.() -> T) : T {
-        return getScriptLibHandlerProvider<GroupEventLuaContext>().getChallengeHandler()?.run {
+    fun <T> onSealBattleHandler(block: SealBattleScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getSealBattleHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
@@ -77,8 +98,13 @@ interface GroupEventLuaContext : LuaContext {
     }
 
     /* activity */
-    fun <T> onGroupSummerTimeHandler(block: SummerTimeScriptHandler<GroupEventLuaContext>.() -> T) : T {
-        return getScriptLibHandlerProvider<GroupEventLuaContext>().getSummerTimeScriptHandler()?.run {
+    fun <T> onAsterScriptHandler(block: AsterScriptHandler<GroupEventLuaContext>.() -> T): T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getAsterScriptHandlerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onCharAmusementScriptHandler(block: CharAmusementScriptHandler<GroupEventLuaContext>.() -> T): T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getCharAmusementScriptHandlerHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
@@ -97,18 +123,8 @@ interface GroupEventLuaContext : LuaContext {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
-    fun <T> onCharAmusementScriptHandler(block: CharAmusementScriptHandler<GroupEventLuaContext>.() -> T) : T {
-        return getScriptLibHandlerProvider<GroupEventLuaContext>().getCharAmusementScriptHandlerHandler()?.run {
-            return block()
-        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
-    }
-    fun <T> onTreasureSeelieScriptHandler(block: TreasureSeelieScriptHandler<GroupEventLuaContext>.() -> T) : T {
-        return getScriptLibHandlerProvider<GroupEventLuaContext>().getTreasureSeelieScriptHandlerHandler()?.run {
-            return block()
-        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
-    }
-    fun <T> onWinterCampScriptHandler(block: WinterCampScriptHandler<GroupEventLuaContext>.() -> T) : T {
-        return getScriptLibHandlerProvider<GroupEventLuaContext>().getWinterCampScriptHandlerHandler()?.run {
+    fun <T> onHideAndSeekScriptHandler(block: HideAndSeekScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getHideAndSeekScriptHandlerHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
@@ -119,6 +135,26 @@ interface GroupEventLuaContext : LuaContext {
     }
     fun <T> onLunaRiteScriptHandler(block: LunaRiteScriptHandler<GroupEventLuaContext>.() -> T) : T {
         return getScriptLibHandlerProvider<GroupEventLuaContext>().getLunaRiteScriptHandlerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onSummerTimeScriptHandler(block: SummerTimeScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getSummerTimeScriptHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onTreasureSeelieScriptHandler(block: TreasureSeelieScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getTreasureSeelieScriptHandlerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onVintageScriptHandler(block: VintageScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getVintageScriptHandlerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onWinterCampScriptHandler(block: WinterCampScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getWinterCampScriptHandlerHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
