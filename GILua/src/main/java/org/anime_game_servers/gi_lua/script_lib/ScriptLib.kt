@@ -12,6 +12,7 @@ import org.anime_game_servers.gi_lua.script_lib.handler.activity.FungusFighterTr
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.MonsterFaceAvatarParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.ChangeLevelTagParams
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.SealBattleParams
 import org.anime_game_servers.gi_lua.utils.ScriptUtils
 import org.anime_game_servers.lua.engine.LuaTable
 import kotlin.reflect.KCallable
@@ -93,105 +94,6 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun GoToGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::GoToGroupSuite, groupId, suite)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                GoToGroupSuite(this@onGroupContext, groupId, suite)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AddExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::AddExtraGroupSuite, groupId, suite)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddExtraGroupSuite(this@onGroupContext, groupId, suite)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun RemoveExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::RemoveExtraGroupSuite, groupId, suite)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                RemoveExtraGroupSuite(this@onGroupContext, groupId, suite)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun KillExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::KillExtraGroupSuite, groupId, suite)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                KillExtraGroupSuite(this@onGroupContext, groupId, suite)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AddExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::AddExtraFlowSuite, groupId, suiteId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
-                    scriptLogger.error { "[AddExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
-                    return@onScriptLibHandler 1
-                }
-                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
-                AddExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun RemoveExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::RemoveExtraFlowSuite, groupId, suiteId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
-                    scriptLogger.error { "[RemoveExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
-                    return@onScriptLibHandler 1
-                }
-                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
-                RemoveExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun KillExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndSuiteId(ScriptLib::KillExtraFlowSuite, groupId, suiteId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
-                    scriptLogger.error { "[KillExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
-                    return@onScriptLibHandler 1
-                }
-                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
-                KillExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
-            }
-        }
-    }
-
 
     @JvmStatic
     fun GetGroupMonsterCountByGroupId(context: LuaContextWrapper, groupId: Int): Int {
@@ -205,82 +107,9 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun GetGroupVariableValue(context: LuaContextWrapper, `var`: String?): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                GetGroupVariableValue(this@onGroupContext, `var`)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGroupVariableValueByGroup(context: LuaContextWrapper, name: String?, groupId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::GetGroupVariableValueByGroup, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                GetGroupVariableValueByGroup(this@onGroupContext, name, groupId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun SetGroupVariableValue(context: LuaContextWrapper, varName: String?, value: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                SetGroupVariableValue(this@onGroupContext, varName, value)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun SetGroupVariableValueByGroup(context: LuaContextWrapper, key: String?, value: Int, groupId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::SetGroupVariableValueByGroup, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                SetGroupVariableValueByGroup(this@onGroupContext, key, value, groupId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ChangeGroupVariableValue(context: LuaContextWrapper, varName: String?, value: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                ChangeGroupVariableValue(this@onGroupContext, varName, value)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ChangeGroupVariableValueByGroup(context: LuaContextWrapper, name: String?, value: Int, groupId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::ChangeGroupVariableValueByGroup, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                ChangeGroupVariableValueByGroup(this@onGroupContext, name, value, groupId)
-            }
-        }
-    }
 
 
-    /**
-     * Set the actions and triggers to designated group
-     */
-    @JvmStatic
-    fun RefreshGroup(context: LuaContextWrapper, rawTable: Any): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val table = context.engine.getTable(rawTable)
-                RefreshGroup(this@onGroupContext, table)
-            }
-        }
-    }
+
 
     @JvmStatic
     fun GetRegionEntityCount(context: LuaContextWrapper, rawTable: Any): Int {
@@ -353,36 +182,6 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun KillEntityByConfigId(context: LuaContextWrapper, rawTable: Any): Int {
-        val table = context.engine.getTable(rawTable)
-        val configId = table.optInt("config_id", 0)
-        val groupId = table.optInt("group_id", 0)
-        checkGroupIdAndConfigId(ScriptLib::KillEntityByConfigId, groupId, configId)?.let {
-            return it.getValue()
-        }
-        val entityTypeValue = table.optInt("entity_type", 0)
-        if (entityTypeValue < 0 || entityTypeValue >= EntityType.entries.size) {
-            scriptLogger.error { "[KillEntityByConfigId] Invalid entity type $entityTypeValue" }
-            return ScriptLibErrors.INVALID_PARAMETER.getValue()
-        }
-        val entityType = EntityType.entries[entityTypeValue]
-        val params = KillByConfigIdParams(configId, groupId, entityType)
-        return context.onTypedContext(
-            {
-                onScriptLibHandler {
-                    KillEntityByConfigId(this@onTypedContext, params)
-                }
-            },
-            {
-                onGadgetControllerHandler {
-                    killEntityByConfigId(this@onTypedContext, params)
-                }
-            }
-        ) {
-            scriptLogger.error { "[KillEntityByConfigId] unknown context type " + this.javaClass.name }
-        }
-    }
 
 
     @JvmStatic
@@ -429,15 +228,6 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun AddQuestProgress(context: LuaContextWrapper, eventNotifyName: String?): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                AddQuestProgress(this@onGroupContext, eventNotifyName)
-            }
-        }
-    }
-
 
     @JvmStatic
     fun GetSceneOwnerUid(context: LuaContextWrapper): Int {
@@ -449,41 +239,10 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetHostQuestState(context: LuaContextWrapper, questId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                GetHostQuestState(this@onGroupContext, questId).getValue()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetQuestState(context: LuaContextWrapper, entityId: Int, questId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                GetQuestState(this@onGroupContext, entityId, questId).getValue()
-            }
-        }
-    }
-
-    @JvmStatic
     fun ShowReminder(context: LuaContextWrapper, reminderId: Int): Int {
         return context.onGroupContext {
             onScriptLibHandler {
                 ShowReminder(this@onGroupContext, reminderId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun RemoveEntityByConfigId(context: LuaContextWrapper, groupId: Int, entityTypeValue: Int, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::RemoveEntityByConfigId, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                val entityType = EntityType.entries[entityTypeValue]
-                RemoveEntityByConfigId(this@onGroupContext, groupId, entityType, configId)
             }
         }
     }
@@ -508,30 +267,6 @@ object ScriptLib {
                     return@onScriptLibHandler it.getValue()
                 }
                 CancelGroupTimerEvent(this@onGroupContext, groupID, source)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGroupSuite(context: LuaContextWrapper, groupId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::GetGroupSuite, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                GetGroupSuite(this@onGroupContext, groupId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun SetGroupReplaceable(context: LuaContextWrapper, groupId: Int, value: Boolean): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::SetGroupReplaceable, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                SetGroupReplaceable(this@onGroupContext, groupId, value)
             }
         }
     }
@@ -762,35 +497,6 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun SetGroupTempValue(context: LuaContextWrapper, name: String?, value: Int, var3Table: Any): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val var3 = context.engine.getTable(var3Table)
-                SetGroupTempValue(this@onGroupContext, name, value, var3)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGroupTempValue(context: LuaContextWrapper, name: String?, var2Table: Any): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val var2 = context.engine.getTable(var2Table)
-                GetGroupTempValue(this@onGroupContext, name, var2)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ChangeGroupTempValue(context: LuaContextWrapper, name: String, diff: Int, var3Table: Any): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val var3 = context.engine.getTable(var3Table)
-                ChangeGroupTempValue(this@onGroupContext, name, diff, var3)
-            }
-        }
-    }
 
     @JvmStatic
     fun FinishExpeditionChallenge(context: LuaContextWrapper): Int {
@@ -810,65 +516,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun StartSealBattle(context: LuaContextWrapper, gadgetId: Int, battleParamsTable: Any): Int {
-        val battleParams = context.engine.getTable(battleParamsTable)
-        val battleType = battleParams.optInt("battle_type", -1)
-        if (battleType < 0 || battleType >= SealBattleType.entries.size) {
-            scriptLogger.error { "[StartSealBattle] Invalid battle type $battleType" }
-            return -1
-        }
-        val battleTypeEnum = SealBattleType.entries[battleType]
-        val handlerParams = when (battleTypeEnum) {
-            SealBattleType.NONE -> parseSealBattleNoneParams(battleParams)
-            SealBattleType.KILL_MONSTER -> parseSealBattleMonsterKillParams(battleParams)
-            SealBattleType.ENERGY_CHARGE -> parseEnergySealBattleTimeParams(battleParams)
-        }
-        return context.onGroupContext {
-            onScriptLibHandler {
-                StartSealBattle(this@onGroupContext, gadgetId, handlerParams)
-            }
-        }
-    }
 
-    private fun parseSealBattleNoneParams(battleParams: LuaTable): SealBattleParams {
-        val radius = battleParams.optInt("radius", -1)
-        val inAdd = battleParams.optInt("in_add", -1)
-        val outSub = battleParams.optInt("out_sub", -1)
-        val failTime = battleParams.optInt("fail_time", -1)
-        val maxProgress = battleParams.optInt("max_progress", -1)
-        // TODO check params and maybe return error?
-        return DefaultSealBattleParams(radius, inAdd, outSub, failTime, maxProgress)
-    }
-
-    private fun parseSealBattleMonsterKillParams(battleParams: LuaTable): SealBattleParams {
-        val radius = battleParams.optInt("radius", -1)
-        val killTime = battleParams.optInt("kill_time", -1)
-        val monsterGroupId = battleParams.optInt("monster_group_id", -1)
-        val maxProgress = battleParams.optInt("max_progress", -1)
-        // TODO check params and maybe return error?
-        return MonsterSealBattleParams(radius, killTime, monsterGroupId, maxProgress)
-    }
-
-    private fun parseEnergySealBattleTimeParams(battleParams: LuaTable): SealBattleParams {
-        val radius = battleParams.optInt("radius", -1)
-        val battleTime = battleParams.optInt("battle_time", -1)
-        val monsterGroupId = battleParams.optInt("monster_group_id", -1)
-        val defaultKillCharge = battleParams.optInt("default_kill_charge", -1)
-        val autoCharge = battleParams.optInt("auto_charge", -1)
-        val autoDecline = battleParams.optInt("auto_decline", -1)
-        val maxEnergy = battleParams.optInt("max_energy", -1)
-        // TODO check params and maybe return error?
-        return EnergySealBattleParams(
-            radius,
-            battleTime,
-            monsterGroupId,
-            defaultKillCharge,
-            autoCharge,
-            autoDecline,
-            maxEnergy
-        )
-    }
 
     @JvmStatic
     fun InitTimeAxis(context: LuaContextWrapper, var1: String?, var2Table: Any, var3: Boolean): Int {
@@ -928,9 +576,9 @@ object ScriptLib {
     @JvmStatic
     fun UnlockFloatSignal(context: LuaContextWrapper, groupId: Int, signalGadgetCfgId: Int): Int {
         return context.onGroupContext {
-            onGroupSummerTimeHandler {
+            onSummerTimeScriptHandler {
                 checkGroupIdAndConfigId(::UnlockFloatSignal, groupId, signalGadgetCfgId)?.let {
-                    return@onGroupSummerTimeHandler it.getValue()
+                    return@onSummerTimeScriptHandler it.getValue()
                 }
                 unlockFloatSignal(this@onGroupContext, groupId, signalGadgetCfgId)
             }
@@ -1282,93 +930,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun KillGroupEntity(context: LuaContextWrapper, rawTable: Any): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val table = context.engine.getTable(rawTable)
-                val groupId = table.optInt("group_id", -1)
-                val killPolicyId = table.optInt("kill_policy", -1)
-                checkGroupId(ScriptLib::KillGroupEntity, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                if (killPolicyId == -1) {
-                    return@onScriptLibHandler killByCfgIds(this@onGroupContext, groupId, table)
-                }
-                return@onScriptLibHandler killByGroupPolicy(this@onGroupContext, groupId, killPolicyId)
-            }
-        }
-    }
 
-    private fun killByGroupPolicy(context: GroupEventLuaContext, groupId: Int, killPolicyId: Int): Int {
-        scriptLogger.debug { "[KillGroupEntity] kill by group policy" }
-        if (killPolicyId >= GroupKillPolicy.entries.size) {
-            scriptLogger.error { "[KillGroupEntity] kill_policy out of bounds" }
-            return ScriptLibErrors.INVALID_PARAMETER.getValue()
-        }
-        val policy = GroupKillPolicy.entries[killPolicyId]
-        return context.onScriptLibHandler {
-            KillGroupEntityByPolicy(context, groupId, policy)
-        }
-    }
-
-    private fun killByCfgIds(context: GroupEventLuaContext, groupId: Int, luaTable: LuaTable): Int {
-        scriptLogger.debug { "[KillGroupEntity] kill by cfg ids" }
-        val monsterList = luaTable.getTable("monsters")
-        val gadgetList = luaTable.getTable("gadgets")
-        val monsters = monsterList?.getAsIntArray() ?: IntArray(0)
-        val gadgets = gadgetList?.getAsIntArray() ?: IntArray(0)
-
-        return context.onScriptLibHandler {
-            KillGroupEntityByCfgIds(context, groupId, monsters, gadgets)
-        }
-    }
-
-
-    @JvmStatic
-    fun GetEntityIdByConfigId(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onGroupEntityHandler {
-                checkConfigId(ScriptLib::GetEntityIdByConfigId, configId)?.let {
-                    return@onGroupEntityHandler it.getValue()
-                }
-                getEntityIdByConfigId(this@onGroupContext, configId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetAvatarEntityIdByUid(context: LuaContextWrapper, uid: Int): Int {
-        return context.onGroupContext {
-            onGroupEntityHandler {
-                checkUid(ScriptLib::GetAvatarEntityIdByUid, uid)?.let {
-                    return@onGroupEntityHandler it.getValue()
-                }
-                getAvatarEntityIdByUid(this@onGroupContext, uid)
-            }
-        }
-    }
-
-
-    @JvmStatic
-    fun GetPosByEntityId(context: LuaContextWrapper, entityId: Int): Any {
-        return context.onGroupContext {
-            onGroupEntityHandler {
-                val pos = getPosByEntityId(this@onGroupContext, entityId)
-                ScriptUtils.posToLua(pos, context.engine).getRawTable()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetRotationByEntityId(context: LuaContextWrapper, entityId: Int): Any {
-        return context.onGroupContext {
-            onGroupEntityHandler {
-                val rot = getRotationByEntityId(this@onGroupContext, entityId)
-                ScriptUtils.posToLua(rot, context.engine).getRawTable()
-            }
-        }
-    }
 
     @JvmStatic
     fun GetActivityOpenAndCloseTimeByScheduleId(context: LuaContextWrapper, scheduleId: Int): Any {
@@ -1392,27 +954,6 @@ object ScriptLib {
         return context.onGroupContext {
             onScriptLibHandler {
                 GetGameHour(this@onGroupContext)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ActivateGroupLinkBundle(context: LuaContextWrapper, groupId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::ActivateGroupLinkBundle, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                ActivateGroupLinkBundle(this@onGroupContext, groupId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ActivateGroupLinkBundleByBundleId(context: LuaContextWrapper, bundleId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                ActivateGroupLinkBundleByBundleId(this@onGroupContext, bundleId)
             }
         }
     }
@@ -1716,53 +1257,193 @@ object ScriptLib {
     }
 
 
-    /**
-     * TODO better parameter handling and verify active handling
-     * Calls a lua function in the specified group if the group is active. The call parameters are passed to the called parameters like this:
-     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
-     * @param groupId group id of the group to call the function in
-     * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
-     */
+
+
+    /* GroupEntityHandler */
+
     @JvmStatic
-    fun ExecuteActiveGroupLua(
-        context: LuaContextWrapper,
-        groupId: Int,
-        functionName: String?,
-        callParamsTable: Any
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::ExecuteActiveGroupLua, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
+    fun KillEntityByConfigId(context: LuaContextWrapper, rawTable: Any): Int {
+        val table = context.engine.getTable(rawTable)
+        val configId = table.optInt("config_id", 0)
+        val groupId = table.optInt("group_id", 0)
+        checkGroupIdAndConfigId(ScriptLib::KillEntityByConfigId, groupId, configId)?.let {
+            return it.getValue()
+        }
+        val entityTypeValue = table.optInt("entity_type", 0)
+        if (entityTypeValue < 0 || entityTypeValue >= EntityType.entries.size) {
+            scriptLogger.error { "[KillEntityByConfigId] Invalid entity type $entityTypeValue" }
+            return ScriptLibErrors.INVALID_PARAMETER.getValue()
+        }
+        val entityType = EntityType.entries[entityTypeValue]
+        val params = KillByConfigIdParams(configId, groupId, entityType)
+        return context.onTypedContext(
+            {
+                onGroupEntityHandler {
+                    killEntityByConfigId(this@onTypedContext, params)
                 }
-                val callParams = context.engine.getTable(callParamsTable)
-                ExecuteActiveGroupLua(this@onGroupContext, groupId, functionName, callParams)
+            },
+            {
+                onGadgetControllerHandler {
+                    killEntityByConfigId(this@onTypedContext, params)
+                }
+            }
+        ) {
+            scriptLogger.error { "[KillEntityByConfigId] unknown context type " + this.javaClass.name }
+        }
+    }
+
+    @JvmStatic
+    fun RemoveEntityByConfigId(context: LuaContextWrapper, groupId: Int, entityTypeValue: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                checkGroupId(ScriptLib::RemoveEntityByConfigId, groupId)?.let {
+                    return@onGroupEntityHandler it.getValue()
+                }
+                val entityType = EntityType.entries[entityTypeValue]
+                removeEntityByConfigId(this@onGroupContext, groupId, entityType, configId)
             }
         }
     }
 
-    /**
-     * TODO better parameter handling
-     * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
-     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
-     * @param groupId group id of the group to call the function in
-     * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
-     */
     @JvmStatic
-    fun ExecuteGroupLua(context: LuaContextWrapper, groupId: Int, functionName: String?, callParamsTable: Any): Int {
+    fun KillGroupEntity(context: LuaContextWrapper, rawTable: Any): Int {
         return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::ExecuteGroupLua, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
+            onGroupEntityHandler {
+                val table = context.engine.getTable(rawTable)
+                val groupId = table.optInt("group_id", -1)
+                val killPolicyId = table.optInt("kill_policy", -1)
+                checkGroupId(ScriptLib::KillGroupEntity, groupId)?.let {
+                    return@onGroupEntityHandler it.getValue()
                 }
-                val callParams = context.engine.getTable(callParamsTable)
-                ExecuteGroupLua(this@onGroupContext, groupId, functionName, callParams)
+                if (killPolicyId == -1) {
+                    return@onGroupEntityHandler killByCfgIds(this@onGroupContext, groupId, table)
+                }
+                return@onGroupEntityHandler killByGroupPolicy(this@onGroupContext, groupId, killPolicyId)
             }
         }
     }
 
+    private fun killByGroupPolicy(context: GroupEventLuaContext, groupId: Int, killPolicyId: Int): Int {
+        scriptLogger.debug { "[KillGroupEntity] kill by group policy" }
+        if (killPolicyId >= GroupKillPolicy.entries.size) {
+            scriptLogger.error { "[KillGroupEntity] kill_policy out of bounds" }
+            return ScriptLibErrors.INVALID_PARAMETER.getValue()
+        }
+        val policy = GroupKillPolicy.entries[killPolicyId]
+        return context.onGroupEntityHandler {
+            killGroupEntityByPolicy(context, groupId, policy)
+        }
+    }
+
+    private fun killByCfgIds(context: GroupEventLuaContext, groupId: Int, luaTable: LuaTable): Int {
+        scriptLogger.debug { "[KillGroupEntity] kill by cfg ids" }
+        val monsterList = luaTable.getTable("monsters")
+        val gadgetList = luaTable.getTable("gadgets")
+        val monsters = monsterList?.getAsIntArray() ?: IntArray(0)
+        val gadgets = gadgetList?.getAsIntArray() ?: IntArray(0)
+
+        return context.onGroupEntityHandler {
+            killGroupEntityByCfgIds(context, groupId, monsters, gadgets)
+        }
+    }
+
+
+    @JvmStatic
+    fun DelAllSubEntityByOriginOwnerConfigId(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                checkConfigId(ScriptLib::DelAllSubEntityByOriginOwnerConfigId, configId)?.let {
+                    return@onGroupEntityHandler it.getValue()
+                }
+                delAllSubEntityByOriginOwnerConfigId(this@onGroupContext, configId)
+            }
+        }
+    }
+
+
+    @JvmStatic
+    fun GetEntityIdByConfigId(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                checkConfigId(ScriptLib::GetEntityIdByConfigId, configId)?.let {
+                    return@onGroupEntityHandler it.getValue()
+                }
+                getEntityIdByConfigId(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetTeamEntityIdByUid(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                checkUid(ScriptLib::GetTeamEntityIdByUid, uid)?.let {
+                    return@onGroupEntityHandler it.getValue()
+                }
+                getTeamEntityIdByUid(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetAvatarEntityIdByUid(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                checkUid(ScriptLib::GetAvatarEntityIdByUid, uid)?.let {
+                    return@onGroupEntityHandler it.getValue()
+                }
+                getAvatarEntityIdByUid(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetConfigIdByEntityId(context: LuaContextWrapper, entityID: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                getConfigIdByEntityId(this@onGroupContext, entityID)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetTeamUidByEntityId(context: LuaContextWrapper, entityID: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                getTeamUidByEntityId(this@onGroupContext, entityID)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetUidByTeamEntityId(context: LuaContextWrapper, entityID: Int): Int {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                getUidByTeamEntityId(this@onGroupContext, entityID)
+            }
+        }
+    }
+
+
+    @JvmStatic
+    fun GetPosByEntityId(context: LuaContextWrapper, entityId: Int): Any {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                val pos = getPosByEntityId(this@onGroupContext, entityId)
+                ScriptUtils.posToLua(pos, context.engine).getRawTable()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetRotationByEntityId(context: LuaContextWrapper, entityId: Int): Any {
+        return context.onGroupContext {
+            onGroupEntityHandler {
+                val rot = getRotationByEntityId(this@onGroupContext, entityId)
+                ScriptUtils.posToLua(rot, context.engine).getRawTable()
+            }
+        }
+    }
 
     /*                    */
     /* GroupGadgetHandler */
@@ -2166,15 +1847,58 @@ object ScriptLib {
         }
     }
 
-
-
-
     @JvmStatic
     fun CreateMonster(context: LuaContextWrapper, rawTable: Any): Int {
         return context.onGroupContext {
             onGroupMonsterHandler {
                 val table = context.engine.getTable(rawTable)
                 createMonster(this@onGroupContext, table)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateMonsterWithGlobalValue(context: LuaContextWrapper, configId: Int, rawTable: Any): Int {
+        return context.onGroupContext {
+            onGroupMonsterHandler {
+                val table = context.engine.getTable(rawTable)
+                val keys = table.getKeys()
+                val paramMap = keys.mapNotNull { key ->
+                    key?.let {
+                        key to table.getInt(key)
+                    }
+                }.toMap()
+                createMonsterWithGlobalValue(this@onGroupContext, configId, paramMap)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateMonsterByConfigIdByPos(
+        context: LuaContextWrapper,
+        configId: Int,
+        rawPosTable: Any,
+        rawRotTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onGroupMonsterHandler {
+                val posTable = context.engine.getTable(rawPosTable)
+                val rotTable = context.engine.getTable(rawRotTable)
+                val pos = ScriptUtils.luaToPos(posTable)
+                    ?: return@onGroupMonsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                val rot = ScriptUtils.luaToPos(rotTable)
+                    ?: return@onGroupMonsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+
+                createMonsterByConfigIdByPos(this@onGroupContext, configId, pos, rot)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateMonstersFromMonsterPool(context: LuaContextWrapper, poolName: String): Int {
+        return context.onGroupContext {
+            onGroupMonsterHandler {
+                createMonstersFromMonsterPool(this@onGroupContext, poolName)
             }
         }
     }
@@ -2362,6 +2086,44 @@ object ScriptLib {
         return context.onGroupContext {
             onGroupAbilityHandler {
                 setGroupLogicStateValue(this@onGroupContext, sgvName, value)
+            }
+        }
+    }
+
+    /* QuestScriptHandler */
+
+    @JvmStatic
+    fun AddQuestProgress(context: LuaContextWrapper, eventNotifyName: String): Int {
+        return context.onGroupContext {
+            onQuestHandler {
+                addQuestProgress(this@onGroupContext, eventNotifyName)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHostQuestState(context: LuaContextWrapper, questId: Int): Int {
+        return context.onGroupContext {
+            onQuestHandler {
+                getHostQuestState(this@onGroupContext, questId).getValue()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetQuestState(context: LuaContextWrapper, entityId: Int, questId: Int): Int {
+        return context.onGroupContext {
+            onQuestHandler {
+                getQuestState(this@onGroupContext, entityId, questId).getValue()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetQuestStateByUid(context: LuaContextWrapper, uid: Int, questId: Int): Int {
+        return context.onGroupContext {
+            onQuestHandler {
+                getQuestStateByUid(this@onGroupContext, uid, questId).getValue()
             }
         }
     }
@@ -2554,6 +2316,29 @@ object ScriptLib {
     }
 
 
+    /* DeathZoneScriptHandler */
+
+    @JvmStatic
+    fun ChangeDeathZone(context: LuaContextWrapper, deathZoneId: Int, rawParamsTable: Any): Int {
+        return context.onGroupContext {
+            onDeathZoneHandler {
+                val conditionArray = context.engine.getTable(rawParamsTable)
+                val isOpen = conditionArray.optBoolean("is_open", false)
+                changeDeathZone(this@onGroupContext, deathZoneId, isOpen)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetDeathZoneStatus(context: LuaContextWrapper, deathZoneId: Int): Int {
+        return context.onGroupContext {
+            onDeathZoneHandler {
+                getDeathZoneStatus(this@onGroupContext, deathZoneId)
+            }
+        }
+    }
+
+
     /* DungeonScriptHandler */
 
     @JvmStatic
@@ -2629,7 +2414,416 @@ object ScriptLib {
     }
 
 
-    /* GroupSceneHandler */
+    /* GroupManagerScriptHandler */
+
+    @JvmStatic
+    fun GoToGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(::GoToGroupSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                goToGroupSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GoToFlowSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(::GoToFlowSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                goToFlowSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetFlowSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(::SetFlowSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                setFlowSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AddExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::AddExtraGroupSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                addExtraGroupSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun RemoveExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::RemoveExtraGroupSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                removeExtraGroupSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun KillExtraGroupSuite(context: LuaContextWrapper, groupId: Int, suite: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::KillExtraGroupSuite, groupId, suite)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                killExtraGroupSuite(this@onGroupContext, groupId, suite)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AddExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::AddExtraFlowSuite, groupId, suiteId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
+                    scriptLogger.error { "[AddExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
+                    return@onGroupManagementHandler 1
+                }
+                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
+                addExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun RemoveExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::RemoveExtraFlowSuite, groupId, suiteId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
+                    scriptLogger.error { "[RemoveExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
+                    return@onGroupManagementHandler 1
+                }
+                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
+                removeExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun KillExtraFlowSuite(context: LuaContextWrapper, groupId: Int, suiteId: Int, flowSuitePolicy: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupIdAndSuiteId(ScriptLib::KillExtraFlowSuite, groupId, suiteId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                if (flowSuitePolicy < 0 || flowSuitePolicy >= FlowSuiteOperatePolicy.entries.size) {
+                    scriptLogger.error { "[KillExtraFlowSuite] Invalid flow suite policy $flowSuitePolicy" }
+                    return@onGroupManagementHandler 1
+                }
+                val flowSuitePolicyEnum = FlowSuiteOperatePolicy.entries[flowSuitePolicy]
+                killExtraFlowSuite(this@onGroupContext, groupId, suiteId, flowSuitePolicyEnum)
+            }
+        }
+    }
+
+    /**
+     * Set the actions and triggers to designated group
+     */
+    @JvmStatic
+    fun RefreshGroup(context: LuaContextWrapper, rawTable: Any): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                val table = context.engine.getTable(rawTable)
+                refreshGroup(this@onGroupContext, table)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupSuite(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(ScriptLib::GetGroupSuite, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                getGroupSuite(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGroupReplaceable(context: LuaContextWrapper, groupId: Int, value: Boolean): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(ScriptLib::SetGroupReplaceable, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                setGroupReplaceable(this@onGroupContext, groupId, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ActivateGroupLinkBundle(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::ActivateGroupLinkBundle, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                activateGroupLinkBundle(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ActivateGroupLinkBundleByBundleId(context: LuaContextWrapper, bundleId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                activateGroupLinkBundleByBundleId(this@onGroupContext, bundleId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DeactivateGroupLinkBundle(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::DeactivateGroupLinkBundle, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                deactivateGroupLinkBundle(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DeactivateGroupLinkBundleByBundleId(context: LuaContextWrapper, bundleId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                deactivateGroupLinkBundleByBundleId(this@onGroupContext, bundleId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun FinishGroupLinkBundle(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::FinishGroupLinkBundle, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                finishGroupLinkBundle(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateGroupVariable(context: LuaContextWrapper, varName: String, value: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                createGroupVariable(this@onGroupContext, varName, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupVariableValue(context: LuaContextWrapper, varName: String): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                getGroupVariableValue(this@onGroupContext, varName)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupVariableValueByGroup(context: LuaContextWrapper, name: String, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::GetGroupVariableValueByGroup, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                getGroupVariableValueByGroup(this@onGroupContext, name, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGroupVariableValue(context: LuaContextWrapper, varName: String, value: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                setGroupVariableValue(this@onGroupContext, varName, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGroupVariableValueByGroup(context: LuaContextWrapper, key: String, value: Int, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::SetGroupVariableValueByGroup, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                setGroupVariableValueByGroup(this@onGroupContext, key, value, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ChangeGroupVariableValue(context: LuaContextWrapper, varName: String, value: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                changeGroupVariableValue(this@onGroupContext, varName, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ChangeGroupVariableValueByGroup(context: LuaContextWrapper, name: String, value: Int, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::ChangeGroupVariableValueByGroup, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                changeGroupVariableValueByGroup(this@onGroupContext, name, value, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGroupTempValue(context: LuaContextWrapper, name: String, value: Int, var3Table: Any): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                val var3 = context.engine.getTable(var3Table)
+                setGroupTempValue(this@onGroupContext, name, value, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupTempValue(context: LuaContextWrapper, name: String, var2Table: Any): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                val var2 = context.engine.getTable(var2Table)
+                getGroupTempValue(this@onGroupContext, name, var2)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ChangeGroupTempValue(context: LuaContextWrapper, name: String, diff: Int, var3Table: Any): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                val var3 = context.engine.getTable(var3Table)
+                changeGroupTempValue(this@onGroupContext, name, diff, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateGroupTrigger(context: LuaContextWrapper, name: String): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                createGroupTrigger(this@onGroupContext, name)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGroupDead(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::SetGroupDead, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                setGroupDead(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsGroupRegisteredInCurScene(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(::IsGroupRegisteredInCurScene, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                isGroupRegisteredInCurScene(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun UnfreezeGroupLimit(context: LuaContextWrapper, forceId: Int): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                unfreezeGroupLimit(this@onGroupContext, forceId)
+            }
+        }
+    }
+
+    /**
+     * TODO better parameter handling and verify active handling
+     * Calls a lua function in the specified group if the group is active. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    @JvmStatic
+    fun ExecuteActiveGroupLua(
+        context: LuaContextWrapper,
+        groupId: Int,
+        functionName: String?,
+        callParamsTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(ScriptLib::ExecuteActiveGroupLua, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                val callParams = context.engine.getTable(callParamsTable)
+                executeActiveGroupLua(this@onGroupContext, groupId, functionName, callParams)
+            }
+        }
+    }
+
+    /**
+     * TODO better parameter handling
+     * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
+     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * @param groupId group id of the group to call the function in
+     * @param functionName name of the function to call
+     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     */
+    @JvmStatic
+    fun ExecuteGroupLua(context: LuaContextWrapper, groupId: Int, functionName: String?, callParamsTable: Any): Int {
+        return context.onGroupContext {
+            onGroupManagementHandler {
+                checkGroupId(ScriptLib::ExecuteGroupLua, groupId)?.let {
+                    return@onGroupManagementHandler it.getValue()
+                }
+                val callParams = context.engine.getTable(callParamsTable)
+                executeGroupLua(this@onGroupContext, groupId, functionName, callParams)
+            }
+        }
+    }
+
+
+
+    /* SceneStateScriptHandler */
 
     @JvmStatic
     fun UnhideScenePoint(context: LuaContextWrapper, scenePointId: Int): Int {
@@ -2747,7 +2941,26 @@ object ScriptLib {
     }
 
 
+    /* SealBattleScriptHandler */
+
+    @JvmStatic
+    fun StartSealBattle(context: LuaContextWrapper, gadgetId: Int, battleParamsTable: Any): Int {
+        return context.onGroupContext {
+            onSealBattleHandler {
+                val battleParams = context.engine.getTable(battleParamsTable)
+                val handlerParams = SealBattleParams.fromSealBattleType(battleParams) ?: run {
+                    val battleType = battleParams.optInt("battle_type", -1)
+                    scriptLogger.error { "[StartSealBattle] Invalid battle type $battleType" }
+                    return@onSealBattleHandler -1
+                }
+                startSealBattle(this@onGroupContext, gadgetId, handlerParams)
+            }
+        }
+    }
+
+
     /* GalleryScriptHandler*/
+
     @JvmStatic
     fun StartGallery(context: LuaContextWrapper, galleryId: Int): Int {
         return context.onGroupContext {
@@ -2767,6 +2980,15 @@ object ScriptLib {
     }
 
     @JvmStatic
+    fun StopGalleryByReason(context: LuaContextWrapper, galleryId: Int, stopReasonId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                stopGalleryByReason(this@onGroupContext, galleryId, stopReasonId)
+            }
+        }
+    }
+
+    @JvmStatic
     fun UpdatePlayerGalleryScore(context: LuaContextWrapper, galleryId: Int, var2Table: Any): Int {
         return context.onGroupContext {
             onGalleryHandler {
@@ -2775,6 +2997,88 @@ object ScriptLib {
             }
         }
     }
+
+    @JvmStatic
+    fun GetGalleryTransaction(context: LuaContextWrapper, galleryId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                getGalleryTransaction(this@onGroupContext, galleryId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGalleryUidList(context: LuaContextWrapper, galleryId: Int): IntArray {
+        return context.onGroupContext {
+            onGalleryHandler {
+                getGalleryUidList(this@onGroupContext, galleryId).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsGalleryStart(context: LuaContextWrapper, galleryId: Int): Boolean {
+        return context.onGroupContext {
+            onGalleryHandler {
+                isGalleryStart(this@onGroupContext, galleryId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGalleryRevivePoint(context: LuaContextWrapper, galleryId: Int, groupId: Int, pointId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                setGalleryRevivePoint(this@onGroupContext, galleryId, groupId, pointId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlayerStartGallery(context: LuaContextWrapper, galleryId: Int, uidListRawTable: Any): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                setPlayerStartGallery(this@onGroupContext, galleryId, uiList)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AttachGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                attachGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AttachGalleryTeamAbilityGroup(
+        context: LuaContextWrapper,
+        uidListRawTable: Any,
+        galleryId: Int,
+        var3: Int
+    ): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                attachGalleryTeamAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DelGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                delGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
 
     @JvmStatic
     fun InitGalleryProgressScore(
@@ -2976,6 +3280,28 @@ object ScriptLib {
     }
 
 
+    /* AsterScriptHandler */
+    @JvmStatic
+    fun CreateAsterMidGeneralRewardGadget(context: LuaContextWrapper, rawParamsTable: Any): Int {
+        return context.onGroupContext {
+            onAsterScriptHandler {
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val configId = paramsTable.optInt("config_id", -1)
+                val difficultyId = paramsTable.optInt("difficulty_id", -1)
+                checkConfigId(::CreateAsterMidGeneralRewardGadget, configId)?.let {
+                    return@onAsterScriptHandler it.getValue()
+                }
+                if (difficultyId == -1) {
+                    scriptLogger.error { "[CreateAsterMidGeneralRewardGadget] Invalid difficulty id $difficultyId" }
+                    return@onAsterScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                createAsterMidGeneralRewardGadget(this@onGroupContext, configId, difficultyId)
+            }
+        }
+    }
+
+
+
     /* CharAmusementScriptHandler */
 
     @JvmStatic
@@ -3128,6 +3454,133 @@ object ScriptLib {
                     return@onFungusFighterScriptHandler it.getValue()
                 }
                 isFungusCaptured(this@onGroupContext, uid, fungusMonsterId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun VintageFinishGroupByPresentId(context: LuaContextWrapper, presentId: Int): Int {
+        return context.onGroupContext {
+            onVintageScriptHandler {
+                vintageFinishGroupByPresentId(this@onGroupContext, presentId)
+            }
+        }
+    }
+
+
+    /* HideAndSeekScriptHandler*/
+
+
+    @JvmStatic
+    fun GetHideAndSeekPlayIndex(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                getHideAndSeekPlayIndex(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHideAndSeekHunter(context: LuaContextWrapper, index: Int): Int {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                getHideAndSeekHunter(this@onGroupContext, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHideAndSeekPreyUidList(context: LuaContextWrapper, index: Int): IntArray {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                getHideAndSeekPreyUidList(this@onGroupContext, index).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHideAndSeekMap(context: LuaContextWrapper, index: Int): Int {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                getHideAndSeekMap(this@onGroupContext, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHideAndSeekPlayGalleryId(context: LuaContextWrapper, index: Int): Int {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                getHideAndSeekPlayGalleryId(this@onGroupContext, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetHideAndSeekPlayerSkillList(context: LuaContextWrapper, index: Int, uid: Int): IntArray {
+        return context.onGroupContext {
+            onHideAndSeekScriptHandler {
+                checkUid(::GetHideAndSeekPlayerSkillList, uid)?.let {
+                    return@onHideAndSeekScriptHandler intArrayOf(it.getValue())
+                }
+                getHideAndSeekPlayerSkillList(this@onGroupContext, index, uid).toIntArray()
+            }
+        }
+    }
+
+
+    /* TreasureSeelieScriptHandler */
+
+    @JvmStatic
+    fun TreasureSeelieCollectOrbsNotify(context: LuaContextWrapper, lightLevel: Int, var2: Int): Int {
+        return context.onGroupContext {
+            onTreasureSeelieScriptHandler {
+                treasureSeelieCollectOrbsNotify(this@onGroupContext, lightLevel, var2)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetTreasureSeelieDayByGroupId(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onTreasureSeelieScriptHandler {
+                checkGroupId(::GetTreasureSeelieDayByGroupId, groupId)?.let {
+                    return@onTreasureSeelieScriptHandler it.getValue()
+                }
+                getTreasureSeelieDayByGroupId(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+
+    /* WinterCampScriptHandler */
+
+    @JvmStatic
+    fun WinterCampGetBattleGroupBundleId(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onWinterCampScriptHandler {
+                winterCampGetBattleGroupBundleId(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun WinterCampGetExploreGroupBundleId(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onWinterCampScriptHandler {
+                winterCampGetExploreGroupBundleId(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun WinterCampSnowDriftInteract(context: LuaContextWrapper, cfgId: Int): Int {
+        return context.onGroupContext {
+            onWinterCampScriptHandler {
+                checkConfigId(::WinterCampSnowDriftInteract, cfgId)?.let {
+                    return@onWinterCampScriptHandler it.getValue()
+                }
+                winterCampSnowDriftInteract(this@onGroupContext, cfgId)
             }
         }
     }
