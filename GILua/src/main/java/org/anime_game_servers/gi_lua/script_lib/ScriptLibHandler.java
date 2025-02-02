@@ -1,14 +1,10 @@
 package org.anime_game_servers.gi_lua.script_lib;
 
-import org.anime_game_servers.core.gi.enums.QuestState;
 import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.constants.*;
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
-import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy;
-import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams;
 import org.anime_game_servers.lua.engine.LuaTable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -25,46 +21,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     // Some fields are guessed
     int AutoMonsterTide(GroupEventContext context, int tideId, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
     int KillMonsterTide(GroupEventContext context, int groupId, int tideId);
-    int GoToGroupSuite(GroupEventContext context, int groupId, int suite);
-
-    /**
-     *
-     * @param context
-     * @param groupId either 0 for the current group, or a group id
-     * @param suite
-     * @return
-     */
-    int AddExtraGroupSuite(GroupEventContext context, int groupId, int suite);
-    int RemoveExtraGroupSuite(GroupEventContext context, int groupId, int suite);
-    int KillExtraGroupSuite(GroupEventContext context, int groupId, int suite);
-
-    int AddExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, FlowSuiteOperatePolicy flowSuitePolicy);
-    int RemoveExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, FlowSuiteOperatePolicy flowSuitePolicy);
-    int KillExtraFlowSuite(GroupEventContext context, int groupId, int suiteId, FlowSuiteOperatePolicy flowSuitePolicy);
 
     int GetGroupMonsterCountByGroupId(GroupEventContext context, int groupId);
-
-    int CreateVariable(GroupEventContext context, String type, LuaTable value);
-    int SetVariableValue(GroupEventContext context, int var1);
-    int GetVariableValue(GroupEventContext context, int var1);
-
-    int GetGroupVariableValue(GroupEventContext context, String var);
-
-    int GetGroupVariableValueByGroup(GroupEventContext context, String name, int groupId);
-
-    int SetGroupVariableValue(GroupEventContext context, String varName, int value);
-
-    int SetGroupVariableValueByGroup(GroupEventContext context, String key, int value, int groupId);
-
-    int ChangeGroupVariableValue(GroupEventContext context, String varName, int value);
-
-    int ChangeGroupVariableValueByGroup(GroupEventContext context, String name, int value, int groupId);
-
-
-    /**
-     * Set the actions and triggers to designated group
-     */
-    int RefreshGroup(GroupEventContext context, LuaTable table);
 
     int GetRegionEntityCount(GroupEventContext context, int regionEId, EntityType entityType);
 
@@ -91,20 +49,12 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 
     int MarkPlayerAction(GroupEventContext context, int var1, int var2, int var3);
-    int AddQuestProgress(GroupEventContext context, String eventNotifyName);
 
     int GetSceneOwnerUid(GroupEventContext context);
-    @Nonnull
-    QuestState GetHostQuestState(GroupEventContext context, int questId);
-    @Nonnull
-    QuestState GetQuestState(GroupEventContext context, int entityId, int questId);
     int ShowReminder(GroupEventContext context, int reminderId);
-    int RemoveEntityByConfigId(GroupEventContext context, int groupId, EntityType entityType, int configId);
     int CreateGroupTimerEvent(GroupEventContext context, int groupID, String source, double time);
     int CancelGroupTimerEvent(GroupEventContext context, int groupID, String source);
 
-    int GetGroupSuite(GroupEventContext context, int groupId);
-    int SetGroupReplaceable(GroupEventContext context, int groupId, boolean value) ;
     int[] GetSceneUidList(GroupEventContext context);
     int GetSeaLampActivityPhase(GroupEventContext context);
     int GadgetPlayUidOp(GroupEventContext context, int groupId, int gadgetCrucibleCfgId, List<Integer> uidList, int var4, String var5, LuaTable var6 );
@@ -130,13 +80,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int GetBlossomRefreshTypeByGroupId(GroupEventContext context, int groupId);
     int RefreshHuntingClueGroup(GroupEventContext context);
     int GetHuntingMonsterExtraSuiteIndexVec(GroupEventContext context);
-    int SetGroupTempValue(GroupEventContext context, String name, int value, LuaTable var3Table);
-    int GetGroupTempValue(GroupEventContext context, String name, LuaTable var2);
-    int ChangeGroupTempValue(GroupEventContext context, String name, int diff, LuaTable var3);
 
     int FinishExpeditionChallenge(GroupEventContext context);
     int ExpeditionChallengeEnterRegion(GroupEventContext context, boolean var1);
-    int StartSealBattle(GroupEventContext context, int gadgetId, SealBattleParams params);
 
     int InitTimeAxis(GroupEventContext context, String var1, LuaTable var2, boolean var3);
     int EndTimeAxis(GroupEventContext context, String var1);
@@ -221,19 +167,10 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int RevokePlayerShowTemplateReminder(GroupEventContext context, int var1, LuaTable var2);
 
-    int KillGroupEntityByCfgIds(GroupEventContext context, int groupId, int[] monsters, int[] gadgets);
-    int KillGroupEntityByPolicy(GroupEventContext context, int groupId, GroupKillPolicy policy);
-    int KillEntityByConfigId(GroupEventContext context, KillByConfigIdParams params);
-
-
-
 
     ActivityOpenAndCloseTime GetActivityOpenAndCloseTimeByScheduleId(GroupEventContext context, int scheduleId);
 
     int GetGameHour(GroupEventContext context);
-
-    int ActivateGroupLinkBundle(GroupEventContext context, int groupId);
-    int ActivateGroupLinkBundleByBundleId(GroupEventContext context, int bundleId);
 
     /**
      * TODO implement
@@ -313,26 +250,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
 
     int CreateTreasureMapSpotRewardGadget(GroupEventContext context, int gadgetCfgId);
-
-    /**
-     * TODO better parameter handling and verify active handling
-     * Calls a lua function in the specified group if the group is active. The call parameters are passed to the called parameters like this:
-     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
-     * @param groupId group id of the group to call the function in
-     * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
-     */
-    int ExecuteActiveGroupLua(GroupEventLuaContext context, int groupId, String functionName, LuaTable callParamsTable);
-
-    /**
-     * TODO better parameter handling
-     * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
-     * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
-     * @param groupId group id of the group to call the function in
-     * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
-     */
-    int ExecuteGroupLua(GroupEventLuaContext context, int groupId, String functionName, LuaTable callParamsTable);
 
 
 }
