@@ -1,6 +1,7 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
 kotlin = "2.1.0"
+jvmTargetVersion = "17"
 # https://github.com/Kotlin/kotlinx-io/releases
 kx_io = "0.3.0"
 # https://github.com/oshai/kotlin-logging/releases
@@ -28,7 +29,7 @@ luaEngine_jnlua = "0.1.0"
 # https://github.com/Hartie95/luaj
 luaEngine_luaj = "3.0.3"
 # https://github.com/Hartie95/Core
-ags_core = "0.1"
+ags_core = "0.2"
 anime_game_lua = "0.2"
 
 [libraries]
