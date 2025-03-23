@@ -3,11 +3,13 @@ plugins {
     kotlin("multiplatform")
 }
 
+val baseVersion = libs.versions.anime.game.lua.get()
+val versionSuffix = System.getenv("VERSION_SUFFIX") ?: ""
+version = "$baseVersion-$versionSuffix"
 group = "org.anime_game_servers.lua"
-version = libs.versions.anime.game.lua.get()
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(libs.versions.jvmTargetVersion.get().toInt())
     jvm {
         withJava()
         testRuns["test"].executionTask.configure {
@@ -33,6 +35,10 @@ kotlin {
     mingwX64()
     linuxX64()
     linuxArm64()
+    macosArm64()
+    macosX64()
+    iosArm64()
+    iosX64()
 
 
     sourceSets {

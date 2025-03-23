@@ -8,8 +8,10 @@ plugins {
     alias(libs.plugins.lombok)
 }
 
+val baseVersion = libs.versions.anime.game.lua.get()
+val versionSuffix = System.getenv("VERSION_SUFFIX") ?: ""
+version = "$baseVersion-$versionSuffix"
 group = "org.anime_game_servers.lua"
-version = libs.versions.anime.game.lua.get()
 
 repositories {
     mavenCentral()
@@ -40,9 +42,11 @@ tasks.test {
     useJUnitPlatform()
 }
 
+kotlin {
+    jvmToolchain(libs.versions.jvmTargetVersion.get().toInt())
+}
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
     withSourcesJar()
     //withJavadocJar()
 }

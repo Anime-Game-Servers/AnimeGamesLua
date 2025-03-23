@@ -1,0 +1,30 @@
+name: Run tests
+# Check for successful build and tests on pull request and when pushing to main or ci branch
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches: [ main, ci ]
+jobs:
+  build_test_pull:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build project and run tests
+        run: ./gradlew check
+      - name: Archive test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            */build/reports/
