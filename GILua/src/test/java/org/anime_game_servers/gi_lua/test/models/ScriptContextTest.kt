@@ -1,11 +1,7 @@
 package org.anime_game_servers.gi_lua.test.models
 
 import org.anime_game_servers.gi_lua.models.ScriptArgs
-import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup
-import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.LuaContextWrapper
-import org.anime_game_servers.gi_lua.script_lib.ScriptLibGroupHandlerProvider
-import org.anime_game_servers.gi_lua.script_lib.ScriptLibHandler
 import org.anime_game_servers.jnlua_engine.JNLuaEngine
 import org.anime_game_servers.lua.engine.*
 import org.anime_game_servers.lua.models.ScriptType
@@ -13,40 +9,10 @@ import org.anime_game_servers.luaj_engine.LuaJEngine
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
-
-data class LuaGroupContextImpl(val myEngine: LuaEngine, val scriptArgs: ScriptArgs, val ouid: Int = 0
-) : GroupEventLuaContext{
-    override fun getGroupInstance(): SceneGroup {
-        TODO("Not yet implemented")
-    }
-
-    override fun getArgs() = scriptArgs
-
-    override fun <T : GroupEventLuaContext> getScriptLibHandler(): ScriptLibHandler<T>? {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T : GroupEventLuaContext> getScriptLibHandlerProvider(): ScriptLibGroupHandlerProvider<T> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getEngine() = myEngine
-
-    override fun uid(): Int = scriptArgs.uid
-    override fun sourceEntityId(): Int = scriptArgs.sourceEid
-    override fun targetEntityId(): Int = scriptArgs.targetEid
-    override fun ownerUid(): Int = ouid
-}
-
 class LuaJContextTest : ScriptContextTest() {
 
     override val scriptLoader = object : TestScriptLoader(){
         override val engine: LuaEngine = LuaJEngine(ScriptConfig(this, RequireMode.DISABLED))
-    }
-
-    @Test
-    fun runTest(){
-        checkScriptContext()
     }
 }
 
@@ -55,26 +21,22 @@ class JNLuaContextTest : ScriptContextTest() {
     override val scriptLoader = object : TestScriptLoader(){
         override val engine: LuaEngine = JNLuaEngine(ScriptConfig(this, RequireMode.DISABLED))
     }
-
-    @Test
-    fun runTest(){
-        checkScriptContext()
-    }
 }
 
 abstract class ScriptContextTest{
     abstract val scriptLoader : TestScriptLoader
 
-    fun getEngine(): LuaEngine {
+    private fun getEngine(): LuaEngine {
         return scriptLoader.engine
     }
 
+    @Test
     fun checkScriptContext() {
         val engine = getEngine()
         LuaEngine.registerNamespace(this::class.java.packageName)
         engine.addGlobals()
         val uri = ClassLoader.getSystemResource("ScriptContextTest.lua").toURI()
-        val path = Path.of(uri);
+        val path = Path.of(uri)
         val script = engine.getScript(path, ScriptType.EXECUTABLE)
 
         assert(script != null)

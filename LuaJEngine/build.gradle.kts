@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.bundles.jvm.reflection)
     implementation(libs.jvm.logging)
     implementation(libs.jvm.kotlinx.io.core)
+    implementation(project(":base"))
 }
 
 tasks.test {

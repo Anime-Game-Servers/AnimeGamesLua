@@ -27,7 +27,7 @@ junit = "5.10.1"
 # https://github.com/Hartie95/JNLua_GC
 luaEngine_jnlua = "0.1.0"
 # https://github.com/Hartie95/luaj
-luaEngine_luaj = "3.0.3"
+luaEngine_luaj = "3.0.4"
 # https://github.com/Hartie95/Core
 ags_core = "0.2"
 anime_game_lua = "0.2"
@@ -60,8 +60,8 @@ jvm-ags-lua-jnlua = { module = "org.anime_game_servers.lua:jnlua", version.ref =
 
 [bundles]
 jvm-reflection = ["kotlin-reflect", "reflectasm", "reflections"]
-jvm-ags-lua-gi = ["jvm-ags-core-base", "jvm-ags-core-gi", "jvm-ags-lua-base"]
-jvm-ags-lua-engine = ["jvm-ags-core-base", "jvm-ags-core-gi", "jvm-ags-lua-base"]
+jvm-ags-lua-gi = ["jvm-ags-core-base", "jvm-ags-core-gi"]
+jvm-ags-lua-engine = ["jvm-ags-core-base", "jvm-ags-core-gi"]
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
