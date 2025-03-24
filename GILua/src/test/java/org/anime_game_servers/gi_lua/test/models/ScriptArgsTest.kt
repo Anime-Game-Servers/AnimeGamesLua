@@ -1,17 +1,13 @@
 package org.anime_game_servers.gi_lua.test.models
 
-import kotlinx.io.Source
 import org.anime_game_servers.core.base.annotations.lua.LuaStatic
 import org.anime_game_servers.gi_lua.models.ScriptArgs
-import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader
 import org.anime_game_servers.gi_lua.script_lib.LuaContext
 import org.anime_game_servers.jnlua_engine.JNLuaEngine
 import org.anime_game_servers.lua.engine.*
 import org.anime_game_servers.lua.models.ScriptType
-import org.anime_game_servers.lua.utils.asSource
 import org.anime_game_servers.luaj_engine.LuaJEngine
 import org.junit.jupiter.api.Test
-import java.nio.file.Files
 import java.nio.file.Path
 
 data class LuaContextImpl(val engine: LuaEngine)
@@ -53,50 +49,18 @@ object KotlinFunctions{
     }
 }
 
-abstract class TestScriptLoader : GIScriptLoader {
-    abstract val engine: LuaEngine
-    override fun getScriptPath(scriptName: String): Path? {
-        val uri = ClassLoader.getSystemResource(scriptName).toURI()
-        return Path.of(uri)
-    }
 
-    override fun openScript(params: BaseScriptLoader.ScriptLoadParams): Source? {
-        val basePath: String = params.getBasePath()
-        val scriptPath = getScriptPath(basePath) ?: return null
-        if(Files.exists(scriptPath)){
-            return scriptPath.asSource()
-        }
-        return null
-    }
-
-    override fun getScript(scriptLoadParams: BaseScriptLoader.ScriptLoadParams): LuaScript? {
-        val basePath: String = scriptLoadParams.getBasePath()
-        val scriptPath = getScriptPath(basePath) ?: return null
-        return engine.getScript(scriptPath, scriptLoadParams.getScriptType());
-    }
-}
-
-class LuaJTest : ScriptArgsTest() {
+class LuaJScriptArgsTest : ScriptArgsTest() {
 
     override val scriptLoader = object : TestScriptLoader(){
         override val engine: LuaEngine = LuaJEngine(ScriptConfig(this, RequireMode.DISABLED))
     }
-
-    @Test
-    fun runTest(){
-        checkScriptArgs()
-    }
 }
 
-class JNLuaTest : ScriptArgsTest() {
+class JNLuaScriptArgsTest : ScriptArgsTest() {
 
     override val scriptLoader = object : TestScriptLoader(){
         override val engine: LuaEngine = JNLuaEngine(ScriptConfig(this, RequireMode.DISABLED))
-    }
-
-    @Test
-    fun runTest(){
-        checkScriptArgs()
     }
 }
 
@@ -107,6 +71,7 @@ abstract class ScriptArgsTest{
         return scriptLoader.engine
     }
 
+    @Test
     fun checkScriptArgs() {
         val engine = getEngine()
         LuaEngine.registerNamespace(this::class.java.packageName)

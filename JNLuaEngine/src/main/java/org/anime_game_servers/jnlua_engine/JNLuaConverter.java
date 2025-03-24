@@ -70,8 +70,10 @@ public class JNLuaConverter implements Converter {
                 .forEach(m -> {
                     class TempFunc implements NamedJavaFunction {
                         Method method;
+                        List<Method> overloads;
                         TempFunc(Method method){
                             this.method = method;
+                            overloads = Arrays.stream(methods).filter(it -> m.getName().equals(it.getName()) && it != method).toList();
                         }
                         @Override
                         public String getName() {
@@ -83,10 +85,16 @@ public class JNLuaConverter implements Converter {
                         public int invoke(LuaState luaState) {
                             val argSize = luaState.getTop();
                             val args = new ArrayList<Object>();
-                            val methodParameters = method.getParameters();
+                            var methodToCall = method;
+                            var methodParameters = method.getParameters();
                             if(argSize != methodParameters.length){
-                                // todo maybe check for and handle vararg?
-                                throw new RuntimeException("invalid argument size");
+                                if(overloads.isEmpty()) {
+                                    // todo maybe check for and handle vararg?
+                                    throw new RuntimeException("invalid argument size");
+                                }
+                                // TODO compare types for overloads with the same number of arguments
+                                methodToCall = overloads.stream().filter(it -> it.getParameterCount() == argSize).findFirst().orElseThrow();
+                                methodParameters = methodToCall.getParameters();
                             }
                             for (int i = 0; i < argSize; ++i) {
                                 val paramter = methodParameters[i];
@@ -94,7 +102,7 @@ public class JNLuaConverter implements Converter {
                                 args.add(luaState.checkJavaObject(i + 1, parameterClass));
                             }
                             try {
-                                Object ret = method.invoke(null, args.toArray());
+                                Object ret = methodToCall.invoke(null, args.toArray());
                                 luaState.pushJavaObject(ret);
                             } catch (Exception e) {
                                 logger.error(e, ()->"Error on invoking binding function. ");

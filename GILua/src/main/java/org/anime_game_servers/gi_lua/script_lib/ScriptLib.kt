@@ -29,13 +29,23 @@ object ScriptLib {
     var staticHandler: ScriptLibStaticHandler? = null
 
     @JvmStatic
-    fun PrintLog(msg: String?) {
-        staticHandler?.PrintLog(msg) ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue()
+    fun PrintLog(msg: String?) : Int {
+        return staticHandler?.PrintLog(msg)?.let { 0 } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue()
+    }
+    @Deprecated("only for compat with modified Scripts", ReplaceWith("PrintLog(msg: String?)"))
+    @JvmStatic
+    fun PrintLog(context: LuaContextWrapper, msg: String?) : Int {
+        return PrintLog(msg)
     }
 
     @JvmStatic
     fun GetEntityType(entityId: Int): Int {
         return staticHandler?.GetEntityType(entityId) ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue()
+    }
+    @Deprecated("only for compat with modified Scripts", ReplaceWith("GetEntityType(entityId: Int)"))
+    @JvmStatic
+    fun GetEntityType(context: LuaContextWrapper, entityId: Int): Int {
+        return GetEntityType(entityId)
     }
 
 
@@ -43,8 +53,8 @@ object ScriptLib {
      * Context independent functions
      */
     @JvmStatic
-    fun PrintContextLog(context: LuaContextWrapper, msg: String) {
-        staticHandler?.PrintContextLog(context.luaContext, msg) ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue()
+    fun PrintContextLog(context: LuaContextWrapper, msg: String) : Int {
+        return staticHandler?.PrintContextLog(context.luaContext, msg)?.let { 0 }  ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue()
     }
 
     /**
@@ -3288,7 +3298,7 @@ object ScriptLib {
                 val paramsTable = context.engine.getTable(rawParamsTable)
                 val configId = paramsTable.optInt("config_id", -1)
                 val difficultyId = paramsTable.optInt("difficulty_id", -1)
-                checkConfigId(::CreateAsterMidGeneralRewardGadget, configId)?.let {
+                checkConfigId(::CreateAsterMidGeneralRewardGadget, configId, isTableParam = true)?.let {
                     return@onAsterScriptHandler it.getValue()
                 }
                 if (difficultyId == -1) {
@@ -3738,10 +3748,10 @@ object ScriptLib {
         return null
     }
 
-    private fun checkConfigId(caller: KCallable<*>, configId: Int): ScriptLibErrors? {
-        if (configId <= 0) {
+    private fun checkConfigId(caller: KCallable<*>, configId: Int, isTableParam: Boolean = false): ScriptLibErrors? {
+        if (configId <= 0) { // TODO 0 exists, verify if always or only in specific cases
             scriptLogger.error { "[$caller] Invalid configId ($configId)" }
-            return ScriptLibErrors.INVALID_PARAMETER
+            return if(isTableParam) ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT else ScriptLibErrors.INVALID_PARAMETER
         }
         return null
     }
