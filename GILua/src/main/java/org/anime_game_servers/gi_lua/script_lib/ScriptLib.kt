@@ -3738,6 +3738,1135 @@ object ScriptLib {
         }
     }
 
+    /*                                          */
+    /* Misc methods. Not yet sorted to handlers */
+    /*                                          */
+
+    @JvmStatic
+    fun AutoPoolMonsterTide(
+        context: LuaContextWrapper,
+        index: Int,
+        groupId: Int,
+        monsterPools: Any,
+        routeId: Int,
+        routePoints: Any,
+        monsterAffixes: Any,
+        monsterPoolParam: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::AutoPoolMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val monsterPoolParamTable = context.engine.getTable(monsterPoolParam)
+                val monsterPoolList = context.engine.getTable(monsterPools).getAsIntArray()
+                val routePointsList = context.engine.getTable(routePoints).getAsIntArray()
+                val monsterAffixList = context.engine.getTable(monsterAffixes).getAsIntArray()
+                autoPoolMonsterTide(
+                    this@onGroupContext,
+                    index,
+                    groupId,
+                    monsterPoolList,
+                    routeId,
+                    routePointsList,
+                    monsterAffixList,
+                    monsterPoolParamTable
+                )
+            }
+        }
+    }
+
+    @JvmStatic
+    fun BeginCameraSceneLookWithTemplate(context: LuaContextWrapper, var1: Int, camParam: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val camParamTable = context.engine.getTable(camParam)
+                beginCameraSceneLookWithTemplate(this@onGroupContext, var1, camParamTable)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CheckIsInGroup(context: LuaContextWrapper, groupId: Int, configId: Int): Boolean {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::CheckIsInGroup, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue() > 0
+                }
+                checkIsInGroup(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ClearExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, key: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::ClearExhibitionReplaceableData, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                clearExhibitionReplaceableData(this@onGroupContext, uid, key)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ClearPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::ClearPoolMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                clearPoolMonsterTide(this@onGroupContext, groupId, tideNum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ContinueAutoMonster(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::ContinueAutoMonster, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                continueAutoMonster(this@onGroupContext, groupId, tideNum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ContinueTimeAxis(context: LuaContextWrapper, key: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                continueTimeAxis(this@onGroupContext, key)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateFoundation(
+        context: LuaContextWrapper,
+        uids: Any,
+        configId: Int,
+        groupId: Int,
+        index: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::CreateFoundation, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                createFoundation(this@onGroupContext, uidList, configId, groupId, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateFoundations(context: LuaContextWrapper, foundationParam: Any, groupId: Int, index: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::CreateFoundations, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val foundationParamTable = context.engine.getTable(foundationParam)
+                createFoundations(this@onGroupContext, foundationParamTable, groupId, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateGadgetWave(
+        context: LuaContextWrapper,
+        areaId: Int,
+        suitId: Int,
+        offset: Int,
+        boxSize: Any,
+        gadgetSize: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val luaBoxSize = context.engine.getTable(boxSize)
+                val luaGadgetSize = context.engine.getTable(gadgetSize)
+                createGadgetWave(
+                    this@onGroupContext,
+                    areaId,
+                    suitId,
+                    offset,
+                    ScriptUtils.luaToPos(luaBoxSize),
+                    ScriptUtils.luaToPos(luaGadgetSize)
+                )
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateGadgetWithGlobalValue(context: LuaContextWrapper, configId: Int, sgv: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::CreateGadgetWithGlobalValue, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val sgvTable = context.engine.getTable(sgv)
+                createGadgetWithGlobalValue(this@onGroupContext, configId, sgvTable)
+                //TODO implement Sgv contains ["SGV_BDShootType"] or sometimes nothing.
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateScenePlayGeneralRewardGadget(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::CreateScenePlayGeneralRewardGadget, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                createScenePlayGeneralRewardGadget(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndAllTimeAxis(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                endAllTimeAxis(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndMonsterTide(context: LuaContextWrapper, groupId: Int, tideIndex: Int, endType: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::EndMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                endMonsterTide(this@onGroupContext, groupId, tideIndex, endType)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndPoolMonsterTide(context: LuaContextWrapper, groupId: Int, index: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::EndPoolMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                endPoolMonsterTide(this@onGroupContext, groupId, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndSceneMultiStagePlay(context: LuaContextWrapper, playIndex: Int, isSucc: Boolean): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                endSceneMultiStagePlay(this@onGroupContext, playIndex, isSucc)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndSceneMultiStagePlayStage(
+        context: LuaContextWrapper,
+        playIndex: Int,
+        stageName: String,
+        isSucc: Boolean
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                endSceneMultiStagePlayStage(this@onGroupContext, playIndex, stageName, isSucc)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EnterCurve(context: LuaContextWrapper, uid: Int, curveId: Int, pointId: Int, oceanCurrent: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::EnterCurve, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val oceanCurrentTable = context.engine.getTable(oceanCurrent)
+                enterCurve(this@onGroupContext, uid, curveId, pointId, oceanCurrentTable)
+                //TODO implement oceanCurrent unknown what it is.
+            }
+        }
+    }
+
+    @JvmStatic
+    fun FailScenePlayBattle(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::FailScenePlayBattle, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                failScenePlayBattle(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun FinishRandTask(context: LuaContextWrapper, optionId: Int, isSucc: Boolean): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                finishRandTask(this@onGroupContext, optionId, isSucc)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ForbidPlayerRegionVision(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::ForbidPlayerRegionVision, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                forbidPlayerRegionVision(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetAranaraCollectableCountByTypeAndState(context: LuaContextWrapper, type: Int, state: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getAranaraCollectableCountByTypeAndState(this@onGroupContext, type, state)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetChainLevel(context: LuaContextWrapper, chainId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getChainLevel(this@onGroupContext, chainId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetExhibitionAccumulableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetExhibitionAccumulableData, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getExhibitionAccumulableData(this@onGroupContext, uid, exhibitionId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetExhibitionReplaceableData, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getExhibitionReplaceableData(this@onGroupContext, uid, exhibitionId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGadgetPlayProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::GetGadgetPlayProgress, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getGadgetPlayProgress(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGadgetPlayStageBeginProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::GetGadgetPlayStageBeginProgress, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getGadgetPlayStageBeginProgress(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGadgetPlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        configId: Int,
+        uid: Int,
+        name: String
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetGadgetPlayUidValue, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkGroupIdAndConfigId(::GetGadgetPlayUidValue, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getGadgetPlayUidValue(this@onGroupContext, groupId, configId, uid, name)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGameTimePassed(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getGameTimePassed(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getGivingItemList(this@onGroupContext, givingId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupAliveMonsterList(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::GetGroupAliveMonsterList, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getGroupAliveMonsterList(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGroupLogicStateValue(context: LuaContextWrapper, sgvName: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getGroupLogicStateValue(this@onGroupContext, sgvName)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetOfferingLevel(context: LuaContextWrapper, offeringId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getOfferingLevel(this@onGroupContext, offeringId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetPlatformArrayInfoByPointId(context: LuaContextWrapper, arrayId: Int, pointId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getPlatformArrayInfoByPointId(this@onGroupContext, arrayId, pointId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetPlatformPointArray(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::GetPlatformPointArray, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getPlatformPointArray(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetPlayerVehicleType(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetPlayerVehicleType, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getPlayerVehicleType(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetRegionalPlayVarValue(context: LuaContextWrapper, uid: Int, type: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getRegionalPlayVarValue(this@onGroupContext, uid, type)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetSceneMultiStagePlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        index: Int,
+        name: String,
+        uid: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetSceneMultiStagePlayUidValue, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkGroupId(::GetSceneMultiStagePlayUidValue, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getSceneMultiStagePlayUidValue(this@onGroupContext, groupId, index, name, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetScenePlayBattleHostUid(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::GetScenePlayBattleHostUid, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getScenePlayBattleHostUid(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetScenePlayBattleType(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::GetScenePlayBattleType, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getScenePlayBattleType(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetScenePlayBattleUidValue(context: LuaContextWrapper, groupId: Int, uid: Int, key: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::GetScenePlayBattleUidValue, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkGroupId(::GetScenePlayBattleUidValue, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getScenePlayBattleUidValue(this@onGroupContext, groupId, uid, key)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetSceneTimeSeconds(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                getSceneTimeSeconds(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetSurroundUidList(context: LuaContextWrapper, configId: Int, radius: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::GetSurroundUidList, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                getSurroundUidList(this@onGroupContext, configId, radius)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun InitSceneMultistagePlay(
+        context: LuaContextWrapper,
+        index: Int,
+        playType: MultistagePlayType,
+        params: Any,
+        uids: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val paramTable = context.engine.getTable(params)
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                initSceneMultistagePlay(this@onGroupContext, index, playType, paramTable, uidList)
+                //TODO implement paramTable contains int[] banList, int rounds, int initBuildingPoints
+            }
+        }
+    }
+
+    @JvmStatic
+    fun InvaildGravenPhotoBundleMark(context: LuaContextWrapper, groupBundleId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                invalidGravenPhotoBundleMark(this@onGroupContext, groupBundleId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsPlayerTransmittable(context: LuaContextWrapper, uid: Int): Boolean {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::IsPlayerTransmittable, uid)?.let {
+                    return@onScriptLibHandler it.getValue() > 0
+                }
+                isPlayerTransmittable(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsWidgetEquipped(context: LuaContextWrapper, hostUid: Int, widgetId: Int): Boolean {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::IsWidgetEquipped, hostUid)?.let {
+                    return@onScriptLibHandler it.getValue() > 0
+                }
+                isWidgetEquipped(this@onGroupContext, hostUid, widgetId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun MarkGroupLuaAction(context: LuaContextWrapper, action: String, transaction: String, log: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val logTable = context.engine.getTable(log)
+                markGroupLuaAction(this@onGroupContext, action, transaction, logTable)
+                //TODO implement log contains many sting/int key/value pairs
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ModifyClimatePolygonParamTable(context: LuaContextWrapper, one: Int, climate: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val climateTable = context.engine.getTable(climate)
+                modifyClimatePolygonParamTable(this@onGroupContext, one, climateTable)
+                //TODO implement climateTable contains int climateType, int meterInheritRatio
+            }
+        }
+    }
+
+    @JvmStatic
+    fun MoveAvatarByPointArrayWithTemplate(
+        context: LuaContextWrapper,
+        uid: Int,
+        pointArrayId: Int,
+        routes: Any,
+        gadgetState: Int,
+        speed: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::MoveAvatarByPointArrayWithTemplate, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val speedTable = context.engine.getTable(speed)
+                val routeList = context.engine.getTable(routes).getAsIntArray()
+                moveAvatarByPointArrayWithTemplate(
+                    this@onGroupContext,
+                    uid,
+                    pointArrayId,
+                    routeList,
+                    gadgetState,
+                    speedTable
+                )
+                //TODO implement speed is sometimes int speed=10 and sometimes {4,60}
+            }
+        }
+    }
+
+    @JvmStatic
+    fun NotifyAllPlayerPerformOperation(
+        context: LuaContextWrapper,
+        teamEntityId: Int,
+        type: Int,
+        effectIndex: Int,
+        hunterPos: Any,
+        hunterRot: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val luaPos = context.engine.getTable(hunterPos)
+                val luaRot = context.engine.getTable(hunterRot)
+                notifyAllPlayerPerformOperation(
+                    this@onGroupContext,
+                    teamEntityId,
+                    type,
+                    effectIndex,
+                    ScriptUtils.luaToPos(luaPos),
+                    ScriptUtils.luaToPos(luaRot)
+                )
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PauseAutoMonsterTide(context: LuaContextWrapper, groupId: Int, monsterTideIndex: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                pauseAutoMonsterTide(this@onGroupContext, groupId, monsterTideIndex)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PauseAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::PauseAutoPoolMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                pauseAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PauseTimeAxis(context: LuaContextWrapper, key: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                pauseTimeAxis(this@onGroupContext, key)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PrestartScenePlayBattle(context: LuaContextWrapper, sceneParam: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val sceneParamTable = context.engine.getTable(sceneParam)
+                prestartScenePlayBattle(this@onGroupContext, sceneParamTable)
+                //TODO implement sceneParam contains int duration, int startCd, int[] progressStage, int groupId, int mode
+            }
+        }
+    }
+
+    @JvmStatic
+    fun RecieveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::RecieveAllAranaraCollectionByType, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                recieveAllAranaraCollectionByType(this@onGroupContext, groupId, type)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ResumeAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::ResumeAutoPoolMonsterTide, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                resumeAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun RevertPlayerRegionVision(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::RevertPlayerRegionVision, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                revertPlayerRegionVision(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ScenePlayBattleUidOp(
+        context: LuaContextWrapper,
+        groupId: Int,
+        configId: Int,
+        uids: Any,
+        buffType: Int,
+        paramString: String,
+        params: Any,
+        paramTargets: Any,
+        index: Int,
+        duration: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::ScenePlayBattleUidOp, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                val paramList = context.engine.getTable(params).getAsIntArray()
+                val paramTargetList = context.engine.getTable(paramTargets).getAsIntArray()
+                scenePlayBattleUidOp(
+                    this@onGroupContext,
+                    groupId,
+                    configId,
+                    uidList,
+                    buffType,
+                    paramString,
+                    paramList,
+                    paramTargetList,
+                    index,
+                    duration
+                )
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetChainLevel(context: LuaContextWrapper, chainId: Int, level: Int, isNotify: Boolean): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                setChainLevel(this@onGroupContext, chainId, level, isNotify)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetDarkPressureLevel(context: LuaContextWrapper, darkLevel: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                setDarkPressureLevel(this@onGroupContext, darkLevel)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetEnvironmentEffectState(
+        context: LuaContextWrapper,
+        index: Int,
+        key: String,
+        floatParam: Any,
+        intParams: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val intParamList = context.engine.getTable(intParams).getAsIntArray()
+                val floatParamTable = context.engine.getTable(floatParam)
+                //TODO: convert floatParam to a FloatArray
+                setEnvironmentEffectState(this@onGroupContext, index, key, floatParamTable, intParamList)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGadgetPlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        configId: Int,
+        uid: Int,
+        key: String,
+        value: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::SetGadgetPlayUidValue, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkGroupIdAndConfigId(::SetGadgetPlayUidValue, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setGadgetPlayUidValue(this@onGroupContext, groupId, configId, uid, key, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetLimitOptimization(context: LuaContextWrapper, uid: Int, isLimitOptimization: Boolean): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                setLimitOptimization(this@onGroupContext, uid, isLimitOptimization)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlatformRouteIndexToNext(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::SetPlatformRouteIndexToNext, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setPlatformRouteIndexToNext(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlayerEyePoint(context: LuaContextWrapper, configId: Int, configId2: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::SetPlayerEyePoint, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkConfigId(::SetPlayerEyePoint, configId2)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setPlayerEyePoint(this@onGroupContext, configId, configId2)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlayerEyePointLOD(context: LuaContextWrapper, configId: Int, configId2: Int, lodLevel: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::SetPlayerEyePointLOD, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkConfigId(::SetPlayerEyePointLOD, configId2)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setPlayerEyePointLOD(this@onGroupContext, configId, configId2, lodLevel)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlayerInteractOption(context: LuaContextWrapper, key: String): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                setPlayerInteractOption(this@onGroupContext, key)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetSceneMultiStagePlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        index: Int,
+        tag: String,
+        value: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::SetSceneMultiStagePlayUidValue, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setSceneMultiStagePlayUidValue(this@onGroupContext, groupId, index, tag, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetSceneMultiStagePlayValue(
+        context: LuaContextWrapper,
+        index: Int,
+        tag: String,
+        value: Int,
+        isNotify: Boolean
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                setSceneMultiStagePlayValue(this@onGroupContext, index, tag, value, isNotify)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetSceneMultiStagePlayValues(
+        context: LuaContextWrapper,
+        index: Int,
+        params: Any,
+        isNotify: Boolean
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val paramTable = context.engine.getTable(params)
+                setSceneMultiStagePlayValues(this@onGroupContext, index, paramTable, isNotify)
+                //TODO implement paramTable contains a lot
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetScenePlayBattlePlayTeamEntityGadgetId(context: LuaContextWrapper, groupId: Int, gadgetId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupId(::SetScenePlayBattlePlayTeamEntityGadgetId, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setScenePlayBattlePlayTeamEntityGadgetId(this@onGroupContext, groupId, gadgetId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetScenePlayBattleUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        uid: Int,
+        key: String,
+        value: Int
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::SetScenePlayBattleUidValue, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                checkGroupId(::SetScenePlayBattleUidValue, groupId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setScenePlayBattleUidValue(this@onGroupContext, groupId, uid, key, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetWidgetClientDetectorCoolDown(context: LuaContextWrapper, configId: Int, isSucc: Boolean): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkConfigId(::SetWidgetClientDetectorCoolDown, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                setWidgetClientDetectorCoolDown(this@onGroupContext, configId, isSucc)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ShowClientTutorial(context: LuaContextWrapper, tutorialId: Int, uids: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                showClientTutorial(this@onGroupContext, tutorialId, uidList)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ShowCommonPlayerTips(context: LuaContextWrapper, type: Int, keys: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val keysTable = context.engine.getTable(keys)
+                //TODO: convert keys to a String Array
+                showCommonPlayerTips(this@onGroupContext, type, keysTable)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ShowReminderByUid(context: LuaContextWrapper, uids: Any, reminderId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                showReminderByUid(this@onGroupContext, uidList, reminderId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ShowTemplateReminder(context: LuaContextWrapper, reminderId: Int, timerInfo: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val timerInfoList = context.engine.getTable(timerInfo).getAsIntArray()
+                showTemplateReminder(this@onGroupContext, reminderId, timerInfoList)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SkipTeyvatTime(context: LuaContextWrapper, time: Int, rate: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                skipTeyvatTime(this@onGroupContext, time, rate)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StartGadgetPlay(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkGroupIdAndConfigId(::StartGadgetPlay, groupId, configId)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                startGadgetPlay(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StartSceneMultiStagePlayStage(
+        context: LuaContextWrapper,
+        index: Int,
+        time: Int,
+        key: String,
+        params: Any
+    ): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val paramTable = context.engine.getTable(params)
+                startSceneMultiStagePlayStage(this@onGroupContext, index, time, key, paramTable)
+                //TODO implement paramTable contains int previewStageIndex, int previewDisplayDuration
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StopFishing(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                checkUid(::StopFishing, uid)?.let {
+                    return@onScriptLibHandler it.getValue()
+                }
+                stopFishing(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StopReminder(context: LuaContextWrapper, reminderId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                stopReminder(this@onGroupContext, reminderId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SwitchSceneEnvAnimal(context: LuaContextWrapper, animalId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                switchSceneEnvAnimal(this@onGroupContext, animalId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun TryRecordActivityPushTips(context: LuaContextWrapper, pushTipId: Int): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                tryRecordActivityPushTips(this@onGroupContext, pushTipId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun UpdateStakeHomePlayRecord(context: LuaContextWrapper, uids: Any): Int {
+        return context.onGroupContext {
+            onScriptLibHandler {
+                val uidList = context.engine.getTable(uids).getAsIntArray()
+                updateStakeHomePlayRecord(this@onGroupContext, uidList)
+            }
+        }
+    }
 
     /* helpers to verify values */
     private fun checkUid(caller: KCallable<*>, uid: Int): ScriptLibErrors? {
