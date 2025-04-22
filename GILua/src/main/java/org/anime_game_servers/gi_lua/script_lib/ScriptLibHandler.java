@@ -6,6 +6,7 @@ import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType;
 import org.anime_game_servers.gi_lua.models.constants.MultistagePlayType;
 import org.anime_game_servers.lua.engine.LuaTable;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -54,8 +55,8 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int getGadgetPlayStageBeginProgress(GroupEventContext context, int groupId, int configId);
     int getGadgetPlayUidValue(GroupEventContext context, int groupId, int configId, int uid, String name);
     int getGameTimePassed(GroupEventContext context);
-    int getGivingItemList(GroupEventContext context, int givingId);
-    int getGroupAliveMonsterList(GroupEventContext context, int groupId);
+    @Nullable int[] getGivingItemList(GroupEventContext context, int givingId);
+    @Nullable int[]  getGroupAliveMonsterList(GroupEventContext context, int groupId);
     int getGroupLogicStateValue(GroupEventContext context, String sgvName);
     int getOfferingLevel(GroupEventContext context, int offeringId);
     int getPlatformArrayInfoByPointId(GroupEventContext context, int arrayId, int pointId);
@@ -67,7 +68,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int getScenePlayBattleType(GroupEventContext context, int groupId);
     int getScenePlayBattleUidValue(GroupEventContext context, int groupId, int uid, String key);
     int getSceneTimeSeconds(GroupEventContext context);
-    int getSurroundUidList(GroupEventContext context, int configId, int radius);
+    @Nullable int[] getSurroundUidList(GroupEventContext context, int configId, int radius);
     int initSceneMultistagePlay(GroupEventContext context, int index, MultistagePlayType playType, LuaTable paramTable, int[] uidList);
     int invalidGravenPhotoBundleMark(GroupEventContext context, int groupBundleId);
     boolean isPlayerTransmittable(GroupEventContext context, int uid);
@@ -80,7 +81,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int pauseAutoPoolMonsterTide(GroupEventContext context, int groupId, int tideStage);
     int pauseTimeAxis(GroupEventContext context, String key);
     int prestartScenePlayBattle(GroupEventContext context, LuaTable sceneParam);
-    int recieveAllAranaraCollectionByType(GroupEventContext context, int groupId, int type);
+    int receiveAllAranaraCollectionByType(GroupEventContext context, int groupId, int type);
     int resumeAutoPoolMonsterTide(GroupEventContext context, int groupId, int tideStage);
     int revertPlayerRegionVision(GroupEventContext context, int uid);
     int scenePlayBattleUidOp(GroupEventContext context, int groupId, int configId, int[] uidList, int buffType, String paramString, int[] paramList, int[] paramTargetList, int index, int duration);

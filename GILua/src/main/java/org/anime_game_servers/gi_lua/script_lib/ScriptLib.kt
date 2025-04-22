@@ -3730,7 +3730,7 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetGatherConfigIdList(context: LuaContextWrapper): IntArray? {
+    fun GetGatherConfigIdList(context: LuaContextWrapper): IntArray {
         return context.onControllerContext {
             onGadgetControllerHandler {
                 getGatherConfigIdList(this@onControllerContext)
@@ -4126,7 +4126,7 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): Int {
+    fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): IntArray? {
         return context.onGroupContext {
             onScriptLibHandler {
                 getGivingItemList(this@onGroupContext, givingId)
@@ -4135,11 +4135,11 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetGroupAliveMonsterList(context: LuaContextWrapper, groupId: Int): Int {
+    fun GetGroupAliveMonsterList(context: LuaContextWrapper, groupId: Int): IntArray? {
         return context.onGroupContext {
             onScriptLibHandler {
                 checkGroupId(::GetGroupAliveMonsterList, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
+                    return@onScriptLibHandler intArrayOf(it.getValue())
                 }
                 getGroupAliveMonsterList(this@onGroupContext, groupId)
             }
@@ -4276,11 +4276,11 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetSurroundUidList(context: LuaContextWrapper, configId: Int, radius: Int): Int {
+    fun GetSurroundUidList(context: LuaContextWrapper, configId: Int, radius: Int): IntArray? {
         return context.onGroupContext {
             onScriptLibHandler {
                 checkConfigId(::GetSurroundUidList, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
+                    return@onScriptLibHandler intArrayOf(it.getValue())
                 }
                 getSurroundUidList(this@onGroupContext, configId, radius)
             }
@@ -4306,12 +4306,18 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun InvaildGravenPhotoBundleMark(context: LuaContextWrapper, groupBundleId: Int): Int {
+    fun InvalidGravenPhotoBundleMark(context: LuaContextWrapper, groupBundleId: Int): Int {
         return context.onGroupContext {
             onScriptLibHandler {
                 invalidGravenPhotoBundleMark(this@onGroupContext, groupBundleId)
             }
         }
+    }
+
+    // Compat for scripts calling it with a typo
+    @JvmStatic
+    fun InvaildGravenPhotoBundleMark(context: LuaContextWrapper, groupBundleId: Int): Int {
+        return InvaildGravenPhotoBundleMark(context, groupBundleId)
     }
 
     @JvmStatic
@@ -4456,15 +4462,19 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun RecieveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
+    fun ReceiveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
         return context.onGroupContext {
             onScriptLibHandler {
                 checkGroupId(::RecieveAllAranaraCollectionByType, groupId)?.let {
                     return@onScriptLibHandler it.getValue()
                 }
-                recieveAllAranaraCollectionByType(this@onGroupContext, groupId, type)
+                receiveAllAranaraCollectionByType(this@onGroupContext, groupId, type)
             }
         }
+    }
+    @JvmStatic
+    fun RecieveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
+        return ReceiveAllAranaraCollectionByType(context, groupId, type)
     }
 
     @JvmStatic

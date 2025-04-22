@@ -56,7 +56,7 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
 
     fun dropSubfield(context: ControllerEventContext, paramsTable: LuaTable?): Int
 
-    fun getGatherConfigIdList(context: ControllerEventContext): IntArray?
+    fun getGatherConfigIdList(context: ControllerEventContext): IntArray
 
 
     fun killEntityByConfigId(context: ControllerEventContext, params: KillByConfigIdParams): Int
