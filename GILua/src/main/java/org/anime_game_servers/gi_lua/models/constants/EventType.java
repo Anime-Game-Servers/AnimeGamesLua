@@ -136,4 +136,6 @@ public class EventType {
 	public static final int EVENT_TRAINING_FUNGUS_SELECT_DONE = 3202;
 	public static final int EVENT_GALLERY_PRE_START = 3300;
 	public static final int EVENT_PLATFORM_DEPART = 3301;
+	public static final int EVENT_GALLERY_ALL_AVATAR_DIE = 3500;
+	public static final int EVENT_CUSTOM_GALLERY_SCORE_BOARD_FINISH = 3600;
 }
