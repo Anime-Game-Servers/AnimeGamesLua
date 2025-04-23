@@ -11,7 +11,7 @@ enum class VisionLevelType(private val value: Int) : IntValueEnum {
     VISION_LEVEL_SUPER(3),
     VISION_LEVEL_NEARBY(4),
     VISION_LEVEL_SUPER_NEARBY(5),
-    VISION_LEVEL_SUPER_NUM(6);
+    VISION_LEVEL_HALF_REMOTE(6);
 
     override fun getValue() = value
     companion object {

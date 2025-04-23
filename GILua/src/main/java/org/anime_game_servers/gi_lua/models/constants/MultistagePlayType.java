@@ -27,5 +27,35 @@ public enum MultistagePlayType {
     @LuaNames("CoinCollect")
     COIN_COLLECT,
     @LuaNames("LanV3Boat")
-    LAN_V3_BOAT
+    LAN_V3_BOAT,
+    @LuaNames("FleurFairV2Pacman")
+    FLEUR_FAIR_V2_PACMAN,
+    @LuaNames("TargetShooting")
+    TARGET_SHOOTING,
+    @LuaNames("PitchPot")
+    PITCH_POT,
+    @LuaNames("BallGame")
+    BALL_GAME,
+    @LuaNames("LanV4PartyLion")
+    LAN_V4_PARTY_LION,
+    @LuaNames("HideAndSeekV4")
+    HIDE_AND_SEEK_V4,
+    @LuaNames("Watergun")
+    WATERGUN,
+    @LuaNames("MonsterVsMonster")
+    MONSTER_VS_MONSTER,
+    @LuaNames("BirdBall")
+    BIRD_BALL,
+    @LuaNames("CooperateChallenge")
+    COOPERATE_CHALLENGE,
+    @LuaNames("CeremonyGhost")
+    CEREMONY_GHOST,
+    @LuaNames("PuzzleFighter")
+    PUZZLE_FIGHTER,
+    @LuaNames("ElectroherculesBattleV3")
+    ELECTROHERCULES_BATTLE_V3,
+    @LuaNames("FishingJoy")
+    FISHING_JOY,
+    @LuaNames("Party")
+    PARTY
 }
