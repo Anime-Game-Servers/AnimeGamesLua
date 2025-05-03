@@ -96,11 +96,13 @@ public class SceneMeta {
         var meta = activities.get(activityId);
         if(meta == null){
             meta = ActivityMeta.of(this, activityId, scriptLoader);
-            activities.put(activityId, meta);
         }
-        this.blocks.putAll(meta.getBlocks());
-        this.groupsInfos.putAll(meta.getGroupsInfos());
-        this.groups.putAll(meta.getGroups());
+        if(meta != null) {
+            activities.put(activityId, meta);
+            this.blocks.putAll(meta.getBlocks());
+            this.groupsInfos.putAll(meta.getGroupsInfos());
+            this.groups.putAll(meta.getGroups());
+        }
     }
 
     private void unloadActivity(int activityId){
