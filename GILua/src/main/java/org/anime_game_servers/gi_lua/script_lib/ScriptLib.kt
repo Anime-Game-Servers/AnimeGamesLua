@@ -8,9 +8,12 @@ import org.anime_game_servers.gi_lua.models.constants.*
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType
 import org.anime_game_servers.gi_lua.script_lib.handler.ScriptLibStaticHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.activity.ChessPreviewInfo
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.FungusFighterTrainingParams
+import org.anime_game_servers.gi_lua.script_lib.handler.activity.MechanicusChallengeState
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.MonsterFaceAvatarParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
+import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionPlayTarget
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.ChangeLevelTagParams
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.SealBattleParams
 import org.anime_game_servers.gi_lua.utils.ScriptUtils
@@ -576,24 +579,7 @@ object ScriptLib {
         }
     }
 
-    /**
-     * This signalizes the server that it should unlock the float signal gadget with the specified id in the specified group
-     * @param context group context in which this function is called
-     * @param groupId group id of the group containing the float signal gadget that should be unlocked
-     * @param signalGadgetCfgId the config id identifying the of the float signal gadget that should be unlocked
-     * @return 0 on success, otherwise an error code
-     */
-    @JvmStatic
-    fun UnlockFloatSignal(context: LuaContextWrapper, groupId: Int, signalGadgetCfgId: Int): Int {
-        return context.onGroupContext {
-            onSummerTimeScriptHandler {
-                checkGroupIdAndConfigId(::UnlockFloatSignal, groupId, signalGadgetCfgId)?.let {
-                    return@onSummerTimeScriptHandler it.getValue()
-                }
-                unlockFloatSignal(this@onGroupContext, groupId, signalGadgetCfgId)
-            }
-        }
-    }
+
 
     @JvmStatic
     fun SendServerMessageByLuaKey(context: LuaContextWrapper, stringKey: String?, targetsTable: Any): Int {
@@ -988,133 +974,9 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun AddChessBuildingPoints(
-        context: LuaContextWrapper,
-        groupId: Int,
-        param2: Int,
-        uid: Int,
-        pointsToAdd: Int
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::AddChessBuildingPoints, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                checkUid(ScriptLib::AddChessBuildingPoints, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddChessBuildingPoints(this@onGroupContext, groupId, param2, uid, pointsToAdd)
-            }
-        }
-    }
 
-    /**
-     * TODO implement
-     * @param context
-     * @param uid
-     * @param param2  probably the name of the data field
-     * @param param3
-     * @return
-     */
-    @JvmStatic
-    fun AddExhibitionAccumulableData(context: LuaContextWrapper, uid: Int, param2: String?, param3: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(ScriptLib::AddExhibitionAccumulableData, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddExhibitionAccumulableData(this@onGroupContext, uid, param2, param3)
-            }
-        }
-    }
 
-    /**
-     * TODO implement
-     * @param context
-     * @param uid
-     * @param param2 probably the name of the data field
-     * @param param3
-     * @param param4Table contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id"
-     * @return
-     */
-    @JvmStatic
-    fun AddExhibitionAccumulableDataAfterSuccess(
-        context: LuaContextWrapper,
-        uid: Int,
-        param2: String?,
-        param3: Int,
-        param4Table: Any
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(ScriptLib::AddExhibitionAccumulableDataAfterSuccess, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                val param4 = context.engine.getTable(param4Table)
-                val exhibitionTypeIndex = param4.optInt("play_type", -1)
-                val galleryId = param4.optInt("gallery_id", -1)
-                if (exhibitionTypeIndex < 0 || exhibitionTypeIndex >= ExhibitionPlayType.entries.size) {
-                    scriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid exhibition type $exhibitionTypeIndex" }
-                    return@onScriptLibHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
-                }
-                if (galleryId == -1) {
-                    scriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid gallery id $galleryId" }
-                    return@onScriptLibHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
-                }
-                val exhibitionTypeEnum = ExhibitionPlayType.entries[exhibitionTypeIndex]
-                AddExhibitionAccumulableDataAfterSuccess(this@onGroupContext, uid, param2, param3, exhibitionTypeEnum, galleryId)
-            }
-        }
-    }
 
-    /**
-     * TODO implement
-     * @param context
-     * @param uid
-     * @param param2  probably the name of the data field
-     * @param param3
-     * @return
-     */
-    @JvmStatic
-    fun AddExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, param2: String?, param3: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(ScriptLib::AddExhibitionReplaceableData, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddExhibitionReplaceableData(this@onGroupContext, uid, param2, param3)
-            }
-        }
-    }
-
-    /**
-     * TODO implement
-     * @param context
-     * @param uid
-     * @param param2 probably the name of the data field
-     * @param param3
-     * @param param4Table contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id"
-     * @return
-     */
-    @JvmStatic
-    fun AddExhibitionReplaceableDataAfterSuccess(
-        context: LuaContextWrapper,
-        uid: Int,
-        param2: String?,
-        param3: Int,
-        param4Table: Any
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(ScriptLib::AddExhibitionReplaceableDataAfterSuccess, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                val param4 = context.engine.getTable(param4Table)
-                AddExhibitionReplaceableDataAfterSuccess(this@onGroupContext, uid, param2, param3, param4)
-            }
-        }
-    }
 
     @JvmStatic
     fun AddGadgetPlayProgress(context: LuaContextWrapper, param1: Int, param2: Int, progressChange: Int): Int {
@@ -1125,56 +987,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun AddIrodoriChessBuildingPoints(context: LuaContextWrapper, groupId: Int, param2: Int, points: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::AddIrodoriChessBuildingPoints, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddIrodoriChessBuildingPoints(this@onGroupContext, groupId, param2, points)
-            }
-        }
-    }
 
-    @JvmStatic
-    fun AddIrodoriChessTowerServerGlobalValue(
-        context: LuaContextWrapper,
-        groupId: Int,
-        param2: Int,
-        param3: Int,
-        delta: Int
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::AddIrodoriChessTowerServerGlobalValue, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddIrodoriChessTowerServerGlobalValue(this@onGroupContext, groupId, param2, param3, delta)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AddMechanicusBuildingPoints(
-        context: LuaContextWrapper,
-        groupId: Int,
-        param2: Int,
-        uid: Int,
-        delta: Int
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::AddMechanicusBuildingPoints, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                checkUid(ScriptLib::AddMechanicusBuildingPoints, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AddMechanicusBuildingPoints(this@onGroupContext, groupId, param2, uid, delta)
-            }
-        }
-    }
 
     @JvmStatic
     fun AddRegionRecycleProgress(context: LuaContextWrapper, regionId: Int, delta: Int): Int {
@@ -2100,6 +1913,151 @@ object ScriptLib {
         }
     }
 
+
+    /*                 */
+    /* Player Handlers */
+    /*                 */
+
+
+    /* ExhibitionScriptHandler */
+
+    /**
+     * @param context
+     * @param uid
+     * @param dataKey key under which the data is stored
+     * @param value value to add
+     * @return
+     */
+    @JvmStatic
+    fun AddExhibitionAccumulableData(context: LuaContextWrapper, uid: Int, dataKey: String, value: Int): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(ScriptLib::AddExhibitionAccumulableData, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                addExhibitionAccumulableData(this@onGroupContext, uid, dataKey, value)
+            }
+        }
+    }
+
+    /**
+     * @param context
+     * @param uid
+     * @param dataKey key under which the data is stored
+     * @param value value to add
+     * @param rawTargetPlayInfoTable contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id",
+     *     These define the play that should be finished successfully before adding the data
+     * @return
+     */
+    @JvmStatic
+    fun AddExhibitionAccumulableDataAfterSuccess(
+        context: LuaContextWrapper,
+        uid: Int,
+        dataKey: String,
+        value: Int,
+        rawTargetPlayInfoTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(ScriptLib::AddExhibitionAccumulableDataAfterSuccess, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                val targetPlayInfoTable = context.engine.getTable(rawTargetPlayInfoTable)
+                val targetPlayInfo = ExhibitionPlayTarget.fromLuaTable(targetPlayInfoTable) ?:
+                    return@onExhibitionHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+
+                addExhibitionAccumulableDataAfterSuccess(this@onGroupContext, uid, dataKey, value, targetPlayInfo)
+            }
+        }
+    }
+
+
+    @JvmStatic
+    fun GetExhibitionAccumulableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(::GetExhibitionAccumulableData, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                getExhibitionAccumulableData(this@onGroupContext, uid, exhibitionId)
+            }
+        }
+    }
+
+    /**
+     * @param context
+     * @param uid
+     * @param dataKey key under which the data is stored
+     * @param value value to add
+     * @return
+     */
+    @JvmStatic
+    fun AddExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, dataKey: String, value: Int): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(ScriptLib::AddExhibitionReplaceableData, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                addExhibitionReplaceableData(this@onGroupContext, uid, dataKey, value)
+            }
+        }
+    }
+
+    /**
+     * @param context
+     * @param uid
+     * @param dataKey key under which the data is stored
+     * @param value value to add
+     * @param rawTargetPlayInfoTable contains the fields "play_type" is part of the enum [ExhibitionPlayType] and "gallery_id",
+     *     These define the play that should be finished successfully before adding the data
+     * @return
+     */
+    @JvmStatic
+    fun AddExhibitionReplaceableDataAfterSuccess(
+        context: LuaContextWrapper,
+        uid: Int,
+        dataKey: String,
+        value: Int,
+        rawTargetPlayInfoTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(::AddExhibitionReplaceableDataAfterSuccess, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                val targetPlayInfoTable = context.engine.getTable(rawTargetPlayInfoTable)
+                val targetPlayInfo = ExhibitionPlayTarget.fromLuaTable(targetPlayInfoTable) ?:
+                return@onExhibitionHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                addExhibitionReplaceableDataAfterSuccess(this@onGroupContext, uid, dataKey, value, targetPlayInfo)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ClearExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, dataKey: String): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(::ClearExhibitionReplaceableData, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                clearExhibitionReplaceableData(this@onGroupContext, uid, dataKey)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
+        return context.onGroupContext {
+            onExhibitionHandler {
+                checkUid(::GetExhibitionReplaceableData, uid)?.let {
+                    return@onExhibitionHandler it.getValue()
+                }
+                getExhibitionReplaceableData(this@onGroupContext, uid, exhibitionId)
+            }
+        }
+    }
+
+
     /* QuestScriptHandler */
 
     @JvmStatic
@@ -2137,6 +2095,11 @@ object ScriptLib {
             }
         }
     }
+
+
+    /*                */
+    /* Scene Handlers */
+    /*                */
 
 
     /* ChallengeScriptHandler */
@@ -2419,6 +2382,208 @@ object ScriptLib {
         return context.onGroupContext {
             onDungeonHandler {
                 getOpeningDungeonListByRosterId(this@onGroupContext, rosterId).toIntArray()
+            }
+        }
+    }
+
+
+    /* GalleryScriptHandler*/
+
+    @JvmStatic
+    fun StartGallery(context: LuaContextWrapper, galleryId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                startGallery(this@onGroupContext, galleryId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StopGallery(context: LuaContextWrapper, galleryId: Int, var2: Boolean): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                stopGallery(this@onGroupContext, galleryId, var2)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StopGalleryByReason(context: LuaContextWrapper, galleryId: Int, stopReasonId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                stopGalleryByReason(this@onGroupContext, galleryId, stopReasonId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun UpdatePlayerGalleryScore(context: LuaContextWrapper, galleryId: Int, var2Table: Any): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val var2 = context.engine.getTable(var2Table)
+                updatePlayerGalleryScore(this@onGroupContext, galleryId, var2)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGalleryTransaction(context: LuaContextWrapper, galleryId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                getGalleryTransaction(this@onGroupContext, galleryId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGalleryUidList(context: LuaContextWrapper, galleryId: Int): IntArray {
+        return context.onGroupContext {
+            onGalleryHandler {
+                getGalleryUidList(this@onGroupContext, galleryId).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsGalleryStart(context: LuaContextWrapper, galleryId: Int): Boolean {
+        return context.onGroupContext {
+            onGalleryHandler {
+                isGalleryStart(this@onGroupContext, galleryId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetGalleryRevivePoint(context: LuaContextWrapper, galleryId: Int, groupId: Int, pointId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                setGalleryRevivePoint(this@onGroupContext, galleryId, groupId, pointId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlayerStartGallery(context: LuaContextWrapper, galleryId: Int, uidListRawTable: Any): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                setPlayerStartGallery(this@onGroupContext, galleryId, uiList)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AttachGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                attachGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AttachGalleryTeamAbilityGroup(
+        context: LuaContextWrapper,
+        uidListRawTable: Any,
+        galleryId: Int,
+        var3: Int
+    ): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                attachGalleryTeamAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DelGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+                delGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+            }
+        }
+    }
+
+
+    @JvmStatic
+    fun InitGalleryProgressScore(
+        context: LuaContextWrapper, name: String?, galleryId: Int, progressTable: Any,
+        scoreUiTypeIndex: Int, scoreTypeIndex: Int
+    ): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val progress = context.engine.getTable(progressTable)
+
+                checkGalleryScoreUiTypeIndexName(::InitGalleryProgressScore, scoreUiTypeIndex)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                val uiScoreType = GalleryProgressScoreUIType.entries[scoreUiTypeIndex]
+
+                checkGalleryScoreTypeIndexName(::InitGalleryProgressScore, scoreTypeIndex)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                val scoreType = GalleryProgressScoreType.entries[scoreTypeIndex]
+
+                checkGalleryProgressName(::InitGalleryProgressScore, name)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+
+                initGalleryProgressScore(this@onGroupContext, name!!, galleryId, progress, uiScoreType, scoreType)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun InitGalleryProgressWithScore(
+        context: LuaContextWrapper, name: String?, galleryId: Int, progressTable: Any,
+        maxProgress: Int, scoreUiTypeIndex: Int, scoreTypeIndex: Int
+    ): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                val progress = context.engine.getTable(progressTable)
+
+                checkGalleryScoreUiTypeIndexName(::InitGalleryProgressWithScore, scoreUiTypeIndex)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                val uiScoreType = GalleryProgressScoreUIType.entries[scoreUiTypeIndex]
+
+                checkGalleryScoreTypeIndexName(::InitGalleryProgressWithScore, scoreTypeIndex)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                val scoreType = GalleryProgressScoreType.entries[scoreTypeIndex]
+
+                checkGalleryProgressName(::InitGalleryProgressWithScore, name)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+
+                initGalleryProgressWithScore(this@onGroupContext, name!!, galleryId, progress, maxProgress, uiScoreType, scoreType)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AddGalleryProgressScore(context: LuaContextWrapper, name: String?, galleryId: Int, score: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                checkGalleryProgressName(::AddGalleryProgressScore, name)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                addGalleryProgressScore(this@onGroupContext, name!!, galleryId, score)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGalleryProgressScore(context: LuaContextWrapper, name: String?, galleryId: Int): Int {
+        return context.onGroupContext {
+            onGalleryHandler {
+                checkGalleryProgressName(::GetGalleryProgressScore, name)?.let {
+                    return@onGalleryHandler it.getValue()
+                }
+                getGalleryProgressScore(this@onGroupContext, name!!, galleryId)
             }
         }
     }
@@ -2832,7 +2997,6 @@ object ScriptLib {
     }
 
 
-
     /* SceneStateScriptHandler */
 
     @JvmStatic
@@ -2969,328 +3133,16 @@ object ScriptLib {
     }
 
 
-    /* GalleryScriptHandler*/
-
-    @JvmStatic
-    fun StartGallery(context: LuaContextWrapper, galleryId: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                startGallery(this@onGroupContext, galleryId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun StopGallery(context: LuaContextWrapper, galleryId: Int, var2: Boolean): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                stopGallery(this@onGroupContext, galleryId, var2)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun StopGalleryByReason(context: LuaContextWrapper, galleryId: Int, stopReasonId: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                stopGalleryByReason(this@onGroupContext, galleryId, stopReasonId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun UpdatePlayerGalleryScore(context: LuaContextWrapper, galleryId: Int, var2Table: Any): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val var2 = context.engine.getTable(var2Table)
-                updatePlayerGalleryScore(this@onGroupContext, galleryId, var2)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGalleryTransaction(context: LuaContextWrapper, galleryId: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                getGalleryTransaction(this@onGroupContext, galleryId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGalleryUidList(context: LuaContextWrapper, galleryId: Int): IntArray {
-        return context.onGroupContext {
-            onGalleryHandler {
-                getGalleryUidList(this@onGroupContext, galleryId).toIntArray()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun IsGalleryStart(context: LuaContextWrapper, galleryId: Int): Boolean {
-        return context.onGroupContext {
-            onGalleryHandler {
-                isGalleryStart(this@onGroupContext, galleryId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun SetGalleryRevivePoint(context: LuaContextWrapper, galleryId: Int, groupId: Int, pointId: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                setGalleryRevivePoint(this@onGroupContext, galleryId, groupId, pointId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun SetPlayerStartGallery(context: LuaContextWrapper, galleryId: Int, uidListRawTable: Any): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                setPlayerStartGallery(this@onGroupContext, galleryId, uiList)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AttachGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                attachGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AttachGalleryTeamAbilityGroup(
-        context: LuaContextWrapper,
-        uidListRawTable: Any,
-        galleryId: Int,
-        var3: Int
-    ): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                attachGalleryTeamAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun DelGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                delGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
-            }
-        }
-    }
 
 
-    @JvmStatic
-    fun InitGalleryProgressScore(
-        context: LuaContextWrapper, name: String?, galleryId: Int, progressTable: Any,
-        scoreUiTypeIndex: Int, scoreTypeIndex: Int
-    ): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val progress = context.engine.getTable(progressTable)
 
-                checkGalleryScoreUiTypeIndexName(::InitGalleryProgressScore, scoreUiTypeIndex)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                val uiScoreType = GalleryProgressScoreUIType.entries[scoreUiTypeIndex]
-
-                checkGalleryScoreTypeIndexName(::InitGalleryProgressScore, scoreTypeIndex)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                val scoreType = GalleryProgressScoreType.entries[scoreTypeIndex]
-
-                checkGalleryProgressName(::InitGalleryProgressScore, name)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-
-                initGalleryProgressScore(this@onGroupContext, name!!, galleryId, progress, uiScoreType, scoreType)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun InitGalleryProgressWithScore(
-        context: LuaContextWrapper, name: String?, galleryId: Int, progressTable: Any,
-        maxProgress: Int, scoreUiTypeIndex: Int, scoreTypeIndex: Int
-    ): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                val progress = context.engine.getTable(progressTable)
-
-                checkGalleryScoreUiTypeIndexName(::InitGalleryProgressWithScore, scoreUiTypeIndex)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                val uiScoreType = GalleryProgressScoreUIType.entries[scoreUiTypeIndex]
-
-                checkGalleryScoreTypeIndexName(::InitGalleryProgressWithScore, scoreTypeIndex)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                val scoreType = GalleryProgressScoreType.entries[scoreTypeIndex]
-
-                checkGalleryProgressName(::InitGalleryProgressWithScore, name)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-
-                initGalleryProgressWithScore(this@onGroupContext, name!!, galleryId, progress, maxProgress, uiScoreType, scoreType)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun AddGalleryProgressScore(context: LuaContextWrapper, name: String?, galleryId: Int, score: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                checkGalleryProgressName(::AddGalleryProgressScore, name)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                addGalleryProgressScore(this@onGroupContext, name!!, galleryId, score)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGalleryProgressScore(context: LuaContextWrapper, name: String?, galleryId: Int): Int {
-        return context.onGroupContext {
-            onGalleryHandler {
-                checkGalleryProgressName(::GetGalleryProgressScore, name)?.let {
-                    return@onGalleryHandler it.getValue()
-                }
-                getGalleryProgressScore(this@onGroupContext, name!!, galleryId)
-            }
-        }
-    }
-
-
-    /* FleurFairScriptHandler */
-
-    @JvmStatic
-    fun AddFleurFairMultistagePlayBuffEnergy(
-        context: LuaContextWrapper,
-        groupId: Int,
-        param2: Int,
-        uid: Int,
-        bonusId: Int
-    ): Int {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                checkGroupId(::AddFleurFairMultistagePlayBuffEnergy, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                checkUid(::AddFleurFairMultistagePlayBuffEnergy, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                addFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, param2, uid, bonusId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun FinishFleurFairGalleryStageByUid(context: LuaContextWrapper, groupId: Int, var2: Int, uid: Int, var4: Boolean): Int {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                checkGroupId(::FinishFleurFairGalleryStageByUid, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                checkUid(::FinishFleurFairGalleryStageByUid, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                finishFleurFairGalleryStageByUid(this@onGroupContext, groupId, var2, uid, var4)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetFleurFairDungeonSectionId(context: LuaContextWrapper): Int {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                getFleurFairDungeonSectionId(this@onGroupContext)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetFleurFairMultistagePlayBuffEnergy(context: LuaContextWrapper, groupId: Int, var2: Int, uid:Int): Int {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                checkGroupId(::GetFleurFairMultistagePlayBuffEnergy, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                checkUid(::GetFleurFairMultistagePlayBuffEnergy, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                getFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, var2, uid)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetFleurFairMultistagePlayGalleryIdVec(context: LuaContextWrapper, groupId: Int, var2: Int): IntArray {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                checkGroupId(::GetFleurFairMultistagePlayGalleryIdVec, groupId)?.let {
-                    return@onFleurFairScriptHandler intArrayOf(it.getValue())
-                }
-                getFleurFairMultistagePlayGalleryIdVec(this@onGroupContext, groupId, var2).toIntArray()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetFleurFairMultistagePlayGalleryTempValue(context: LuaContextWrapper, groupId: Int, var2: Int, tmpValueKey: String): Int {
-        return context.onGroupContext {
-            onFleurFairScriptHandler {
-                checkGroupId(::GetFleurFairMultistagePlayGalleryTempValue, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
-                }
-                getFleurFairMultistagePlayGalleryTempValue(this@onGroupContext, groupId, var2, tmpValueKey)
-            }
-        }
-    }
-
-
-    /* LanternRiteScriptHandler */
-
-    @JvmStatic
-    fun GetLanternRiteValue(context: LuaContextWrapper): Int {
-        return context.onGroupContext {
-            onLanternRiteScriptHandler {
-                getLanternRiteValue(this@onGroupContext)
-            }
-        }
-    }
-    @JvmStatic
-    fun SetLanternRiteValue(context: LuaContextWrapper, value: Int): Int {
-        return context.onGroupContext {
-            onLanternRiteScriptHandler {
-                setLanternRiteValue(this@onGroupContext, value)
-            }
-        }
-    }
-
-
-    /* LunaRiteScriptHandler */
-
-    @JvmStatic
-    fun GetLunaRiteSacrificeNum(context: LuaContextWrapper, areaId: Int): Int {
-        return context.onGroupContext {
-            onLunaRiteScriptHandler {
-                getLunaRiteSacrificeNum(this@onGroupContext, areaId)
-            }
-        }
-    }
+    /*                   */
+    /* Activity Handlers */
+    /*                   */
 
 
     /* AsterScriptHandler */
+
     @JvmStatic
     fun CreateAsterMidGeneralRewardGadget(context: LuaContextWrapper, rawParamsTable: Any): Int {
         return context.onGroupContext {
@@ -3309,7 +3161,6 @@ object ScriptLib {
             }
         }
     }
-
 
 
     /* CharAmusementScriptHandler */
@@ -3355,6 +3206,59 @@ object ScriptLib {
                     return@onCharAmusementScriptHandler intArrayOf(it.getValue())
                 }
                 getCharAmusementMultistagePlayGalleryIdVec(this@onGroupContext, groupId, var2).toIntArray()
+            }
+        }
+    }
+
+
+    /* ChessScriptHandler */
+
+    @JvmStatic
+    fun AddChessBuildingPoints(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        uid: Int,
+        pointsToAdd: Int
+    ): Int {
+        return context.onGroupContext {
+            onChessScriptHandler {
+                checkGroupId(ScriptLib::AddChessBuildingPoints, groupId)?.let {
+                    return@onChessScriptHandler it.getValue()
+                }
+                checkUid(ScriptLib::AddChessBuildingPoints, uid)?.let {
+                    return@onChessScriptHandler it.getValue()
+                }
+                addChessBuildingPoints(this@onGroupContext, groupId, playIndex, uid, pointsToAdd)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetChessMonsterPoolIdVecByRound(context: LuaContextWrapper, groupId: Int, playIndex: Int, waveNumber: Int): IntArray? {
+        return context.onGroupContext {
+            onChessScriptHandler {
+                checkGroupId(::GetChessMonsterPoolIdVecByRound, groupId)?.let {
+                    return@onChessScriptHandler intArrayOf(it.getValue())
+                }
+                getChessMonsterPoolIdVecByRound(this@onGroupContext, groupId, playIndex, waveNumber)?.toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetChessMystery(context: LuaContextWrapper, groupId: Int, playIndex: Int, rawChessPreviewTable: Any): Int {
+        return context.onGroupContext {
+            onChessScriptHandler {
+                checkGroupId(::SetChessMystery, groupId)?.let {
+                    return@onChessScriptHandler it.getValue()
+                }
+                val chessPreviewTable = context.engine.getTable(rawChessPreviewTable)
+                val chessPreviewInfo = ChessPreviewInfo.fromLuaTable(chessPreviewTable) ?: run {
+                    scriptLogger.error { "[SetChessMystery] Invalid chess preview info" }
+                    return@onChessScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                setChessMystery(this@onGroupContext, groupId, playIndex, chessPreviewInfo)
             }
         }
     }
@@ -3409,7 +3313,109 @@ object ScriptLib {
     }
 
 
-    /* FungusFighertScriptHandler */
+    /* FleurFairScriptHandler */
+
+    @JvmStatic
+    fun AddFleurFairMultistagePlayBuffEnergy(
+        context: LuaContextWrapper,
+        groupId: Int,
+        param2: Int,
+        uid: Int,
+        bonusId: Int
+    ): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::AddFleurFairMultistagePlayBuffEnergy, groupId)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                checkUid(::AddFleurFairMultistagePlayBuffEnergy, uid)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                addFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, param2, uid, bonusId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun FinishFleurFairGalleryStageByUid(context: LuaContextWrapper, groupId: Int, var2: Int, uid: Int, var4: Boolean): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::FinishFleurFairGalleryStageByUid, groupId)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                checkUid(::FinishFleurFairGalleryStageByUid, uid)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                finishFleurFairGalleryStageByUid(this@onGroupContext, groupId, var2, uid, var4)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetFleurFairDungeonSectionId(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                getFleurFairDungeonSectionId(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetFleurFairMultistagePlayBuffEnergy(context: LuaContextWrapper, groupId: Int, playIndex: Int, uid:Int): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::GetFleurFairMultistagePlayBuffEnergy, groupId)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                checkUid(::GetFleurFairMultistagePlayBuffEnergy, uid)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                getFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, playIndex, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetFleurFairMultistagePlayBuffEnergy(context: LuaContextWrapper, groupId: Int, playIndex: Int, uid:Int, energyValue:Int): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::SetFleurFairMultistagePlayBuffEnergy, groupId)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                checkUid(::GetFleurFairMultistagePlayBuffEnergy, uid)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                setFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, playIndex, uid, energyValue)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetFleurFairMultistagePlayGalleryIdVec(context: LuaContextWrapper, groupId: Int, var2: Int): IntArray {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::GetFleurFairMultistagePlayGalleryIdVec, groupId)?.let {
+                    return@onFleurFairScriptHandler intArrayOf(it.getValue())
+                }
+                getFleurFairMultistagePlayGalleryIdVec(this@onGroupContext, groupId, var2).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetFleurFairMultistagePlayGalleryTempValue(context: LuaContextWrapper, groupId: Int, var2: Int, tmpValueKey: String): Int {
+        return context.onGroupContext {
+            onFleurFairScriptHandler {
+                checkGroupId(::GetFleurFairMultistagePlayGalleryTempValue, groupId)?.let {
+                    return@onFleurFairScriptHandler it.getValue()
+                }
+                getFleurFairMultistagePlayGalleryTempValue(this@onGroupContext, groupId, var2, tmpValueKey)
+            }
+        }
+    }
+
+
+    /* FungusFighterScriptHandler */
 
     @JvmStatic
     fun SetCurFungusFighterTrainingParams(context: LuaContextWrapper, rawTable: Any): Int {
@@ -3468,18 +3474,8 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun VintageFinishGroupByPresentId(context: LuaContextWrapper, presentId: Int): Int {
-        return context.onGroupContext {
-            onVintageScriptHandler {
-                vintageFinishGroupByPresentId(this@onGroupContext, presentId)
-            }
-        }
-    }
-
 
     /* HideAndSeekScriptHandler*/
-
 
     @JvmStatic
     fun GetHideAndSeekPlayIndex(context: LuaContextWrapper): Int {
@@ -3539,6 +3535,251 @@ object ScriptLib {
     }
 
 
+    /* IrodoriChessScriptHandler */
+
+    @JvmStatic
+    fun AddIrodoriChessBuildingPoints(context: LuaContextWrapper, groupId: Int, playIndex: Int, points: Int): Int {
+        return context.onGroupContext {
+            onIrodoriChessScriptHandler {
+                checkGroupId(::AddIrodoriChessBuildingPoints, groupId)?.let {
+                    return@onIrodoriChessScriptHandler it.getValue()
+                }
+                addIrodoriChessBuildingPoints(this@onGroupContext, groupId, playIndex, points)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AddIrodoriChessTowerServerGlobalValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        gadgetId: Int,
+        rawSgvDeltaTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onIrodoriChessScriptHandler {
+                checkGroupId(::AddIrodoriChessTowerServerGlobalValue, groupId)?.let {
+                    return@onIrodoriChessScriptHandler it.getValue()
+                }
+                val sgvDeltaTable = context.engine.getTable(rawSgvDeltaTable)
+                val keys = sgvDeltaTable.getKeys()
+                val sgvDeltaMap = keys.associateWith { sgvDeltaTable.getInt(it) }
+                addIrodoriChessTowerServerGlobalValue(this@onGroupContext, groupId, playIndex, gadgetId, sgvDeltaMap)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetIrodoriChessSelectedCards(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int
+    ): Int {
+        return context.onGroupContext {
+            onIrodoriChessScriptHandler {
+                checkGroupId(::GetIrodoriChessSelectedCards, groupId)?.let {
+                    return@onIrodoriChessScriptHandler it.getValue()
+                }
+                getIrodoriChessSelectedCards(this@onGroupContext, groupId, playIndex)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DestroyIrodoriChessTower(
+        context: LuaContextWrapper,
+        entityId: Int,
+        groupId: Int,
+        playIndex: Int,
+    ): Int {
+        return context.onGroupContext {
+            onIrodoriChessScriptHandler {
+                checkGroupId(::DestroyIrodoriChessTower, groupId)?.let {
+                    return@onIrodoriChessScriptHandler it.getValue()
+                }
+                destroyIrodoriChessTower(this@onGroupContext, entityId, groupId, playIndex)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ForceSetIrodoriFoundationTowers(
+        context: LuaContextWrapper,
+        rawConfigIdGearTable: Any,
+        groupId: Int,
+        playIndex: Int,
+    ): Int {
+        return context.onGroupContext {
+            onIrodoriChessScriptHandler {
+                checkGroupId(::ForceSetIrodoriFoundationTowers, groupId)?.let {
+                    return@onIrodoriChessScriptHandler it.getValue()
+                }
+                val configIdGearTable = context.engine.getTable(rawConfigIdGearTable)
+                val keys = configIdGearTable.getKeys().map { it.toInt() }
+                val configIdGearMap = keys.associateWith { configIdGearTable.getInt(it) }
+                forceSetIrodoriFoundationTowers(this@onGroupContext, configIdGearMap, groupId, playIndex)
+            }
+        }
+    }
+
+
+    /* LanternRiteScriptHandler */
+
+    @JvmStatic
+    fun GetLanternRiteValue(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onLanternRiteScriptHandler {
+                getLanternRiteValue(this@onGroupContext)
+            }
+        }
+    }
+    @JvmStatic
+    fun SetLanternRiteValue(context: LuaContextWrapper, value: Int): Int {
+        return context.onGroupContext {
+            onLanternRiteScriptHandler {
+                setLanternRiteValue(this@onGroupContext, value)
+            }
+        }
+    }
+
+
+    /* LunaRiteScriptHandler */
+
+    @JvmStatic
+    fun GetLunaRiteSacrificeNum(context: LuaContextWrapper, areaId: Int): Int {
+        return context.onGroupContext {
+            onLunaRiteScriptHandler {
+                getLunaRiteSacrificeNum(this@onGroupContext, areaId)
+            }
+        }
+    }
+
+
+    /* MechanicusScriptHandler */
+
+    @JvmStatic
+    fun AddMechanicusBuildingPoints(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        uid: Int,
+        delta: Int
+    ): Int {
+        return context.onGroupContext {
+            onMechanicusScriptHandler {
+                checkGroupId(::AddMechanicusBuildingPoints, groupId)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                checkUid(::AddMechanicusBuildingPoints, uid)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                addMechanicusBuildingPoints(this@onGroupContext, groupId, playIndex, uid, delta)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetMechanicusBuildingPoints(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        uid: Int,
+    ): Int {
+        return context.onGroupContext {
+            onMechanicusScriptHandler {
+                checkGroupId(::GetMechanicusBuildingPoints, groupId)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                checkUid(::GetMechanicusBuildingPoints, uid)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                getMechanicusBuildingPoints(this@onGroupContext, groupId, playIndex, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetMechanicusChallengeState(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        cardId: Int,
+        effectId: Int,
+        stateIndex: Int,
+    ): Int {
+        return context.onGroupContext {
+            onMechanicusScriptHandler {
+                checkGroupId(::SetMechanicusChallengeState, groupId)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                if(stateIndex<0 || stateIndex>=MechanicusChallengeState.entries.size) {
+                    scriptLogger.error { "[SetMechanicusChallengeState] Invalid state index $stateIndex" }
+                    return@onMechanicusScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                val state = MechanicusChallengeState.entries[stateIndex]
+                setMechanicusChallengeState(this@onGroupContext, groupId, playIndex, cardId, effectId, state)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetMechanicusMonsterPoolVec(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int
+    ): IntArray {
+        return context.onGroupContext {
+            onMechanicusScriptHandler {
+                checkGroupId(::GetMechanicusMonsterPoolVec, groupId)?.let {
+                    return@onMechanicusScriptHandler intArrayOf(it.getValue())
+                }
+                getMechanicusMonsterPoolVec(this@onGroupContext, groupId, playIndex).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetMechanicusMonsterPoolVec(
+        context: LuaContextWrapper,
+        groupId: Int,
+        playIndex: Int,
+        rawMonsterPoolTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onMechanicusScriptHandler {
+                checkGroupId(::SetMechanicusMonsterPoolVec, groupId)?.let {
+                    return@onMechanicusScriptHandler it.getValue()
+                }
+                val monsterPoolList = context.engine.getTable(rawMonsterPoolTable).getAsIntArray().toList()
+                setMechanicusMonsterPoolVec(this@onGroupContext, groupId, playIndex, monsterPoolList)
+            }
+        }
+    }
+
+
+    /* SummerTimeScriptHandler */
+
+    /**
+     * This signalizes the server that it should unlock the float signal gadget with the specified id in the specified group
+     * @param context group context in which this function is called
+     * @param groupId group id of the group containing the float signal gadget that should be unlocked
+     * @param signalGadgetCfgId the config id identifying the of the float signal gadget that should be unlocked
+     * @return 0 on success, otherwise an error code
+     */
+    @JvmStatic
+    fun UnlockFloatSignal(context: LuaContextWrapper, groupId: Int, signalGadgetCfgId: Int): Int {
+        return context.onGroupContext {
+            onSummerTimeScriptHandler {
+                checkGroupIdAndConfigId(::UnlockFloatSignal, groupId, signalGadgetCfgId)?.let {
+                    return@onSummerTimeScriptHandler it.getValue()
+                }
+                unlockFloatSignal(this@onGroupContext, groupId, signalGadgetCfgId)
+            }
+        }
+    }
+
+
     /* TreasureSeelieScriptHandler */
 
     @JvmStatic
@@ -3558,6 +3799,18 @@ object ScriptLib {
                     return@onTreasureSeelieScriptHandler it.getValue()
                 }
                 getTreasureSeelieDayByGroupId(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+
+    /* VintageScriptHandler */
+
+    @JvmStatic
+    fun VintageFinishGroupByPresentId(context: LuaContextWrapper, presentId: Int): Int {
+        return context.onGroupContext {
+            onVintageScriptHandler {
+                vintageFinishGroupByPresentId(this@onGroupContext, presentId)
             }
         }
     }
@@ -3799,18 +4052,6 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun ClearExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, key: String): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(::ClearExhibitionReplaceableData, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                clearExhibitionReplaceableData(this@onGroupContext, uid, key)
-            }
-        }
-    }
-
-    @JvmStatic
     fun ClearPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
         return context.onGroupContext {
             onScriptLibHandler {
@@ -4043,30 +4284,6 @@ object ScriptLib {
         return context.onGroupContext {
             onScriptLibHandler {
                 getChainLevel(this@onGroupContext, chainId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetExhibitionAccumulableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(::GetExhibitionAccumulableData, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getExhibitionAccumulableData(this@onGroupContext, uid, exhibitionId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetExhibitionReplaceableData(context: LuaContextWrapper, uid: Int, exhibitionId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(::GetExhibitionReplaceableData, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getExhibitionReplaceableData(this@onGroupContext, uid, exhibitionId)
             }
         }
     }

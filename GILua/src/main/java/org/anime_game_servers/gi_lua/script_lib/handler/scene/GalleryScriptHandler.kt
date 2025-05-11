@@ -1,4 +1,4 @@
-package org.anime_game_servers.gi_lua.script_lib.handler.activity
+package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType
