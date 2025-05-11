@@ -24,8 +24,9 @@ interface FleurFairScriptHandler<GroupEventContext : GroupEventLuaContext> {
     ): Int
 
     fun getFleurFairDungeonSectionId(context: GroupEventContext): Int
-    fun getFleurFairMultistagePlayBuffEnergy(context: GroupEventContext, groupId: Int, var2: Int, uid: Int): Int
-    fun getFleurFairMultistagePlayGalleryIdVec(context: GroupEventContext, groupId: Int, var2: Int): List<Int>
+    fun getFleurFairMultistagePlayBuffEnergy(context: GroupEventContext, groupId: Int, playIndex: Int, uid: Int): Int
+    fun setFleurFairMultistagePlayBuffEnergy(context: GroupEventContext, groupId:Int, playIndex: Int, uid:Int, energyValue:Int): Int
+    fun getFleurFairMultistagePlayGalleryIdVec(context: GroupEventContext, groupId: Int, playIndex: Int): List<Int>
     fun getFleurFairMultistagePlayGalleryTempValue(
         context: GroupEventContext,
         groupId: Int,

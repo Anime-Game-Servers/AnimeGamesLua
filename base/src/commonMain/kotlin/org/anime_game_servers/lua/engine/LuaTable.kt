@@ -87,7 +87,7 @@ interface LuaTable {
 
     fun set(key: String, value: LuaTable)
 
-    fun getKeys(): Set<String?>
+    fun getKeys(): Set<String>
 
     fun getAsIntArray(): IntArray
 
