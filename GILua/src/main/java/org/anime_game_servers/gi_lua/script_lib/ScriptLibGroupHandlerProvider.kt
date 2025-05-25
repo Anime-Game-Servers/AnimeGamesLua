@@ -26,27 +26,39 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getChallengeHandler(): ChallengeScriptHandler<GroupEventContext>? = null
     fun getDungeonHandler(): DungeonScriptHandler<GroupEventContext>? = null
     fun getDeathZoneHandler(): DeathZoneScriptHandler<GroupEventContext>? = null
-    fun getGalleryScriptHandler(): GalleryScriptHandler<GroupEventContext>? = null
+    fun getGalleryHandler(): GalleryScriptHandler<GroupEventContext>? = null
     fun getGroupManagementHandler(): GroupManagementScriptHandler<GroupEventContext>? = null
     fun getSceneStateHandler(): SceneStateScriptHandler<GroupEventContext>? = null
     fun getSealBattleHandler(): SealBattleScriptHandler<GroupEventContext>? = null
 
     /* Activity handlers */
-    fun getAsterScriptHandlerHandler(): AsterScriptHandler<GroupEventContext>? = null
-    fun getCharAmusementScriptHandlerHandler(): CharAmusementScriptHandler<GroupEventContext>? = null
-    fun getChessScriptHandlerHandler(): ChessScriptHandler<GroupEventContext>? = null
-    fun getEffigyScriptHandlerHandler(): EffigyScriptHandler<GroupEventContext>? = null
-    fun getFleurFairScriptHandlerHandler(): FleurFairScriptHandler<GroupEventContext>? = null
-    fun getFungusFighterScriptHandlerHandler(): FungusFighterScriptHandler<GroupEventContext>? = null
-    fun getHideAndSeekScriptHandlerHandler(): HideAndSeekScriptHandler<GroupEventContext>? = null
-    fun getIrodoriChessScriptHandlerHandler(): IrodoriChessScriptHandler<GroupEventContext>? = null
-    fun getLanternRiteScriptHandlerHandler(): LanternRiteScriptHandler<GroupEventContext>? = null
-    fun getLunaRiteScriptHandlerHandler(): LunaRiteScriptHandler<GroupEventContext>? = null
-    fun getMechanicusScriptHandlerHandler(): MechanicusScriptHandler<GroupEventContext>? = null
-    fun getSummerTimeScriptHandler(): SummerTimeScriptHandler<GroupEventContext>? = null
-    fun getTreasureSeelieScriptHandlerHandler(): TreasureSeelieScriptHandler<GroupEventContext>? = null
-    fun getVintageScriptHandlerHandler(): VintageScriptHandler<GroupEventContext>? = null
-    fun getWinterCampScriptHandlerHandler(): WinterCampScriptHandler<GroupEventContext>? = null
+    fun getAsterHandler(): AsterScriptHandler<GroupEventContext>? = null
+    fun getChannelerSlabHandler(): ChannelerSlabScriptHandler<GroupEventContext>? = null
+    fun getCharAmusementHandler(): CharAmusementScriptHandler<GroupEventContext>? = null
+    fun getChessHandler(): ChessScriptHandler<GroupEventContext>? = null
+    fun getCoinCollectHandler(): CoinCollectScriptHandler<GroupEventContext>? = null
+    fun getCrystalLinkHandler(): CrystalLinkScriptHandler<GroupEventContext>? = null
+    fun getDigHandler(): DigScriptHandler<GroupEventContext>? = null
+    fun getEffigyHandler(): EffigyScriptHandler<GroupEventContext>? = null
+    fun getFleurFairHandler(): FleurFairScriptHandler<GroupEventContext>? = null
+    fun getFungusFighterHandler(): FungusFighterScriptHandler<GroupEventContext>? = null
+    fun getHideAndSeekHandler(): HideAndSeekScriptHandler<GroupEventContext>? = null
+    fun getInstableSprayHandler(): InstableSprayScriptHandler<GroupEventContext>? = null
+    fun getIrodoriChessHandler(): IrodoriChessScriptHandler<GroupEventContext>? = null
+    fun getLanternRiteHandler(): LanternRiteScriptHandler<GroupEventContext>? = null
+    fun getLuminanceStoneChallengeHandler(): LuminanceStoneChallengeScriptHandler<GroupEventContext>? = null
+    fun getLunaRiteHandler(): LunaRiteScriptHandler<GroupEventContext>? = null
+    fun getMechanicusHandler(): MechanicusScriptHandler<GroupEventContext>? = null
+    fun getMistTrialHandler(): MistTrialScriptHandler<GroupEventContext>? = null
+    fun getPotionHandler(): PotionScriptHandler<GroupEventContext>? = null
+    fun getRogueDiaryHandler(): RogueDiaryScriptHandler<GroupEventContext>? = null
+    fun getRoguelikeHandler(): RoguelikeScriptHandler<GroupEventContext>? = null
+    fun getSummerTimeHandler(): SummerTimeScriptHandler<GroupEventContext>? = null
+    fun getTreasureMapHandler(): TreasureMapScriptHandler<GroupEventContext>? = null
+    fun getTreasureSeelieHandler(): TreasureSeelieScriptHandler<GroupEventContext>? = null
+    fun getUgcDungeonHandler(): UgcDungeonScriptHandler<GroupEventContext>? = null
+    fun getVintageHandler(): VintageScriptHandler<GroupEventContext>? = null
+    fun getWinterCampHandler(): WinterCampScriptHandler<GroupEventContext>? = null
 
 
 

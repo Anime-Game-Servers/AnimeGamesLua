@@ -316,5 +316,4 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      */
     int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
 
-    int CreateTreasureMapSpotRewardGadget(GroupEventContext context, int gadgetCfgId);
 }

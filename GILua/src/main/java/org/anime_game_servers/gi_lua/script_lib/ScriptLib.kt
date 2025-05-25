@@ -9,6 +9,7 @@ import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressS
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType
 import org.anime_game_servers.gi_lua.script_lib.handler.ScriptLibStaticHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.ChessPreviewInfo
+import org.anime_game_servers.gi_lua.script_lib.handler.activity.CrystalLinkTeamSetupParams
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.FungusFighterTrainingParams
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.MechanicusChallengeState
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.MonsterFaceAvatarParameters
@@ -1066,15 +1067,6 @@ object ScriptLib {
             onScriptLibHandler {
                 val param1 = context.engine.getTable(param1Table)
                 AssignPlayerUidOpNotify(this@onGroupContext, param1)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun CreateTreasureMapSpotRewardGadget(context: LuaContextWrapper, gadgetCfgId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                CreateTreasureMapSpotRewardGadget(this@onGroupContext, gadgetCfgId)
             }
         }
     }
@@ -3146,18 +3138,29 @@ object ScriptLib {
     @JvmStatic
     fun CreateAsterMidGeneralRewardGadget(context: LuaContextWrapper, rawParamsTable: Any): Int {
         return context.onGroupContext {
-            onAsterScriptHandler {
+            onAsterHandler {
                 val paramsTable = context.engine.getTable(rawParamsTable)
                 val configId = paramsTable.optInt("config_id", -1)
                 val difficultyId = paramsTable.optInt("difficulty_id", -1)
                 checkConfigId(::CreateAsterMidGeneralRewardGadget, configId, isTableParam = true)?.let {
-                    return@onAsterScriptHandler it.getValue()
+                    return@onAsterHandler it.getValue()
                 }
                 if (difficultyId == -1) {
                     scriptLogger.error { "[CreateAsterMidGeneralRewardGadget] Invalid difficulty id $difficultyId" }
-                    return@onAsterScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                    return@onAsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
                 createAsterMidGeneralRewardGadget(this@onGroupContext, configId, difficultyId)
+            }
+        }
+    }
+
+    /* ChannelerSlabHandler */
+
+    @JvmStatic
+    fun IsChannellerSlabLoopDungeonConditionSelected(context: LuaContextWrapper, conditionId: Int): Boolean {
+        return context.onGroupContext {
+            onChannelerSlapHandler {
+                isChannellerSlabLoopDungeonConditionSelected(this@onGroupContext, conditionId)
             }
         }
     }
@@ -3168,9 +3171,9 @@ object ScriptLib {
     @JvmStatic
     fun CharAmusementMultistagePlaySwitchTeam(context: LuaContextWrapper, groupId: Int, var2: Int, stageIndex: Int): Int {
         return context.onGroupContext {
-            onCharAmusementScriptHandler {
+            onCharAmusementHandler {
                 checkGroupId(::CharAmusementMultistagePlaySwitchTeam, groupId)?.let {
-                    return@onCharAmusementScriptHandler it.getValue()
+                    return@onCharAmusementHandler it.getValue()
                 }
                 charAmusementMultistagePlaySwitchTeam(this@onGroupContext, groupId, var2, stageIndex)
             }
@@ -3180,9 +3183,9 @@ object ScriptLib {
     @JvmStatic
     fun CharAmusementUpdateScore(context: LuaContextWrapper, groupId: Int, var2: Int, scoreChange:Int): Int {
         return context.onGroupContext {
-            onCharAmusementScriptHandler {
+            onCharAmusementHandler {
                 checkGroupId(::CharAmusementUpdateScore, groupId)?.let {
-                    return@onCharAmusementScriptHandler it.getValue()
+                    return@onCharAmusementHandler it.getValue()
                 }
                 charAmusementUpdateScore(this@onGroupContext, groupId, var2, scoreChange)
             }
@@ -3192,7 +3195,7 @@ object ScriptLib {
     @JvmStatic
     fun GetCharAmusementGalleryTarget(context: LuaContextWrapper, galleryId: Int, isMultiplayer: Boolean): Int {
         return context.onGroupContext {
-            onCharAmusementScriptHandler {
+            onCharAmusementHandler {
                 getCharAmusementGalleryTarget(this@onGroupContext, galleryId, isMultiplayer)
             }
         }
@@ -3201,9 +3204,9 @@ object ScriptLib {
     @JvmStatic
     fun GetCharAmusementMultistagePlayGalleryIdVec(context: LuaContextWrapper, groupId: Int, var2: Int): IntArray {
         return context.onGroupContext {
-            onCharAmusementScriptHandler {
+            onCharAmusementHandler {
                 checkGroupId(::GetCharAmusementMultistagePlayGalleryIdVec, groupId)?.let {
-                    return@onCharAmusementScriptHandler intArrayOf(it.getValue())
+                    return@onCharAmusementHandler intArrayOf(it.getValue())
                 }
                 getCharAmusementMultistagePlayGalleryIdVec(this@onGroupContext, groupId, var2).toIntArray()
             }
@@ -3222,12 +3225,12 @@ object ScriptLib {
         pointsToAdd: Int
     ): Int {
         return context.onGroupContext {
-            onChessScriptHandler {
+            onChessHandler {
                 checkGroupId(ScriptLib::AddChessBuildingPoints, groupId)?.let {
-                    return@onChessScriptHandler it.getValue()
+                    return@onChessHandler it.getValue()
                 }
                 checkUid(ScriptLib::AddChessBuildingPoints, uid)?.let {
-                    return@onChessScriptHandler it.getValue()
+                    return@onChessHandler it.getValue()
                 }
                 addChessBuildingPoints(this@onGroupContext, groupId, playIndex, uid, pointsToAdd)
             }
@@ -3237,9 +3240,9 @@ object ScriptLib {
     @JvmStatic
     fun GetChessMonsterPoolIdVecByRound(context: LuaContextWrapper, groupId: Int, playIndex: Int, waveNumber: Int): IntArray? {
         return context.onGroupContext {
-            onChessScriptHandler {
+            onChessHandler {
                 checkGroupId(::GetChessMonsterPoolIdVecByRound, groupId)?.let {
-                    return@onChessScriptHandler intArrayOf(it.getValue())
+                    return@onChessHandler intArrayOf(it.getValue())
                 }
                 getChessMonsterPoolIdVecByRound(this@onGroupContext, groupId, playIndex, waveNumber)?.toIntArray()
             }
@@ -3249,16 +3252,75 @@ object ScriptLib {
     @JvmStatic
     fun SetChessMystery(context: LuaContextWrapper, groupId: Int, playIndex: Int, rawChessPreviewTable: Any): Int {
         return context.onGroupContext {
-            onChessScriptHandler {
+            onChessHandler {
                 checkGroupId(::SetChessMystery, groupId)?.let {
-                    return@onChessScriptHandler it.getValue()
+                    return@onChessHandler it.getValue()
                 }
                 val chessPreviewTable = context.engine.getTable(rawChessPreviewTable)
                 val chessPreviewInfo = ChessPreviewInfo.fromLuaTable(chessPreviewTable) ?: run {
                     scriptLogger.error { "[SetChessMystery] Invalid chess preview info" }
-                    return@onChessScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                    return@onChessHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
                 setChessMystery(this@onGroupContext, groupId, playIndex, chessPreviewInfo)
+            }
+        }
+    }
+
+
+    /* CoinCollectScriptHandler */
+
+    @JvmStatic
+    fun GetCoinCollectGalleryPlayerSkillInfo(context: LuaContextWrapper, uid: Int, galleryId: Int): IntArray {
+        return context.onGroupContext {
+            onCoinCollectHandler {
+                checkUid(::GetCoinCollectGalleryPlayerSkillInfo, uid)?.let {
+                    return@onCoinCollectHandler intArrayOf(it.getValue())
+                }
+                getCoinCollectGalleryPlayerSkillInfo(this@onGroupContext, uid, galleryId).toIntArray()
+            }
+        }
+    }
+
+
+    /* CrystalLinkScriptHandler */
+
+    @JvmStatic
+    fun CrystalLinkDungeonTeamSetUp(context: LuaContextWrapper, configId: Int, rawSetupParamsTable: Any): Int {
+        return context.onGroupContext {
+            onCrystalLinkHandler {
+                checkConfigId(::CrystalLinkDungeonTeamSetUp, configId)?.let {
+                    return@onCrystalLinkHandler it.getValue()
+                }
+                val setupParamsTable = context.engine.getTable(rawSetupParamsTable)
+                val setupParams = CrystalLinkTeamSetupParams.fromLuaTable(setupParamsTable) ?: run {
+                    scriptLogger.error { "[CrystalLinkDungeonTeamSetUp] Invalid setup params" }
+                    return@onCrystalLinkHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                crystalLinkDungeonTeamSetUp(this@onGroupContext, configId, setupParams)
+            }
+        }
+    }
+
+
+    /* CrystalLinkScriptHandler */
+
+    @JvmStatic
+    fun DigRetractAllWidget(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onDigHandler {
+                digRetractAllWidget(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DigSetSearchingTarget(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onDigHandler {
+                checkConfigId(::DigSetSearchingTarget, configId)?.let {
+                    return@onDigHandler it.getValue()
+                }
+                digSetSearchingTarget(this@onGroupContext, configId)
             }
         }
     }
@@ -3269,7 +3331,7 @@ object ScriptLib {
     @JvmStatic
     fun CreateEffigyChallengeMonster(context: LuaContextWrapper, var1: Int, var2Table: Any): Int {
         return context.onGroupContext {
-            onEffigyScriptHandler {
+            onEffigyHandler {
                 val var2 = context.engine.getTable(var2Table)
                 createEffigyChallengeMonster(this@onGroupContext, var1, var2)
             }
@@ -3279,7 +3341,7 @@ object ScriptLib {
     @JvmStatic
     fun GetEffigyChallengeMonsterLevel(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onEffigyScriptHandler {
+            onEffigyHandler {
                 getEffigyChallengeMonsterLevel(this@onGroupContext)
             }
         }
@@ -3288,7 +3350,7 @@ object ScriptLib {
     @JvmStatic
     fun GetEffigyChallengeLimitTime(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onEffigyScriptHandler {
+            onEffigyHandler {
                 getEffigyChallengeLimitTime(this@onGroupContext)
             }
         }
@@ -3297,7 +3359,7 @@ object ScriptLib {
     @JvmStatic
     fun GetEffigyChallengeV2DungeonDifficulty(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onEffigyScriptHandler {
+            onEffigyHandler {
                 getEffigyChallengeV2DungeonDifficulty(this@onGroupContext)
             }
         }
@@ -3306,7 +3368,7 @@ object ScriptLib {
     @JvmStatic
     fun IsEffigyChallengeConditionSelected(context: LuaContextWrapper, conditionId: Int): Boolean {
         return context.onGroupContext {
-            onEffigyScriptHandler {
+            onEffigyHandler {
                 isEffigyChallengeConditionSelected(this@onGroupContext, conditionId)
             }
         }
@@ -3324,12 +3386,12 @@ object ScriptLib {
         bonusId: Int
     ): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::AddFleurFairMultistagePlayBuffEnergy, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 checkUid(::AddFleurFairMultistagePlayBuffEnergy, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 addFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, param2, uid, bonusId)
             }
@@ -3339,12 +3401,12 @@ object ScriptLib {
     @JvmStatic
     fun FinishFleurFairGalleryStageByUid(context: LuaContextWrapper, groupId: Int, var2: Int, uid: Int, var4: Boolean): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::FinishFleurFairGalleryStageByUid, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 checkUid(::FinishFleurFairGalleryStageByUid, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 finishFleurFairGalleryStageByUid(this@onGroupContext, groupId, var2, uid, var4)
             }
@@ -3354,7 +3416,7 @@ object ScriptLib {
     @JvmStatic
     fun GetFleurFairDungeonSectionId(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 getFleurFairDungeonSectionId(this@onGroupContext)
             }
         }
@@ -3363,12 +3425,12 @@ object ScriptLib {
     @JvmStatic
     fun GetFleurFairMultistagePlayBuffEnergy(context: LuaContextWrapper, groupId: Int, playIndex: Int, uid:Int): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::GetFleurFairMultistagePlayBuffEnergy, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 checkUid(::GetFleurFairMultistagePlayBuffEnergy, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 getFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, playIndex, uid)
             }
@@ -3378,12 +3440,12 @@ object ScriptLib {
     @JvmStatic
     fun SetFleurFairMultistagePlayBuffEnergy(context: LuaContextWrapper, groupId: Int, playIndex: Int, uid:Int, energyValue:Int): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::SetFleurFairMultistagePlayBuffEnergy, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 checkUid(::GetFleurFairMultistagePlayBuffEnergy, uid)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 setFleurFairMultistagePlayBuffEnergy(this@onGroupContext, groupId, playIndex, uid, energyValue)
             }
@@ -3393,9 +3455,9 @@ object ScriptLib {
     @JvmStatic
     fun GetFleurFairMultistagePlayGalleryIdVec(context: LuaContextWrapper, groupId: Int, var2: Int): IntArray {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::GetFleurFairMultistagePlayGalleryIdVec, groupId)?.let {
-                    return@onFleurFairScriptHandler intArrayOf(it.getValue())
+                    return@onFleurFairHandler intArrayOf(it.getValue())
                 }
                 getFleurFairMultistagePlayGalleryIdVec(this@onGroupContext, groupId, var2).toIntArray()
             }
@@ -3405,9 +3467,9 @@ object ScriptLib {
     @JvmStatic
     fun GetFleurFairMultistagePlayGalleryTempValue(context: LuaContextWrapper, groupId: Int, var2: Int, tmpValueKey: String): Int {
         return context.onGroupContext {
-            onFleurFairScriptHandler {
+            onFleurFairHandler {
                 checkGroupId(::GetFleurFairMultistagePlayGalleryTempValue, groupId)?.let {
-                    return@onFleurFairScriptHandler it.getValue()
+                    return@onFleurFairHandler it.getValue()
                 }
                 getFleurFairMultistagePlayGalleryTempValue(this@onGroupContext, groupId, var2, tmpValueKey)
             }
@@ -3420,14 +3482,14 @@ object ScriptLib {
     @JvmStatic
     fun SetCurFungusFighterTrainingParams(context: LuaContextWrapper, rawTable: Any): Int {
         return context.onGroupContext {
-            onFungusFighterScriptHandler {
+            onFungusFighterHandler {
                 val paramsTable = context.engine.getTable(rawTable)
                 val randIndex = paramsTable.optInt("randIndex", -1)
                 val monsterPoolList = paramsTable.getTable("monsterPoolList")?.getAsIntArray()?.toList()
 
                 if(randIndex == -1 || monsterPoolList == null) {
                     scriptLogger.error { "SetCurFungusFighterTrainingParams: Invalid parameters" }
-                    return@onFungusFighterScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                    return@onFungusFighterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
 
                 setCurFungusFighterTrainingParams(this@onGroupContext, FungusFighterTrainingParams(randIndex, monsterPoolList))
@@ -3438,7 +3500,7 @@ object ScriptLib {
     @JvmStatic
     fun GetCurFungusFighterPlotConfigIdList(context: LuaContextWrapper): IntArray {
         return context.onGroupContext {
-            onFungusFighterScriptHandler {
+            onFungusFighterHandler {
                 getCurFungusFighterPlotConfigIdList(this@onGroupContext).toIntArray()
             }
         }
@@ -3447,7 +3509,7 @@ object ScriptLib {
     @JvmStatic
     fun GetCurFungusFighterTrainingParams(context: LuaContextWrapper): IntArray {
         return context.onGroupContext {
-            onFungusFighterScriptHandler {
+            onFungusFighterHandler {
                 getCurFungusFighterTrainingParams(this@onGroupContext).toIntArray()
             }
         }
@@ -3456,7 +3518,7 @@ object ScriptLib {
     @JvmStatic
     fun GetCurFungusFighterTrainingValidBackupFungusIdList(context: LuaContextWrapper): IntArray {
         return context.onGroupContext {
-            onFungusFighterScriptHandler {
+            onFungusFighterHandler {
                 getCurFungusFighterTrainingValidBackupFungusIdList(this@onGroupContext).toIntArray()
             }
         }
@@ -3465,9 +3527,9 @@ object ScriptLib {
     @JvmStatic
     fun IsFungusCaptured(context: LuaContextWrapper, uid:Int, fungusMonsterId:Int): Int {
         return context.onGroupContext {
-            onFungusFighterScriptHandler {
+            onFungusFighterHandler {
                 checkUid(::IsFungusCaptured, uid)?.let {
-                    return@onFungusFighterScriptHandler it.getValue()
+                    return@onFungusFighterHandler it.getValue()
                 }
                 isFungusCaptured(this@onGroupContext, uid, fungusMonsterId)
             }
@@ -3480,7 +3542,7 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekPlayIndex(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 getHideAndSeekPlayIndex(this@onGroupContext)
             }
         }
@@ -3489,7 +3551,7 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekHunter(context: LuaContextWrapper, index: Int): Int {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 getHideAndSeekHunter(this@onGroupContext, index)
             }
         }
@@ -3498,7 +3560,7 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekPreyUidList(context: LuaContextWrapper, index: Int): IntArray {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 getHideAndSeekPreyUidList(this@onGroupContext, index).toIntArray()
             }
         }
@@ -3507,7 +3569,7 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekMap(context: LuaContextWrapper, index: Int): Int {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 getHideAndSeekMap(this@onGroupContext, index)
             }
         }
@@ -3516,7 +3578,7 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekPlayGalleryId(context: LuaContextWrapper, index: Int): Int {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 getHideAndSeekPlayGalleryId(this@onGroupContext, index)
             }
         }
@@ -3525,9 +3587,9 @@ object ScriptLib {
     @JvmStatic
     fun GetHideAndSeekPlayerSkillList(context: LuaContextWrapper, index: Int, uid: Int): IntArray {
         return context.onGroupContext {
-            onHideAndSeekScriptHandler {
+            onHideAndSeekHandler {
                 checkUid(::GetHideAndSeekPlayerSkillList, uid)?.let {
-                    return@onHideAndSeekScriptHandler intArrayOf(it.getValue())
+                    return@onHideAndSeekHandler intArrayOf(it.getValue())
                 }
                 getHideAndSeekPlayerSkillList(this@onGroupContext, index, uid).toIntArray()
             }
@@ -3535,14 +3597,36 @@ object ScriptLib {
     }
 
 
+    /* InstableSprayScriptHandler */
+
+    @JvmStatic
+    fun InstableSprayGetSGVByBuffId(context: LuaContextWrapper, buffId: Int): String {
+        return context.onGroupContext {
+            onInstableSprayHandler {
+                instableSprayGetSGVByBuffId(this@onGroupContext, buffId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun InstableSprayRandomBuffs(context: LuaContextWrapper, galleryId: Int, stage: Int): IntArray {
+        return context.onGroupContext {
+            onInstableSprayHandler {
+                instableSprayRandomBuffs(this@onGroupContext, galleryId, stage).toIntArray()
+            }
+        }
+    }
+
+
+
     /* IrodoriChessScriptHandler */
 
     @JvmStatic
     fun AddIrodoriChessBuildingPoints(context: LuaContextWrapper, groupId: Int, playIndex: Int, points: Int): Int {
         return context.onGroupContext {
-            onIrodoriChessScriptHandler {
+            onIrodoriChessHandler {
                 checkGroupId(::AddIrodoriChessBuildingPoints, groupId)?.let {
-                    return@onIrodoriChessScriptHandler it.getValue()
+                    return@onIrodoriChessHandler it.getValue()
                 }
                 addIrodoriChessBuildingPoints(this@onGroupContext, groupId, playIndex, points)
             }
@@ -3558,9 +3642,9 @@ object ScriptLib {
         rawSgvDeltaTable: Any
     ): Int {
         return context.onGroupContext {
-            onIrodoriChessScriptHandler {
+            onIrodoriChessHandler {
                 checkGroupId(::AddIrodoriChessTowerServerGlobalValue, groupId)?.let {
-                    return@onIrodoriChessScriptHandler it.getValue()
+                    return@onIrodoriChessHandler it.getValue()
                 }
                 val sgvDeltaTable = context.engine.getTable(rawSgvDeltaTable)
                 val keys = sgvDeltaTable.getKeys()
@@ -3577,9 +3661,9 @@ object ScriptLib {
         playIndex: Int
     ): Int {
         return context.onGroupContext {
-            onIrodoriChessScriptHandler {
+            onIrodoriChessHandler {
                 checkGroupId(::GetIrodoriChessSelectedCards, groupId)?.let {
-                    return@onIrodoriChessScriptHandler it.getValue()
+                    return@onIrodoriChessHandler it.getValue()
                 }
                 getIrodoriChessSelectedCards(this@onGroupContext, groupId, playIndex)
             }
@@ -3594,9 +3678,9 @@ object ScriptLib {
         playIndex: Int,
     ): Int {
         return context.onGroupContext {
-            onIrodoriChessScriptHandler {
+            onIrodoriChessHandler {
                 checkGroupId(::DestroyIrodoriChessTower, groupId)?.let {
-                    return@onIrodoriChessScriptHandler it.getValue()
+                    return@onIrodoriChessHandler it.getValue()
                 }
                 destroyIrodoriChessTower(this@onGroupContext, entityId, groupId, playIndex)
             }
@@ -3611,9 +3695,9 @@ object ScriptLib {
         playIndex: Int,
     ): Int {
         return context.onGroupContext {
-            onIrodoriChessScriptHandler {
+            onIrodoriChessHandler {
                 checkGroupId(::ForceSetIrodoriFoundationTowers, groupId)?.let {
-                    return@onIrodoriChessScriptHandler it.getValue()
+                    return@onIrodoriChessHandler it.getValue()
                 }
                 val configIdGearTable = context.engine.getTable(rawConfigIdGearTable)
                 val keys = configIdGearTable.getKeys().map { it.toInt() }
@@ -3629,7 +3713,7 @@ object ScriptLib {
     @JvmStatic
     fun GetLanternRiteValue(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onLanternRiteScriptHandler {
+            onLanternRiteHandler {
                 getLanternRiteValue(this@onGroupContext)
             }
         }
@@ -3637,8 +3721,23 @@ object ScriptLib {
     @JvmStatic
     fun SetLanternRiteValue(context: LuaContextWrapper, value: Int): Int {
         return context.onGroupContext {
-            onLanternRiteScriptHandler {
+            onLanternRiteHandler {
                 setLanternRiteValue(this@onGroupContext, value)
+            }
+        }
+    }
+
+
+    /* LanternRiteScriptHandler */
+
+    @JvmStatic
+    fun TryFinishLuminanceStoneChallengeStage(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onLuminanceStoneChallengeHandler {
+                checkGroupId(::TryFinishLuminanceStoneChallengeStage, groupId)?.let {
+                    return@onLuminanceStoneChallengeHandler it.getValue()
+                }
+                tryFinishLuminanceStoneChallengeStage(this@onGroupContext, groupId)
             }
         }
     }
@@ -3649,7 +3748,7 @@ object ScriptLib {
     @JvmStatic
     fun GetLunaRiteSacrificeNum(context: LuaContextWrapper, areaId: Int): Int {
         return context.onGroupContext {
-            onLunaRiteScriptHandler {
+            onLunaRiteHandler {
                 getLunaRiteSacrificeNum(this@onGroupContext, areaId)
             }
         }
@@ -3667,12 +3766,12 @@ object ScriptLib {
         delta: Int
     ): Int {
         return context.onGroupContext {
-            onMechanicusScriptHandler {
+            onMechanicusHandler {
                 checkGroupId(::AddMechanicusBuildingPoints, groupId)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 checkUid(::AddMechanicusBuildingPoints, uid)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 addMechanicusBuildingPoints(this@onGroupContext, groupId, playIndex, uid, delta)
             }
@@ -3687,12 +3786,12 @@ object ScriptLib {
         uid: Int,
     ): Int {
         return context.onGroupContext {
-            onMechanicusScriptHandler {
+            onMechanicusHandler {
                 checkGroupId(::GetMechanicusBuildingPoints, groupId)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 checkUid(::GetMechanicusBuildingPoints, uid)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 getMechanicusBuildingPoints(this@onGroupContext, groupId, playIndex, uid)
             }
@@ -3709,13 +3808,13 @@ object ScriptLib {
         stateIndex: Int,
     ): Int {
         return context.onGroupContext {
-            onMechanicusScriptHandler {
+            onMechanicusHandler {
                 checkGroupId(::SetMechanicusChallengeState, groupId)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 if(stateIndex<0 || stateIndex>=MechanicusChallengeState.entries.size) {
                     scriptLogger.error { "[SetMechanicusChallengeState] Invalid state index $stateIndex" }
-                    return@onMechanicusScriptHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                    return@onMechanicusHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
                 val state = MechanicusChallengeState.entries[stateIndex]
                 setMechanicusChallengeState(this@onGroupContext, groupId, playIndex, cardId, effectId, state)
@@ -3730,9 +3829,9 @@ object ScriptLib {
         playIndex: Int
     ): IntArray {
         return context.onGroupContext {
-            onMechanicusScriptHandler {
+            onMechanicusHandler {
                 checkGroupId(::GetMechanicusMonsterPoolVec, groupId)?.let {
-                    return@onMechanicusScriptHandler intArrayOf(it.getValue())
+                    return@onMechanicusHandler intArrayOf(it.getValue())
                 }
                 getMechanicusMonsterPoolVec(this@onGroupContext, groupId, playIndex).toIntArray()
             }
@@ -3747,12 +3846,168 @@ object ScriptLib {
         rawMonsterPoolTable: Any
     ): Int {
         return context.onGroupContext {
-            onMechanicusScriptHandler {
+            onMechanicusHandler {
                 checkGroupId(::SetMechanicusMonsterPoolVec, groupId)?.let {
-                    return@onMechanicusScriptHandler it.getValue()
+                    return@onMechanicusHandler it.getValue()
                 }
                 val monsterPoolList = context.engine.getTable(rawMonsterPoolTable).getAsIntArray().toList()
                 setMechanicusMonsterPoolVec(this@onGroupContext, groupId, playIndex, monsterPoolList)
+            }
+        }
+    }
+
+
+    /* MistTrialScriptHandler */
+
+    @JvmStatic
+    fun FailMistTrialDungeonChallenge(context: LuaContextWrapper, challengeIndex: Int): Int {
+        return context.onGroupContext {
+            onMistTrialHandler {
+                failMistTrialDungeonChallenge(this@onGroupContext, challengeIndex)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetMistTrialServerGlobalValue(context: LuaContextWrapper, floorLevel: Int): Int {
+        return context.onGroupContext {
+            onMistTrialHandler {
+                setMistTrialServerGlobalValue(this@onGroupContext, floorLevel)
+            }
+        }
+    }
+
+
+    /* PotionScriptHandler */
+
+    @JvmStatic
+    fun GetPotionDungeonAffixParams(context: LuaContextWrapper): IntArray? {
+        return context.onGroupContext {
+            onPotionHandler {
+                getPotionDungeonAffixParams(this@onGroupContext)?.toIntArray()
+            }
+        }
+    }
+
+
+    /* RogueDiaryScriptHandler */
+
+    @JvmStatic
+    fun GetRogueDiaryDungeonStage(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onRogueDiaryHandler {
+                getRogueDiaryDungeonStage(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetRogueDiaryRoundAndRoom(context: LuaContextWrapper): IntArray {
+        return context.onGroupContext {
+            onRogueDiaryHandler {
+                getRogueDiaryRoundAndRoom(this@onGroupContext).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun FinishRogueDiaryDungeonSingleRoom(context: LuaContextWrapper, isFailed: Boolean): Int {
+        return context.onGroupContext {
+            onRogueDiaryHandler {
+                finishRogueDiaryDungeonSingleRoom(this@onGroupContext, isFailed)
+            }
+        }
+    }
+
+
+    /* RoguelikeScriptHandler */
+
+    @JvmStatic
+    fun TriggerRoguelikeCurseByLua(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkUid(::TriggerRoguelikeCurseByLua, uid)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                triggerRoguelikeCurseByLua(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DoRoguelikeCardGachaByLua(context: LuaContextWrapper, uid: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkUid(::DoRoguelikeCardGachaByLua, uid)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                doRoguelikeCardGachaByLua(this@onGroupContext, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun DisableRoguelikeTrapBySgv(context: LuaContextWrapper, sgvName: String, uid: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkUid(::DisableRoguelikeTrapBySgv, uid)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                disableRoguelikeTrapBySgv(this@onGroupContext, sgvName, uid)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetRogueCellState(context: LuaContextWrapper, groupId: Int, state: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkGroupId(::SetRogueCellState, groupId)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                setRogueCellState(this@onGroupContext, groupId, state)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun IsRogueBossCellPrevCellFinish(context: LuaContextWrapper): Boolean {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                isRogueBossCellPrevCellFinish(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetRogueCellState(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkGroupId(::GetRogueCellState, groupId)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                getRogueCellState(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EnterRogueCell(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                checkGroupId(::EnterRogueCell, groupId)?.let {
+                    return@onRoguelikeHandler it.getValue()
+                }
+                enterRogueCell(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EnterRogueDungeonNextLevel(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onRoguelikeHandler {
+                enterRogueDungeonNextLevel(this@onGroupContext)
             }
         }
     }
@@ -3770,11 +4025,38 @@ object ScriptLib {
     @JvmStatic
     fun UnlockFloatSignal(context: LuaContextWrapper, groupId: Int, signalGadgetCfgId: Int): Int {
         return context.onGroupContext {
-            onSummerTimeScriptHandler {
+            onSummerTimeHandler {
                 checkGroupIdAndConfigId(::UnlockFloatSignal, groupId, signalGadgetCfgId)?.let {
-                    return@onSummerTimeScriptHandler it.getValue()
+                    return@onSummerTimeHandler it.getValue()
                 }
                 unlockFloatSignal(this@onGroupContext, groupId, signalGadgetCfgId)
+            }
+        }
+    }
+
+
+    /*TreasureMapScriptHandler*/
+
+    @JvmStatic
+    fun CreateTreasureMapSpotRewardGadget(context: LuaContextWrapper, gadgetCfgId: Int): Int {
+        return context.onGroupContext {
+            onTreasureMapHandler {
+                checkConfigId(::CreateTreasureMapSpotRewardGadget, gadgetCfgId)?.let {
+                    return@onTreasureMapHandler it.getValue()
+                }
+                createTreasureMapSpotRewardGadget(this@onGroupContext, gadgetCfgId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetBonusTreasureMapSolution(context: LuaContextWrapper, groupId: Int): Int {
+        return context.onGroupContext {
+            onTreasureMapHandler {
+                checkGroupId(::GetBonusTreasureMapSolution, groupId)?.let {
+                    return@onTreasureMapHandler it.getValue()
+                }
+                getBonusTreasureMapSolution(this@onGroupContext, groupId)
             }
         }
     }
@@ -3785,7 +4067,7 @@ object ScriptLib {
     @JvmStatic
     fun TreasureSeelieCollectOrbsNotify(context: LuaContextWrapper, lightLevel: Int, var2: Int): Int {
         return context.onGroupContext {
-            onTreasureSeelieScriptHandler {
+            onTreasureSeelieHandler {
                 treasureSeelieCollectOrbsNotify(this@onGroupContext, lightLevel, var2)
             }
         }
@@ -3794,11 +4076,59 @@ object ScriptLib {
     @JvmStatic
     fun GetTreasureSeelieDayByGroupId(context: LuaContextWrapper, groupId: Int): Int {
         return context.onGroupContext {
-            onTreasureSeelieScriptHandler {
+            onTreasureSeelieHandler {
                 checkGroupId(::GetTreasureSeelieDayByGroupId, groupId)?.let {
-                    return@onTreasureSeelieScriptHandler it.getValue()
+                    return@onTreasureSeelieHandler it.getValue()
                 }
                 getTreasureSeelieDayByGroupId(this@onGroupContext, groupId)
+            }
+        }
+    }
+
+
+    /* UgcDungeonScriptHandler */
+
+    @JvmStatic
+    fun EnterCustomDungeonOfficialEdit(context: LuaContextWrapper, roomId: Int): Int {
+        return context.onGroupContext {
+            onUgcDungeonHandler {
+                enterCustomDungeonOfficialEdit(this@onGroupContext, roomId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetCurrentCustomDungeonForbidSkill(context: LuaContextWrapper): Boolean {
+        return context.onGroupContext {
+            onUgcDungeonHandler {
+                getCurrentCustomDungeonForbidSkill(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetCurrentCustomDungeonParamVec(context: LuaContextWrapper): IntArray {
+        return context.onGroupContext {
+            onUgcDungeonHandler {
+                getCurrentCustomDungeonParamVec(this@onGroupContext).toIntArray()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetCustomDungeonCoinNum(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onUgcDungeonHandler {
+                getCustomDungeonCoinNum(this@onGroupContext)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetCustomDungeonOpenRoomVec(context: LuaContextWrapper): IntArray {
+        return context.onGroupContext {
+            onUgcDungeonHandler {
+                getCustomDungeonOpenRoomVec(this@onGroupContext).toIntArray()
             }
         }
     }
@@ -3809,7 +4139,7 @@ object ScriptLib {
     @JvmStatic
     fun VintageFinishGroupByPresentId(context: LuaContextWrapper, presentId: Int): Int {
         return context.onGroupContext {
-            onVintageScriptHandler {
+            onVintageHandler {
                 vintageFinishGroupByPresentId(this@onGroupContext, presentId)
             }
         }
@@ -3821,7 +4151,7 @@ object ScriptLib {
     @JvmStatic
     fun WinterCampGetBattleGroupBundleId(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onWinterCampScriptHandler {
+            onWinterCampHandler {
                 winterCampGetBattleGroupBundleId(this@onGroupContext)
             }
         }
@@ -3830,7 +4160,7 @@ object ScriptLib {
     @JvmStatic
     fun WinterCampGetExploreGroupBundleId(context: LuaContextWrapper): Int {
         return context.onGroupContext {
-            onWinterCampScriptHandler {
+            onWinterCampHandler {
                 winterCampGetExploreGroupBundleId(this@onGroupContext)
             }
         }
@@ -3839,9 +4169,9 @@ object ScriptLib {
     @JvmStatic
     fun WinterCampSnowDriftInteract(context: LuaContextWrapper, cfgId: Int): Int {
         return context.onGroupContext {
-            onWinterCampScriptHandler {
+            onWinterCampHandler {
                 checkConfigId(::WinterCampSnowDriftInteract, cfgId)?.let {
-                    return@onWinterCampScriptHandler it.getValue()
+                    return@onWinterCampHandler it.getValue()
                 }
                 winterCampSnowDriftInteract(this@onGroupContext, cfgId)
             }

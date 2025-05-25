@@ -39,7 +39,7 @@ class TestScriptLibHandlerProvider : ScriptLibGroupHandlerProvider<LuaGroupConte
         TODO("Not yet implemented but will be deprecated anyway")
     }
 
-    override fun getAsterScriptHandlerHandler(): AsterScriptHandler<LuaGroupContextImpl>? {
+    override fun getAsterHandler(): AsterScriptHandler<LuaGroupContextImpl>? {
         return asterScriptHandler
     }
 }
