@@ -18,20 +18,20 @@ interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
 
     fun startGallery(context: GroupEventContext, galleryId: Int): Int
 
-    fun stopGallery(context: GroupEventContext, galleryId: Int, var2: Boolean): Int
+    fun stopGallery(context: GroupEventContext, galleryId: Int, isFailed: Boolean): Int
     fun stopGalleryByReason(context: GroupEventContext, galleryId: Int, stopReason: Int): Int
 
-    fun updatePlayerGalleryScore(context: GroupEventContext, galleryId: Int, var2: LuaTable?): Int
+    fun updatePlayerGalleryScore(context: GroupEventContext, galleryId: Int, params: LuaTable): Int
 
     // progress
     fun initGalleryProgressScore(
         context: GroupEventContext, name: String, galleryId: Int, progressTable: LuaTable,
-        scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType?
+        scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType
     ): Int
 
     fun initGalleryProgressWithScore(
         context: GroupEventContext, name: String, galleryId: Int, progress: LuaTable,
-        maxProgress: Int, scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType?
+        maxProgress: Int, scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType
     ): Int
 
     fun getGalleryProgressScore(context: GroupEventContext, name: String, galleryId: Int): Int
@@ -40,7 +40,7 @@ interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
 
 
     // gallery ability
-    fun attachGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
-    fun attachGalleryTeamAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
-    fun delGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, var3: Int): Int
+    fun attachGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
+    fun attachGalleryTeamAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
+    fun delGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
 }

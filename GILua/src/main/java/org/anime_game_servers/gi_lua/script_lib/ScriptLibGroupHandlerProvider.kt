@@ -28,6 +28,7 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getDeathZoneHandler(): DeathZoneScriptHandler<GroupEventContext>? = null
     fun getGalleryHandler(): GalleryScriptHandler<GroupEventContext>? = null
     fun getGroupManagementHandler(): GroupManagementScriptHandler<GroupEventContext>? = null
+    fun getMonsterTideHandler(): MonsterTideScriptHandler<GroupEventContext>? = null
     fun getSceneStateHandler(): SceneStateScriptHandler<GroupEventContext>? = null
     fun getSealBattleHandler(): SealBattleScriptHandler<GroupEventContext>? = null
 
@@ -53,6 +54,7 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getPotionHandler(): PotionScriptHandler<GroupEventContext>? = null
     fun getRogueDiaryHandler(): RogueDiaryScriptHandler<GroupEventContext>? = null
     fun getRoguelikeHandler(): RoguelikeScriptHandler<GroupEventContext>? = null
+    fun getSeaLampHandler(): SeaLampScriptHandler<GroupEventContext>? = null
     fun getSummerTimeHandler(): SummerTimeScriptHandler<GroupEventContext>? = null
     fun getTreasureMapHandler(): TreasureMapScriptHandler<GroupEventContext>? = null
     fun getTreasureSeelieHandler(): TreasureSeelieScriptHandler<GroupEventContext>? = null

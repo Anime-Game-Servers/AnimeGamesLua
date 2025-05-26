@@ -30,5 +30,5 @@ interface GroupEntityHandler<GroupEventContext : GroupEventLuaContext> {
     fun killGroupEntityByCfgIds(context: GroupEventContext, groupId: Int, monsters: IntArray, gadgets: IntArray): Int
     fun killGroupEntityByPolicy(context: GroupEventContext, groupId: Int, policy: GroupKillPolicy): Int
     fun killEntityByConfigId(context: GroupEventContext, params: KillByConfigIdParams): Int
-    fun removeEntityByConfigId(context: GroupEventContext, groupId: Int, entityType: EntityType?, configId: Int): Int
+    fun removeEntityByConfigId(context: GroupEventContext, groupId: Int, entityType: EntityType, configId: Int): Int
 }

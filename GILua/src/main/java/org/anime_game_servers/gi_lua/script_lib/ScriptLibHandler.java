@@ -17,20 +17,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     void PrintGroupWarning(LuaContext context, String msg);
 
-
-    // monster tide
-    int AutoMonsterTide(GroupEventContext context, int tideId, int groupId, Integer[] ordersConfigId, int tideCount, int sceneLimit, int param6);
-    int KillMonsterTide(GroupEventContext context, int groupId, int tideId);
-    int autoPoolMonsterTide(GroupEventContext context, int index, int groupId, int[] monsterPool, int routeId, int[] routePoints, int[] monsterAffix, LuaTable monsterPoolParam);
-    int clearPoolMonsterTide(GroupEventContext context, int groupId, int tideNum);
-    int endMonsterTide(GroupEventContext context, int groupId, int tideIndex, int endType);
-    int endPoolMonsterTide(GroupEventContext context, int groupId, int index);
-    int pauseAutoMonsterTide(GroupEventContext context, int groupId, int monsterTideIndex);
-    int pauseAutoPoolMonsterTide(GroupEventContext context, int groupId, int tideStage);
-    int resumeAutoPoolMonsterTide(GroupEventContext context, int groupId, int tideStage);
-    int continueAutoMonster(GroupEventContext context, int groupId, int tideNum);
-
-
     // time axis
     int endAllTimeAxis(GroupEventContext context);
     int continueTimeAxis(GroupEventContext context, String key);
@@ -107,6 +93,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     long GetServerTimeByWeek(GroupEventContext context);
 
 
+    boolean CheckIsInMpMode(GroupEventContext context);
     boolean isPlayerTransmittable(GroupEventContext context, int uid);
 
 
@@ -184,11 +171,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int forbidPlayerRegionVision(GroupEventContext context, int uid);
     int getChainLevel(GroupEventContext context, int chainId);
     int getOfferingLevel(GroupEventContext context, int offeringId);
-    int getPlayerVehicleType(GroupEventContext context, int uid);
     @Nullable int[] getSurroundUidList(GroupEventContext context, int configId, int radius);
     int invalidGravenPhotoBundleMark(GroupEventContext context, int groupBundleId);
     int markGroupLuaAction(GroupEventContext context, String action, String transaction, LuaTable log);
-    int moveAvatarByPointArrayWithTemplate(GroupEventContext context, int uid, int pointArrayId, int[] routeList, int gadgetState, LuaTable speed);
     int notifyAllPlayerPerformOperation(GroupEventContext context, int teamEntityId, int type, int effectIndex, Vector hunterPos, Vector hunterRot);
 
     int revertPlayerRegionVision(GroupEventContext context, int uid);
@@ -211,7 +196,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
 
     int GetRegionEntityCount(GroupEventContext context, int regionEId, EntityType entityType);
-
     int GetRegionConfigId(GroupEventContext context, int regionEId);
 
     int GetGroupMonsterCount(GroupEventContext context);
@@ -230,7 +214,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      */
     int CreateVehicle(GroupEventContext context, int uid, int gadgetId, Vector position, Vector rot);
 
-    int CheckRemainGadgetCountByGroupId(GroupEventContext context, LuaTable table);
 
     int MarkPlayerAction(GroupEventContext context, int var1, int var2, int var3);
 
@@ -238,9 +221,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int ShowReminder(GroupEventContext context, int reminderId);
 
     int[] GetSceneUidList(GroupEventContext context);
-    int GetSeaLampActivityPhase(GroupEventContext context);
     int GetCurTriggerCount(GroupEventContext context);
-    boolean IsPlayerAllAvatarDie(GroupEventContext context, int uid);
 
     int sendShowCommonTipsToClient(GroupEventContext context, String title, String content, int closeTime);
 
@@ -261,8 +242,12 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int SetPlayerGroupVisionType(GroupEventContext context, int[] uids, int[] visionTypeList);
 
     int MoveAvatarByPointArray(GroupEventContext context, int uid, int targetId, LuaTable var3, String var4);
+    int moveAvatarByPointArrayWithTemplate(GroupEventContext context, int uid, int pointArrayId, int[] routeList, int gadgetState, LuaTable speed);
+
 
     int MovePlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
+    int getPlayerVehicleType(GroupEventContext context, int uid);
+    boolean IsPlayerAllAvatarDie(GroupEventContext context, int uid);
 
     /**
      * This teleports the player to another position.
@@ -295,7 +280,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
 
     //TODO check
-    boolean CheckIsInMpMode(GroupEventContext context);
     int AssignPlayerShowTemplateReminder(GroupEventContext context, int var1, LuaTable var2);
 
     int RevokePlayerShowTemplateReminder(GroupEventContext context, int var1, LuaTable var2);
@@ -315,5 +299,4 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
      * @return
      */
     int AssignPlayerUidOpNotify(GroupEventContext context, LuaTable param1Table);
-
 }
