@@ -89,6 +89,11 @@ interface GroupEventLuaContext : LuaContext {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
+    fun <T> onMonsterTideHandler(block: MonsterTideScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getMonsterTideHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
     fun <T> onSceneStateHandler(block: SceneStateScriptHandler<GroupEventLuaContext>.() -> T) : T {
         return getScriptLibHandlerProvider<GroupEventLuaContext>().getSceneStateHandler()?.run {
             return block()
@@ -205,6 +210,11 @@ interface GroupEventLuaContext : LuaContext {
     }
     fun <T> onRoguelikeHandler(block: RoguelikeScriptHandler<GroupEventLuaContext>.() -> T) : T {
         return getScriptLibHandlerProvider<GroupEventLuaContext>().getRoguelikeHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onSeaLampHandler(block: SeaLampScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getSeaLampHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }

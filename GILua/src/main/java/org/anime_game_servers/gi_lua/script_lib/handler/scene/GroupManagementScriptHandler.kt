@@ -4,6 +4,25 @@ import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
+data class RefreshGroupParams(
+    val groupId: Int,
+    val suiteId: Int,
+    val refreshLevelRevise: Int = 0,
+    val excludePrev: Boolean = false,
+    val isForceRandomSuite: Boolean = false,
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): RefreshGroupParams? {
+            val groupId = table.optInt("groupId", 0)
+            val suiteId = table.optInt("suiteId", 0)
+            val refreshLevelRevise = table.optInt("refresh_level_revise", 0)
+            val excludePrev = table.optBoolean("exclude_prev", false)
+            val isForceRandomSuite = table.optBoolean("is_force_random_suite", false)
+            return RefreshGroupParams(groupId, suiteId, refreshLevelRevise, excludePrev, isForceRandomSuite)
+        }
+    }
+}
+
 /**
  * Handler for scriptlib functions used to manage the states of groups
  * These are only callable from a lua group context.
@@ -33,21 +52,21 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
         context: GroupEventContext,
         groupId: Int,
         suiteId: Int,
-        flowSuitePolicy: FlowSuiteOperatePolicy?
+        flowSuitePolicy: FlowSuiteOperatePolicy
     ): Int
 
     fun removeExtraFlowSuite(
         context: GroupEventContext,
         groupId: Int,
         suiteId: Int,
-        flowSuitePolicy: FlowSuiteOperatePolicy?
+        flowSuitePolicy: FlowSuiteOperatePolicy
     ): Int
 
     fun killExtraFlowSuite(
         context: GroupEventContext,
         groupId: Int,
         suiteId: Int,
-        flowSuitePolicy: FlowSuiteOperatePolicy?
+        flowSuitePolicy: FlowSuiteOperatePolicy
     ): Int
 
 
@@ -68,16 +87,16 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
     fun changeGroupVariableValueByGroup(context: GroupEventContext, varName: String, value: Int, groupId: Int): Int
 
     /* group temp value*/
-    fun setGroupTempValue(context: GroupEventContext, name: String, value: Int, var3Table: LuaTable?): Int
-    fun getGroupTempValue(context: GroupEventContext, name: String, var2: LuaTable?): Int
-    fun changeGroupTempValue(context: GroupEventContext, name: String, diff: Int, var3: LuaTable?): Int
+    fun setGroupTempValue(context: GroupEventContext, name: String, value: Int, groupId: Int): Int
+    fun getGroupTempValue(context: GroupEventContext, name: String, groupId: Int): Int
+    fun changeGroupTempValue(context: GroupEventContext, name: String, diff: Int, groupId: Int): Int
 
 
     /* misc */
     /**
      * Set the actions and triggers to designated group
      */
-    fun refreshGroup(context: GroupEventContext, table: LuaTable?): Int
+    fun refreshGroup(context: GroupEventContext, params: RefreshGroupParams): Int
     fun setGroupReplaceable(context: GroupEventContext, groupId: Int, value: Boolean): Int
     fun createGroupTrigger(context: GroupEventContext, triggerName: String): Int
     fun setGroupDead(context: GroupEventContext, groupId: Int): Int
@@ -94,24 +113,25 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
      * @param callParamsTable lua array containing the parameters to pass to the function on call
      */
     fun executeActiveGroupLua(
-        context: GroupEventLuaContext,
+        context: GroupEventContext,
         groupId: Int,
-        functionName: String?,
-        callParamsTable: LuaTable?
+        functionName: String,
+        callParams: List<Int>
     ): Int
 
     /**
      * TODO better parameter handling
      * Calls a lua function in the specified group. The call parameters are passed to the called parameters like this:
      * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
+     * If the group is not loaded yet, this should force load the group and then call the function.
      * @param groupId group id of the group to call the function in
      * @param functionName name of the function to call
      * @param callParamsTable lua array containing the parameters to pass to the function on call
      */
     fun executeGroupLua(
-        context: GroupEventLuaContext?,
+        context: GroupEventContext,
         groupId: Int,
-        functionName: String?,
-        callParamsTable: LuaTable?
+        functionName: String,
+        callParams: List<Int>
     ): Int
 }

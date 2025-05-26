@@ -12,10 +12,17 @@ import org.anime_game_servers.gi_lua.script_lib.handler.activity.ChessPreviewInf
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.CrystalLinkTeamSetupParams
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.FungusFighterTrainingParams
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.MechanicusChallengeState
+import org.anime_game_servers.gi_lua.script_lib.handler.entites.CreateGadgetParameters
+import org.anime_game_servers.gi_lua.script_lib.handler.entites.CreateMonsterParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.MonsterFaceAvatarParameters
+import org.anime_game_servers.gi_lua.script_lib.handler.entites.RemainGadgetCountParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
 import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionPlayTarget
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.AttachChildChallengePointConfig
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.ChangeLevelTagParams
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.CreateFatherChallengeParameters
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.PoolMonsterTideConfig
+import org.anime_game_servers.gi_lua.script_lib.handler.scene.RefreshGroupParams
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.SealBattleParams
 import org.anime_game_servers.gi_lua.utils.ScriptUtils
 import org.anime_game_servers.lua.engine.LuaTable
@@ -69,41 +76,6 @@ object ScriptLib {
         context.onGroupContext {
             onScriptLibHandler {
                 PrintGroupWarning(this@onGroupContext, msg)
-            }
-        }
-    }
-
-
-
-    @JvmStatic
-    // Some fields are guessed
-    fun AutoMonsterTide(
-        context: LuaContextWrapper,
-        tideId: Int,
-        groupId: Int,
-        ordersConfigId: Array<Int?>?,
-        tideCount: Int,
-        sceneLimit: Int,
-        param6: Int
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::AutoMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                AutoMonsterTide(this@onGroupContext, tideId, groupId, ordersConfigId, tideCount, sceneLimit, param6)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun KillMonsterTide(context: LuaContextWrapper, groupId: Int, tideId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(ScriptLib::KillMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                KillMonsterTide(this@onGroupContext, groupId, tideId)
             }
         }
     }
@@ -224,11 +196,15 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun CheckRemainGadgetCountByGroupId(context: LuaContextWrapper, rawTable: Any): Int {
+    fun CheckRemainGadgetCountByGroupId(context: LuaContextWrapper, rawParametersTable: Any): Int {
         return context.onGroupContext {
-            onScriptLibHandler {
-                val table = context.engine.getTable(rawTable)
-                CheckRemainGadgetCountByGroupId(this@onGroupContext, table)
+            onGroupGadgetHandler {
+                val parametersTable = context.engine.getTable(rawParametersTable)
+                val parameters = RemainGadgetCountParameters.fromLuaTable(parametersTable) ?: run {
+                    scriptLogger.error { "[CheckRemainGadgetCountByGroupId] Invalid parameters: $rawParametersTable" }
+                    return@onGroupGadgetHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                checkRemainGadgetCountByGroupId(this@onGroupContext, parameters)
             }
         }
     }
@@ -296,15 +272,6 @@ object ScriptLib {
                     result.set((i + 1).toString(), list[i])
                 }
                 return@onScriptLibHandler result.getRawTable()
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetSeaLampActivityPhase(context: LuaContextWrapper): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                GetSeaLampActivityPhase(this@onGroupContext)
             }
         }
     }
@@ -1271,18 +1238,20 @@ object ScriptLib {
                 checkGroupIdAndConfigId(::SetWorktopOptionsByGroupId, groupId, configId)?.let {
                     return@onGroupGadgetHandler it.getValue()
                 }
-                val options = context.engine.getTable(optionsTable)
+                val optionsTable = context.engine.getTable(optionsTable)
+                val options = optionsTable.getAsIntArray().toList()
                 setWorktopOptionsByGroupId(this@onGroupContext, groupId, configId, options)
             }
         }
     }
 
     @JvmStatic
-    fun SetWorktopOptions(context: LuaContextWrapper, rawTable: Any): Int {
+    fun SetWorktopOptions(context: LuaContextWrapper, rawOptionsTable: Any): Int {
         return context.onGroupContext {
             onGroupGadgetHandler {
-                val table = context.engine.getTable(rawTable)
-                setWorktopOptions(this@onGroupContext, table)
+                val optionsTable = context.engine.getTable(rawOptionsTable)
+                val options = optionsTable.getAsIntArray().toList()
+                setWorktopOptions(this@onGroupContext, options)
             }
         }
     }
@@ -1313,7 +1282,11 @@ object ScriptLib {
         return context.onGroupContext {
             onGroupGadgetHandler {
                 val table = context.engine.getTable(rawTable)
-                createGadget(this@onGroupContext, table)
+                val configId = table.optInt("config_id", 0)
+                checkConfigId(::CreateGadget, configId)?.let {
+                    return@onGroupGadgetHandler it.getValue()
+                }
+                createGadget(this@onGroupContext, configId)
             }
         }
     }
@@ -1345,7 +1318,11 @@ object ScriptLib {
         return context.onGroupContext {
             onGroupGadgetHandler {
                 val table = context.engine.getTable(creationParamsTable)
-                createGadgetByParamTable(this@onGroupContext, table)
+                val creationParams = CreateGadgetParameters.fromLuaTable(table) ?: run {
+                    scriptLogger.error { "[CreateGadgetByParamTable] Invalid parameters table" }
+                    return@onGroupGadgetHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                createGadgetByParamTable(this@onGroupContext, creationParams)
             }
         }
     }
@@ -1663,11 +1640,15 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun CreateMonster(context: LuaContextWrapper, rawTable: Any): Int {
+    fun CreateMonster(context: LuaContextWrapper, rawParametersTable: Any): Int {
         return context.onGroupContext {
             onGroupMonsterHandler {
-                val table = context.engine.getTable(rawTable)
-                createMonster(this@onGroupContext, table)
+                val parametersTable = context.engine.getTable(rawParametersTable)
+                val parameters = CreateMonsterParameters.fromLuaTable(parametersTable) ?: run {
+                    scriptLogger.error { "[CreateMonster] Invalid parameters table $parametersTable" }
+                    return@onGroupMonsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                createMonster(this@onGroupContext, parameters)
             }
         }
     }
@@ -2122,7 +2103,7 @@ object ScriptLib {
     ): Int {
         return context.onGroupContext {
             onChallengeHandler {
-                val challengeParamTable = context.engine.getTable(challengeParams)
+                val challengeParamTable = context.engine.getTable(challengeParams).getAsIntArray().toList()
                 startChallenge(this@onGroupContext, challengeIndex, challengeId, challengeParamTable)
             }
         }
@@ -2208,12 +2189,16 @@ object ScriptLib {
         challengeIndex: Int,
         challengeId: Int,
         timeLimit: Int,
-        conditionTable: Any
+        rawParamtersTable: Any
     ): Int {
         return context.onGroupContext {
             onChallengeHandler {
-                val conditionLuaTable = context.engine.getTable(conditionTable)
-                createFatherChallenge(this@onGroupContext, challengeIndex, challengeId, timeLimit, conditionLuaTable)
+                val parametersTable = context.engine.getTable(rawParamtersTable)
+                val conditions = CreateFatherChallengeParameters.fromLuaTable(parametersTable) ?: run {
+                    scriptLogger.error { "[CreateFatherChallenge] Invalid or missing conditions in table $rawParamtersTable" }
+                    return@onChallengeHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                createFatherChallenge(this@onGroupContext, challengeIndex, challengeId, timeLimit, conditions)
             }
         }
     }
@@ -2268,14 +2253,19 @@ object ScriptLib {
     @JvmStatic
     fun AttachChildChallenge(
         context: LuaContextWrapper, fatherChallengeIndex: Int, childChallengeIndex: Int,
-        childChallengeId: Int, var4Table: Any, var5Table: Any, var6Table: Any
+        childChallengeId: Int, rawParametersTable: Any, rawUidListTable: Any, rawPointConfigTable: Any
     ): Int {
         return context.onGroupContext {
             onChallengeHandler {
-                val conditionArray = context.engine.getTable(var4Table)
-                val var5 = context.engine.getTable(var5Table)
-                val conditionTable = context.engine.getTable(var6Table)
-                attachChildChallenge(this@onGroupContext, fatherChallengeIndex, childChallengeIndex, childChallengeId, conditionArray, var5, conditionTable)
+                val parameterList = context.engine.getTable(rawParametersTable).getAsIntArray().toList()
+                val uidList = context.engine.getTable(rawUidListTable).getAsIntArray().toList()
+                val pointConfigTable = context.engine.getTable(rawPointConfigTable)
+                val pointConfig = AttachChildChallengePointConfig.fromLuaTable(pointConfigTable) ?: run {
+                    scriptLogger.error { "[AttachChildChallenge] Invalid or missing point config in table $rawPointConfigTable" }
+                    return@onChallengeHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                attachChildChallenge(this@onGroupContext, fatherChallengeIndex, childChallengeIndex, childChallengeId,
+                    parameterList, uidList, pointConfig)
             }
         }
     }
@@ -2391,10 +2381,10 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun StopGallery(context: LuaContextWrapper, galleryId: Int, var2: Boolean): Int {
+    fun StopGallery(context: LuaContextWrapper, galleryId: Int, isFailed: Boolean): Int {
         return context.onGroupContext {
             onGalleryHandler {
-                stopGallery(this@onGroupContext, galleryId, var2)
+                stopGallery(this@onGroupContext, galleryId, isFailed)
             }
         }
     }
@@ -2409,11 +2399,11 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun UpdatePlayerGalleryScore(context: LuaContextWrapper, galleryId: Int, var2Table: Any): Int {
+    fun UpdatePlayerGalleryScore(context: LuaContextWrapper, galleryId: Int, rawParamsTable: Any): Int {
         return context.onGroupContext {
             onGalleryHandler {
-                val var2 = context.engine.getTable(var2Table)
-                updatePlayerGalleryScore(this@onGroupContext, galleryId, var2)
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                updatePlayerGalleryScore(this@onGroupContext, galleryId, paramsTable)
             }
         }
     }
@@ -2465,11 +2455,11 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun AttachGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+    fun AttachGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, abilityGroupIndex: Int): Int {
         return context.onGroupContext {
             onGalleryHandler {
                 val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                attachGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+                attachGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, abilityGroupIndex)
             }
         }
     }
@@ -2479,22 +2469,22 @@ object ScriptLib {
         context: LuaContextWrapper,
         uidListRawTable: Any,
         galleryId: Int,
-        var3: Int
+        abilityGroupIndex: Int
     ): Int {
         return context.onGroupContext {
             onGalleryHandler {
                 val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                attachGalleryTeamAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+                attachGalleryTeamAbilityGroup(this@onGroupContext, uiList, galleryId, abilityGroupIndex)
             }
         }
     }
 
     @JvmStatic
-    fun DelGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, var3: Int): Int {
+    fun DelGalleryAbilityGroup(context: LuaContextWrapper, uidListRawTable: Any, galleryId: Int, abilityGroupIndex: Int): Int {
         return context.onGroupContext {
             onGalleryHandler {
                 val uiList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                delGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, var3)
+                delGalleryAbilityGroup(this@onGroupContext, uiList, galleryId, abilityGroupIndex)
             }
         }
     }
@@ -2710,11 +2700,15 @@ object ScriptLib {
      * Set the actions and triggers to designated group
      */
     @JvmStatic
-    fun RefreshGroup(context: LuaContextWrapper, rawTable: Any): Int {
+    fun RefreshGroup(context: LuaContextWrapper, rawParamsTable: Any): Int {
         return context.onGroupContext {
             onGroupManagementHandler {
-                val table = context.engine.getTable(rawTable)
-                refreshGroup(this@onGroupContext, table)
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val params = RefreshGroupParams.fromLuaTable(paramsTable) ?: run {
+                    scriptLogger.error { "[RefreshGroup] Invalid params $paramsTable" }
+                    return@onGroupManagementHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                refreshGroup(this@onGroupContext, params)
             }
         }
     }
@@ -2870,31 +2864,34 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun SetGroupTempValue(context: LuaContextWrapper, name: String, value: Int, var3Table: Any): Int {
+    fun SetGroupTempValue(context: LuaContextWrapper, name: String, value: Int, rawParamsTable: Any): Int {
         return context.onGroupContext {
             onGroupManagementHandler {
-                val var3 = context.engine.getTable(var3Table)
-                setGroupTempValue(this@onGroupContext, name, value, var3)
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val groupId = paramsTable.optInt("group_id", 0)
+                setGroupTempValue(this@onGroupContext, name, value, groupId)
             }
         }
     }
 
     @JvmStatic
-    fun GetGroupTempValue(context: LuaContextWrapper, name: String, var2Table: Any): Int {
+    fun GetGroupTempValue(context: LuaContextWrapper, name: String, rawParamsTable: Any): Int {
         return context.onGroupContext {
             onGroupManagementHandler {
-                val var2 = context.engine.getTable(var2Table)
-                getGroupTempValue(this@onGroupContext, name, var2)
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val groupId = paramsTable.optInt("group_id", 0)
+                getGroupTempValue(this@onGroupContext, name, groupId)
             }
         }
     }
 
     @JvmStatic
-    fun ChangeGroupTempValue(context: LuaContextWrapper, name: String, diff: Int, var3Table: Any): Int {
+    fun ChangeGroupTempValue(context: LuaContextWrapper, name: String, diff: Int, rawParamsTable: Any): Int {
         return context.onGroupContext {
             onGroupManagementHandler {
-                val var3 = context.engine.getTable(var3Table)
-                changeGroupTempValue(this@onGroupContext, name, diff, var3)
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val groupId = paramsTable.optInt("group_id", 0)
+                changeGroupTempValue(this@onGroupContext, name, diff, groupId)
             }
         }
     }
@@ -2953,7 +2950,7 @@ object ScriptLib {
     fun ExecuteActiveGroupLua(
         context: LuaContextWrapper,
         groupId: Int,
-        functionName: String?,
+        functionName: String,
         callParamsTable: Any
     ): Int {
         return context.onGroupContext {
@@ -2961,7 +2958,7 @@ object ScriptLib {
                 checkGroupId(ScriptLib::ExecuteActiveGroupLua, groupId)?.let {
                     return@onGroupManagementHandler it.getValue()
                 }
-                val callParams = context.engine.getTable(callParamsTable)
+                val callParams = context.engine.getTable(callParamsTable).getAsIntArray().toList()
                 executeActiveGroupLua(this@onGroupContext, groupId, functionName, callParams)
             }
         }
@@ -2976,14 +2973,134 @@ object ScriptLib {
      * @param callParamsTable lua array containing the parameters to pass to the function on call
      */
     @JvmStatic
-    fun ExecuteGroupLua(context: LuaContextWrapper, groupId: Int, functionName: String?, callParamsTable: Any): Int {
+    fun ExecuteGroupLua(context: LuaContextWrapper, groupId: Int, functionName: String, callParamsTable: Any): Int {
         return context.onGroupContext {
             onGroupManagementHandler {
                 checkGroupId(ScriptLib::ExecuteGroupLua, groupId)?.let {
                     return@onGroupManagementHandler it.getValue()
                 }
-                val callParams = context.engine.getTable(callParamsTable)
+                val callParams = context.engine.getTable(callParamsTable).getAsIntArray().toList()
                 executeGroupLua(this@onGroupContext, groupId, functionName, callParams)
+            }
+        }
+    }
+
+
+    /* MonsterTideScriptHandler*/
+
+    @JvmStatic
+    fun ClearPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::ClearPoolMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                clearPoolMonsterTide(this@onGroupContext, groupId, tideNum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ContinueAutoMonster(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::ContinueAutoMonster, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                continueAutoMonster(this@onGroupContext, groupId, tideNum)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndMonsterTide(context: LuaContextWrapper, groupId: Int, tideIndex: Int, endType: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::EndMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                endMonsterTide(this@onGroupContext, groupId, tideIndex, endType)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun EndPoolMonsterTide(context: LuaContextWrapper, groupId: Int, index: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::EndPoolMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                endPoolMonsterTide(this@onGroupContext, groupId, index)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PauseAutoMonsterTide(context: LuaContextWrapper, groupId: Int, monsterTideIndex: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::PauseAutoMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                pauseAutoMonsterTide(this@onGroupContext, groupId, monsterTideIndex)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun PauseAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::PauseAutoPoolMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                pauseAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun ResumeAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(::ResumeAutoPoolMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                resumeAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
+            }
+        }
+    }
+
+    @JvmStatic
+    // Some fields are guessed
+    fun AutoMonsterTide(
+        context: LuaContextWrapper,
+        tideId: Int,
+        groupId: Int,
+        ordersConfigId: Array<Int>,
+        tideCount: Int,
+        sceneLimit: Int,
+        param6: Int
+    ): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(ScriptLib::AutoMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                autoMonsterTide(this@onGroupContext, tideId, groupId, ordersConfigId, tideCount, sceneLimit, param6)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun KillMonsterTide(context: LuaContextWrapper, groupId: Int, tideId: Int): Int {
+        return context.onGroupContext {
+            onMonsterTideHandler {
+                checkGroupId(ScriptLib::KillMonsterTide, groupId)?.let {
+                    return@onMonsterTideHandler it.getValue()
+                }
+                killMonsterTide(this@onGroupContext, groupId, tideId)
             }
         }
     }
@@ -3329,11 +3446,11 @@ object ScriptLib {
     /* EffigyChallengeScriptHandler */
 
     @JvmStatic
-    fun CreateEffigyChallengeMonster(context: LuaContextWrapper, var1: Int, var2Table: Any): Int {
+    fun CreateEffigyChallengeMonster(context: LuaContextWrapper, groupId: Int, rawMonsterPoolIdTable: Any): Int {
         return context.onGroupContext {
             onEffigyHandler {
-                val var2 = context.engine.getTable(var2Table)
-                createEffigyChallengeMonster(this@onGroupContext, var1, var2)
+                val monsterPoolIdList = context.engine.getTable(rawMonsterPoolIdTable).getAsIntArray().toList()
+                createEffigyChallengeMonster(this@onGroupContext, groupId, monsterPoolIdList)
             }
         }
     }
@@ -4013,6 +4130,18 @@ object ScriptLib {
     }
 
 
+    /* SeaLampScriptHandler */
+
+    @JvmStatic
+    fun GetSeaLampActivityPhase(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onSeaLampHandler {
+                getSeaLampActivityPhase(this@onGroupContext)
+            }
+        }
+    }
+
+
     /* SummerTimeScriptHandler */
 
     /**
@@ -4307,7 +4436,11 @@ object ScriptLib {
         return context.onControllerContext {
             onGadgetControllerHandler {
                 val params = context.engine.getTable(paramsTable)
-                dropSubfield(this@onControllerContext, params)
+                val subFieldName = params.getString("subfield_name") ?: run {
+                    scriptLogger.error { "DropSubfield: subfield_name is missing in params" }
+                    return@onGadgetControllerHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                dropSubfield(this@onControllerContext, subFieldName)
             }
         }
     }
@@ -4337,11 +4470,15 @@ object ScriptLib {
         monsterPoolParam: Any
     ): Int {
         return context.onGroupContext {
-            onScriptLibHandler {
+            onMonsterTideHandler {
                 checkGroupId(::AutoPoolMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
+                    return@onMonsterTideHandler it.getValue()
                 }
                 val monsterPoolParamTable = context.engine.getTable(monsterPoolParam)
+                val monsterPoolParams = PoolMonsterTideConfig.fromLuaTable(monsterPoolParamTable) ?: run {
+                    scriptLogger.error { "AutoPoolMonsterTide: Invalid monsterPoolParamTable" }
+                    return@onMonsterTideHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
                 val monsterPoolList = context.engine.getTable(monsterPools).getAsIntArray()
                 val routePointsList = context.engine.getTable(routePoints).getAsIntArray()
                 val monsterAffixList = context.engine.getTable(monsterAffixes).getAsIntArray()
@@ -4353,7 +4490,7 @@ object ScriptLib {
                     routeId,
                     routePointsList,
                     monsterAffixList,
-                    monsterPoolParamTable
+                    monsterPoolParams
                 )
             }
         }
@@ -4377,30 +4514,6 @@ object ScriptLib {
                     return@onScriptLibHandler it.getValue() > 0
                 }
                 checkIsInGroup(this@onGroupContext, groupId, configId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ClearPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::ClearPoolMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                clearPoolMonsterTide(this@onGroupContext, groupId, tideNum)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun ContinueAutoMonster(context: LuaContextWrapper, groupId: Int, tideNum: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::ContinueAutoMonster, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                continueAutoMonster(this@onGroupContext, groupId, tideNum)
             }
         }
     }
@@ -4502,30 +4615,6 @@ object ScriptLib {
         return context.onGroupContext {
             onScriptLibHandler {
                 endAllTimeAxis(this@onGroupContext)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun EndMonsterTide(context: LuaContextWrapper, groupId: Int, tideIndex: Int, endType: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::EndMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                endMonsterTide(this@onGroupContext, groupId, tideIndex, endType)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun EndPoolMonsterTide(context: LuaContextWrapper, groupId: Int, index: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::EndPoolMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                endPoolMonsterTide(this@onGroupContext, groupId, index)
             }
         }
     }
@@ -4968,27 +5057,6 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun PauseAutoMonsterTide(context: LuaContextWrapper, groupId: Int, monsterTideIndex: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                pauseAutoMonsterTide(this@onGroupContext, groupId, monsterTideIndex)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun PauseAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::PauseAutoPoolMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                pauseAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
-            }
-        }
-    }
-
-    @JvmStatic
     fun PauseTimeAxis(context: LuaContextWrapper, key: String): Int {
         return context.onGroupContext {
             onScriptLibHandler {
@@ -5024,17 +5092,6 @@ object ScriptLib {
         return ReceiveAllAranaraCollectionByType(context, groupId, type)
     }
 
-    @JvmStatic
-    fun ResumeAutoPoolMonsterTide(context: LuaContextWrapper, groupId: Int, tideStage: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::ResumeAutoPoolMonsterTide, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                resumeAutoPoolMonsterTide(this@onGroupContext, groupId, tideStage)
-            }
-        }
-    }
 
     @JvmStatic
     fun RevertPlayerRegionVision(context: LuaContextWrapper, uid: Int): Int {

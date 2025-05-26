@@ -5,6 +5,50 @@ import org.anime_game_servers.gi_lua.models.constants.FatherChallengeProperty
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
+data class CreateFatherChallengeParameters(
+    val success: Int,
+    val fail: Int,
+    val failOnWipe: Boolean
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): CreateFatherChallengeParameters? {
+            val success = table.optInt("success", -1)
+            val fail = table.optInt("fail", -1)
+            val failOnWipe = table.optBoolean("failOnWipe", false)
+
+            if (success == -1 || fail == -1) {
+                return null // Invalid or missing data
+            }
+
+            return CreateFatherChallengeParameters(
+                success = success,
+                fail = fail,
+                failOnWipe = failOnWipe
+            )
+        }
+    }
+}
+data class AttachChildChallengePointConfig(
+    val success: Int,
+    val fail: Int,
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): AttachChildChallengePointConfig? {
+            val success = table.optInt("success", -1)
+            val fail = table.optInt("fail", -1)
+
+            if (success == -1 || fail == -1) {
+                return null // Invalid or missing data
+            }
+
+            return AttachChildChallengePointConfig(
+                success = success,
+                fail = fail,
+            )
+        }
+    }
+}
+
 /**
  * Handler for scriptlib functions used in Challenges
  * These are only callable from a lua group context.
@@ -24,7 +68,7 @@ interface ChallengeScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         challengeIndex: Int,
         challengeId: Int,
-        challengeParams: LuaTable?
+        challengeParams: List<Int>
     ): Int
 
     fun stopChallenge(context: GroupEventContext, challengeIndex: Int, result: Int): Int
@@ -35,7 +79,7 @@ interface ChallengeScriptHandler<GroupEventContext : GroupEventLuaContext> {
         challengeIndex: Int,
         challengeId: Int,
         timeLimit: Int,
-        conditionTable: LuaTable?
+        parameters: CreateFatherChallengeParameters
     ): Int
 
     fun startFatherChallenge(context: GroupEventContext, challengeIndex: Int): Int
@@ -49,8 +93,8 @@ interface ChallengeScriptHandler<GroupEventContext : GroupEventLuaContext> {
     ): Int
 
     fun attachChildChallenge(
-        context: GroupEventContext, fatherChallengeIndex: Int, childChallengeIndex: Int,
-        childChallengeId: Int, var4: LuaTable?, var5: LuaTable?, var6: LuaTable?
+        context: GroupEventContext, fatherChallengeIndex: Int, childChallengeIndex: Int, childChallengeId: Int,
+        parameterList: List<Int>, uidList: List<Int>, pointConfig: AttachChildChallengePointConfig
     ): Int
 
 

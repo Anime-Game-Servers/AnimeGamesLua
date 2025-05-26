@@ -2,7 +2,6 @@ package org.anime_game_servers.gi_lua.script_lib.handler
 
 import org.anime_game_servers.gi_lua.script_lib.ControllerLuaContext
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
-import org.anime_game_servers.lua.engine.LuaTable
 
 /**
  * Handler for scriptlib functions used in EntityControllers, which use the ControllerEventContext.
@@ -54,7 +53,7 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
      */
     fun setGadgetEnableInteract(context: ControllerEventContext, groupId: Int, configId: Int, enable: Boolean): Int
 
-    fun dropSubfield(context: ControllerEventContext, paramsTable: LuaTable?): Int
+    fun dropSubfield(context: ControllerEventContext, subfieldName: String): Int
 
     fun getGatherConfigIdList(context: ControllerEventContext): IntArray
 

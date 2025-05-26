@@ -1,8 +1,59 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.entites
 
 import org.anime_game_servers.core.gi.models.Vector
+import org.anime_game_servers.gi_lua.models.PositionImpl
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
+import org.anime_game_servers.gi_lua.utils.ScriptUtils.toVector
 import org.anime_game_servers.lua.engine.LuaTable
+
+data class RemainGadgetCountParameters(
+    var groupId: Int,
+    var gadgetIds: List<Int>?
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): RemainGadgetCountParameters? {
+            val groupId = table.optInt("group_id", 0)
+            val gadgetIds = table.getTable("gadget_id")?.getAsIntArray()?.toList()
+            return RemainGadgetCountParameters(
+                groupId = groupId,
+                gadgetIds = gadgetIds
+            )
+        }
+    }
+}
+
+data class CreateGadgetParameters(
+    var configId: Int,
+    var pos: Vector,
+    var rot: Vector,
+    var sgvMap: Map<String, Number>? = null,
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): CreateGadgetParameters? {
+            val configId = table.optInt("config_id", 0)
+            val pos = table.getTable("pos")?.toVector()
+            val rot = table.getTable("rot")?.toVector()
+            val sgvKeys = table.getTable("sgv_key")
+            val sgvValues = table.getTable("sgv_value")?.getAsIntArray()?.toList()
+            var sgvMap: MutableMap<String, Number>? = null
+            if (sgvKeys != null && sgvValues != null && sgvKeys.getSize() == sgvValues.size) {
+                sgvMap = mutableMapOf()
+                for (i in 0 until sgvKeys.getSize()) {
+                    val key = sgvKeys.getString(i)
+                    if(key == null) continue
+                    val value = sgvValues[i]
+                    sgvMap[key] = value
+                }
+            }
+            return CreateGadgetParameters(
+                configId = configId,
+                pos = pos ?: PositionImpl(0f, 0f, 0f),
+                rot = rot ?: PositionImpl(0f, 0f, 0f),
+                sgvMap = sgvMap
+            )
+        }
+    }
+}
 
 /**
  * Handler for scriptlib functions used in GroupScripts related to Gadgets.
@@ -10,7 +61,7 @@ import org.anime_game_servers.lua.engine.LuaTable
  */
 interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
 
-    fun createGadget(context: GroupEventContext, table: LuaTable?): Int
+    fun createGadget(context: GroupEventContext, configId: Int): Int
 
     /**
      * Spawn a gadget from the caller group at the specified position
@@ -26,7 +77,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * Spawns a gadget based on the caller groups gadget with cfg id matching the specified id. It also applies additional parameters based on the parameters
      * @param creationParams parameters to spawn a gadget with
      */
-    fun createGadgetByParamTable(context: GroupEventContext, creationParams: LuaTable?): Int
+    fun createGadgetByParamTable(context: GroupEventContext, creationParams: CreateGadgetParameters): Int
 
     /**
      * Returns the state of a gadget based on the group id and config id
@@ -96,10 +147,13 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
     fun setGadgetHp(context: GroupEventContext, groupId: Int, configId: Int, hpPercent: Int): Int
 
     /* Worktop */
-    fun setWorktopOptionsByGroupId(context: GroupEventContext, groupId: Int, configId: Int, options: LuaTable?): Int
-    fun setWorktopOptions(context: GroupEventContext, table: LuaTable?): Int
+    fun setWorktopOptionsByGroupId(context: GroupEventContext, groupId: Int, configId: Int, options: List<Int>): Int
+    fun setWorktopOptions(context: GroupEventContext, options: List<Int>): Int
     fun delWorktopOptionByGroupId(context: GroupEventContext, groupId: Int, configId: Int, option: Int): Int
     fun delWorktopOption(context: GroupEventContext, var1: Int): Int
+
+
+    fun checkRemainGadgetCountByGroupId(context: GroupEventContext, parameters: RemainGadgetCountParameters): Int
 
     /* Lua */
     /**
