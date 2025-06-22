@@ -15,7 +15,7 @@ interface DungeonScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun enterPersistentDungeon(
         context: GroupEventContext,
         dungeonId: Int,
-        var2: Int,
+        uid: Int,
         position: Vector,
         rot: Vector
     ): Int

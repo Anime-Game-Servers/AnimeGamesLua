@@ -2,12 +2,23 @@ package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
 import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
+import org.anime_game_servers.gi_lua.utils.ScriptUtils
+import org.anime_game_servers.lua.engine.LuaTable
 
 data class ChangeLevelTagParams(
     var pos: Vector,
     var rot: Vector,
-    var radius: Int
-)
+    var radius: Int = -1
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): ChangeLevelTagParams {
+            val posTable = table.getTable("pos")
+            val rotTable = table.getTable("rot")
+            val radius = table.optInt("radius", -1)
+            return ChangeLevelTagParams(ScriptUtils.luaToPos(posTable), ScriptUtils.luaToPos(rotTable), radius)
+        }
+    }
+}
 
 /**
  * Handler for scriptlib functions used in
