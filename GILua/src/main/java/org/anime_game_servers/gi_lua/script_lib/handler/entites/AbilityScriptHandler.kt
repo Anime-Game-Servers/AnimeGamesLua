@@ -24,7 +24,7 @@ interface AbilityScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         uidList: List<Int>,
         floatValueKey: String,
-        var3: Int
+        value: Int
     ): Int
 
     /**
@@ -61,7 +61,7 @@ interface AbilityScriptHandler<GroupEventContext : GroupEventLuaContext> {
         value: Int
     ): Int
 
-    fun setTeamServerGlobalValue(context: GroupEventContext, sceneUid: Int, sgvName: String, var3: Int): Int
+    fun setTeamServerGlobalValue(context: GroupEventContext, sceneUid: Int, sgvName: String, value: Int): Int
     fun addTeamServerGlobalValue(context: GroupEventContext, ownerId: Int, sgvName: String, value: Int): Int
     fun getTeamServerGlobalValue(context: GroupEventContext, ownerId: Int, sgvName: String, value: Int): Int
 

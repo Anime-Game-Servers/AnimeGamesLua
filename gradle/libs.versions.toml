@@ -1,9 +1,9 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.1.0"
+kotlin = "2.1.21"
 jvmTargetVersion = "17"
 # https://github.com/Kotlin/kotlinx-io/releases
-kx_io = "0.3.0"
+kx_io = "0.7.0"
 # https://github.com/oshai/kotlin-logging/releases
 logger = "6.0.3"
 # https://mvnrepository.com/artifact/com.esotericsoftware/reflectasm/1.11.9  // TODO not maintained anymore
@@ -13,9 +13,9 @@ reflections = "0.10.2"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://projectlombok.org/download
-lombok_libs = "1.18.30"
+lombok_libs = "1.18.38"
 # https://plugins.gradle.org/plugin/io.freefair.lombok
-lombok_plugin = "8.4"
+lombok_plugin = "8.14"
 # https://github.com/davidmoten/rtree-multi/releases
 rtree_multi = "0.1"
 
