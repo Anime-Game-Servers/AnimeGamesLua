@@ -8,6 +8,11 @@ import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupEntityHandl
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupGadgetHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupMonsterHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupRegionScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetGivingScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetPlayScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.PlatformScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.AranaraScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.TowerScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.QuestScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.*
@@ -57,6 +62,24 @@ interface GroupEventLuaContext : LuaContext {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
+
+    /* Gadgets*/
+    fun <T> onGadgetGivingHandler(block: GadgetGivingScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getGadgetGivingHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onGadgetPlayHandler(block: GadgetPlayScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getGadgetPlayHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onPlatformHandler(block: PlatformScriptHandler<GroupEventLuaContext>.() -> T) : T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getPlatformHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+
 
     /* player */
     fun <T> onQuestHandler(block: QuestScriptHandler<GroupEventLuaContext>.() -> T) : T {
@@ -117,6 +140,19 @@ interface GroupEventLuaContext : LuaContext {
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }
 
+
+
+    /* other */
+    fun <T> onAranaraHandler(block: AranaraScriptHandler<GroupEventLuaContext>.() -> T): T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getAranaraHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+    fun <T> onTowerHandler(block: TowerScriptHandler<GroupEventLuaContext>.() -> T): T {
+        return getScriptLibHandlerProvider<GroupEventLuaContext>().getTowerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
 
 
     /* activity */

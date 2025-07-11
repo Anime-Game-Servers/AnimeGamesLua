@@ -6,6 +6,11 @@ import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupEntityHandl
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupGadgetHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupMonsterHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupRegionScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetGivingScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetPlayScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.PlatformScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.AranaraScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.TowerScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.QuestScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.*
@@ -19,6 +24,12 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getGroupGadgetHandler(): GroupGadgetHandler<GroupEventContext>? = null
     fun getGroupMonsterHandler(): GroupMonsterHandler<GroupEventContext>? = null
     fun getGroupRegionHandler(): GroupRegionScriptHandler<GroupEventContext>? = null
+
+    /* Gadget handler */
+    fun getGadgetGivingHandler(): GadgetGivingScriptHandler<GroupEventContext>? = null
+    fun getGadgetPlayHandler(): GadgetPlayScriptHandler<GroupEventContext>? = null
+    fun getPlatformHandler(): PlatformScriptHandler<GroupEventContext>? = null
+
 
     /* player handler */
     fun getQuestHandler(): QuestScriptHandler<GroupEventContext>? = null
@@ -34,6 +45,10 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getScenePlayHandler(): ScenePlayScriptHandler<GroupEventContext>? = null
     fun getSceneStateHandler(): SceneStateScriptHandler<GroupEventContext>? = null
     fun getSealBattleHandler(): SealBattleScriptHandler<GroupEventContext>? = null
+
+    /* other handlers */
+    fun getAranaraHandler(): AranaraScriptHandler<GroupEventContext>? = null
+    fun getTowerHandler(): TowerScriptHandler<GroupEventContext>? = null
 
     /* Activity handlers */
     fun getActivityHandler(): GeneralActivityScriptHandler<GroupEventContext>? = null

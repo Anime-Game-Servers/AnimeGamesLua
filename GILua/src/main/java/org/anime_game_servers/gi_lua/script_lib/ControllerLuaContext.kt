@@ -2,6 +2,7 @@ package org.anime_game_servers.gi_lua.script_lib
 
 import org.anime_game_servers.gi_lua.script_lib.handler.GadgetControllerHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupGadgetHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget_controller.GadgetPlayControllerHandler
 
 /**
  * Lua context for calls to a Gadget Controller scripts functions.
@@ -14,6 +15,12 @@ interface ControllerLuaContext<GadgetEntity> : LuaContext {
 
     fun <T>onGadgetControllerHandler(block: GadgetControllerHandler<GadgetEntity, ControllerLuaContext<GadgetEntity>>.() -> T) : T {
         return getScriptLibHandlerProvider<ControllerLuaContext<GadgetEntity>>().getGadgetControllerHandler()?.run {
+            return block()
+        } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
+    }
+
+    fun <T>onGadgetPlayControllerHandler(block: GadgetPlayControllerHandler<GadgetEntity, ControllerLuaContext<GadgetEntity>>.() -> T) : T {
+        return getScriptLibHandlerProvider<ControllerLuaContext<GadgetEntity>>().getGadgetPlayControllerHandler()?.run {
             return block()
         } ?: ScriptLibErrors.NOT_IMPLEMENTED.getValue() as T
     }

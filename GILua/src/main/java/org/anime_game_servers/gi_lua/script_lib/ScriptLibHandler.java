@@ -27,36 +27,10 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int getRegionalPlayVarValue(GroupEventContext context, int uid, int type);
     int addRegionalPlayVarValue(GroupEventContext context, int uid, int regionId, int delta);
 
-    // gadget play
-    int getGadgetPlayProgress(GroupEventContext context, int groupId, int configId);
-    int getGadgetPlayStageBeginProgress(GroupEventContext context, int groupId, int configId);
-    int getGadgetPlayUidValue(GroupEventContext context, int groupId, int configId, int uid, String name);
-    int setGadgetPlayUidValue(GroupEventContext context, int groupId, int configId, int uid, String key, int value);
-    int startGadgetPlay(GroupEventContext context, int groupId, int configId);
-    int gadgetPlayUidOp(GroupEventContext context, int groupId, int gadgetCrucibleCfgId, List<Integer> uidList, int var4, String var5, LuaTable var6 );
-    int addGadgetPlayProgress(GroupEventContext context, int param1, int param2, int progressChange);
 
     // gadget
     int createGadgetWave(GroupEventContext context, int areaId, int suitId, int offset, Vector boxSize, Vector gadgetSize);
     int createGadgetWithGlobalValue(GroupEventContext context, int configId, LuaTable sgv);
-
-    // aranara collection
-    int getAranaraCollectableCountByTypeAndState(GroupEventContext context, int type, int state);
-    int receiveAllAranaraCollectionByType(GroupEventContext context, int groupId, int type);
-
-    // platform
-    int getPlatformArrayInfoByPointId(GroupEventContext context, int arrayId, int pointId);
-    int getPlatformPointArray(GroupEventContext context, int configId);
-    int setPlatformRouteIndexToNext(GroupEventContext context, int configId);
-    /**
-     * TODO properly implement
-     * var3 might contain the next point, sometimes is a single int, sometimes multiple ints as array
-     * var4 has RouteType route_type, bool turn_mode
-     */
-    int setPlatformPointArray(GroupEventContext context, int entityConfigId, int pointArrayId, LuaTable var3, LuaTable var4);
-    int setPlatformRouteId(GroupEventContext context, int entityConfigId, int routeId);
-    int startPlatform(GroupEventContext context, int configId);
-    int stopPlatform(GroupEventContext context, int configId);
 
     // scene
     int getSceneTimeSeconds(GroupEventContext context);
@@ -77,21 +51,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int getSceneOwnerUid(GroupEventContext context);
 
 
-    // giving
-    /**
-     * TODO implement
-     * @param context
-     * @param givingId The id if the giving element found in [GivingData]
-     * @param groupId The groupdId of the group containing the gadget
-     * @param gadgetCfgId The gadgets target configId
-     * @return 0 if success, something else if failed
-     */
-    int activeGadgetItemGiving(GroupEventContext context, int givingId, int groupId, int gadgetCfgId);
-    @Nullable int[] getGivingItemList(GroupEventContext context, int givingId);
-
-    // tower
-    int towerCountTimeStatus(GroupEventContext context, int isDone, int var2);
-    int towerMirrorTeamSetUp(GroupEventContext context, int team, int var1);
 
     // blossom
     int createBlossomChestByGroupId(GroupEventContext context, int groupId, int chestConfigId);
@@ -110,10 +69,6 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int createGroupTimerEvent(GroupEventContext context, int groupID, String source, double time);
     int cancelGroupTimerEvent(GroupEventContext context, int groupID, String source);
 
-
-    // Channeller Slab
-    int createChannellerSlabCampRewardGadget(GroupEventContext context, int configId);
-    int getChannellerSlabLoopDungeonLimitTime(GroupEventContext context);
 
     int getGroupMonsterCountByGroupId(GroupEventContext context, int groupId);
     boolean checkIsInGroup(GroupEventContext context, int groupId, int configId);
@@ -152,6 +107,9 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int showClientGuide(GroupEventContext context, String guideName);
     int showClientTutorial(GroupEventContext context, int tutorialId, int[] uidList);
     int showCommonPlayerTips(GroupEventContext context, int type, LuaTable keys);
+    int sendShowCommonTipsToClient(GroupEventContext context, String title, String content, int closeTime);
+    int sendCloseCommonTipsToClient(GroupEventContext context);
+
 
 
     // GadgetChainExcelConfigData
@@ -201,17 +159,11 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
 
     int getCurTriggerCount(GroupEventContext context);
 
-    int sendShowCommonTipsToClient(GroupEventContext context, String title, String content, int closeTime);
-
-    int sendCloseCommonTipsToClient(GroupEventContext context);
     int updateBundleMarkShowStateByGroupId(GroupEventContext context, int groupId, boolean val2);
-
-
 
     int sendServerMessageByLuaKey(GroupEventContext context, String messageKey, int[] targets);
 
     int tryReallocateEntityAuthority(GroupEventContext context, int uid, int endConfig, int var3);
-
     int forceRefreshAuthorityByConfigId(GroupEventContext context, int var1, int uid);
 
     int addPlayerGroupVisionType(GroupEventContext context, int[] uids, int[] visionTypeList);
@@ -222,7 +174,7 @@ public interface ScriptLibHandler<GroupEventContext extends GroupEventLuaContext
     int moveAvatarByPointArrayWithTemplate(GroupEventContext context, int uid, int pointArrayId, int[] routeList, int gadgetState, LuaTable speed);
 
 
-     int getPlayerVehicleType(GroupEventContext context, int uid);
+    int getPlayerVehicleType(GroupEventContext context, int uid);
     boolean isPlayerAllAvatarDie(GroupEventContext context, int uid);
     int movePlayerToPos(GroupEventContext context, int[] targetUIds, Vector pos, Vector rot, int radius, boolean isSkipUi);
 

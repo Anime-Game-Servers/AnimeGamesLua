@@ -8,4 +8,6 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
  */
 interface ChannelerSlabScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun isChannellerSlabLoopDungeonConditionSelected(context: GroupEventContext, conditionId: Int): Boolean
+    fun createChannellerSlabCampRewardGadget(context: GroupEventContext, configId: Int): Int
+    fun getChannellerSlabLoopDungeonLimitTime(context: GroupEventContext): Int
 }

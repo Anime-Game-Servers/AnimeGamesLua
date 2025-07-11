@@ -6,10 +6,7 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.ScriptLib
 import org.anime_game_servers.lua.engine.LuaTable
 
-
-private val exhibitionScriptLogger = logger(
-    ScriptLib::class.java.name
-)
+private val scriptLogger = logger {}
 
 data class ExhibitionPlayTarget(
     val playType: ExhibitionPlayType,
@@ -20,11 +17,11 @@ data class ExhibitionPlayTarget(
             val exhibitionTypeIndex = targetPlayInfoTable.optInt("play_type", -1)
             val galleryId = targetPlayInfoTable.optInt("gallery_id", -1)
             if (exhibitionTypeIndex < 0 || exhibitionTypeIndex >= ExhibitionPlayType.entries.size) {
-                exhibitionScriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid exhibition type $exhibitionTypeIndex" }
+                scriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid exhibition type $exhibitionTypeIndex" }
                 return null
             }
             if (galleryId == -1) {
-                exhibitionScriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid gallery id $galleryId" }
+                scriptLogger.error { "[AddExhibitionAccumulableDataAfterSuccess] Invalid gallery id $galleryId" }
                 return null
             }
             val exhibitionTypeEnum = ExhibitionPlayType.entries[exhibitionTypeIndex]
