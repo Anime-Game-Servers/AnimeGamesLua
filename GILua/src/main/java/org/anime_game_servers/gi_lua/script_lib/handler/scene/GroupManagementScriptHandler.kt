@@ -1,20 +1,26 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.models.constants.FlowSuiteOperatePolicy
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class RefreshGroupParams(
+    @LuaNames("group_id")
     val groupId: Int,
+    @LuaNames("suite")
     val suiteId: Int,
+    @LuaNames("refresh_level_revise")
     val refreshLevelRevise: Int = 0,
+    @LuaNames("exclude_prev")
     val excludePrev: Boolean = false,
+    @LuaNames("is_force_random_suite")
     val isForceRandomSuite: Boolean = false,
 ) {
     companion object {
         fun fromLuaTable(table: LuaTable): RefreshGroupParams? {
-            val groupId = table.optInt("groupId", 0)
-            val suiteId = table.optInt("suiteId", 0)
+            val groupId = table.optInt("group_id", 0)
+            val suiteId = table.optInt("suite", 0)
             val refreshLevelRevise = table.optInt("refresh_level_revise", 0)
             val excludePrev = table.optBoolean("exclude_prev", false)
             val isForceRandomSuite = table.optBoolean("is_force_random_suite", false)

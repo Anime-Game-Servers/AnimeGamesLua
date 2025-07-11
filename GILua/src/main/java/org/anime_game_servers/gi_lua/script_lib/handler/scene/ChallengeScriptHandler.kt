@@ -1,5 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.models.constants.ChallengeEventMarkType
 import org.anime_game_servers.gi_lua.models.constants.FatherChallengeProperty
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
@@ -8,13 +9,14 @@ import org.anime_game_servers.lua.engine.LuaTable
 data class CreateFatherChallengeParameters(
     val success: Int,
     val fail: Int,
+    @LuaNames("fail_on_wipe")
     val failOnWipe: Boolean
 ) {
     companion object {
         fun fromLuaTable(table: LuaTable): CreateFatherChallengeParameters? {
             val success = table.optInt("success", -1)
             val fail = table.optInt("fail", -1)
-            val failOnWipe = table.optBoolean("failOnWipe", false)
+            val failOnWipe = table.optBoolean("fail_on_wipe", false)
 
             if (success == -1 || fail == -1) {
                 return null // Invalid or missing data

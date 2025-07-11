@@ -16,6 +16,7 @@ import org.anime_game_servers.gi_lua.script_lib.handler.entites.CreateGadgetPara
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.CreateMonsterParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.MonsterFaceAvatarParameters
 import org.anime_game_servers.gi_lua.script_lib.handler.entites.RemainGadgetCountParameters
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.SetPlatformPointArrayParams
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
 import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionPlayTarget
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.AttachChildChallengePointConfig
@@ -102,14 +103,6 @@ object ScriptLib {
 
 
 
-    @JvmStatic
-    fun TowerCountTimeStatus(context: LuaContextWrapper, isDone: Int, var2: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                towerCountTimeStatus(this@onGroupContext, isDone, var2)
-            }
-        }
-    }
 
     @JvmStatic
     fun GetGroupMonsterCount(context: LuaContextWrapper): Int {
@@ -144,15 +137,6 @@ object ScriptLib {
     }
 
 
-
-    @JvmStatic
-    fun TowerMirrorTeamSetUp(context: LuaContextWrapper, team: Int, var1: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                towerMirrorTeamSetUp(this@onGroupContext, team, var1)
-            }
-        }
-    }
 
 
 
@@ -241,27 +225,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun GadgetPlayUidOp(
-        context: LuaContextWrapper,
-        groupId: Int,
-        gadgetCrucibleCfgId: Int,
-        uidListRawTable: Any,
-        var4: Int,
-        var5: String,
-        var6RawTable: Any
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndConfigId(ScriptLib::GadgetPlayUidOp, groupId, gadgetCrucibleCfgId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                val uidList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
-                val var6Table = context.engine.getTable(var6RawTable)
-                gadgetPlayUidOp(this@onGroupContext, groupId, gadgetCrucibleCfgId, uidList, var4, var5, var6Table)
-            }
-        }
-    }
+
 
     @JvmStatic
     fun GetServerTime(context: LuaContextWrapper): Long {
@@ -286,15 +250,6 @@ object ScriptLib {
         return context.onGroupContext {
             onScriptLibHandler {
                 getCurTriggerCount(this@onGroupContext)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetChannellerSlabLoopDungeonLimitTime(context: LuaContextWrapper): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                getChannellerSlabLoopDungeonLimitTime(this@onGroupContext)
             }
         }
     }
@@ -733,75 +688,6 @@ object ScriptLib {
         }
     }
 
-    /**
-     * TODO properly implement
-     * var3 might contain the next point, sometimes is a single int, sometimes multiple ints as array
-     * var4 has RouteType route_type, bool turn_mode
-     */
-    @JvmStatic
-    fun SetPlatformPointArray(
-        context: LuaContextWrapper,
-        entityConfigId: Int,
-        pointArrayId: Int,
-        var3Table: Any,
-        var4Table: Any
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                val var3 = context.engine.getTable(var3Table)
-                val var4 = context.engine.getTable(var4Table)
-                setPlatformPointArray(this@onGroupContext, entityConfigId, pointArrayId, var3, var4)
-            }
-        }
-    }
-
-    //TODO check
-    @JvmStatic
-    fun SetPlatformRouteId(context: LuaContextWrapper, entityConfigId: Int, routeId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkConfigId(ScriptLib::SetPlatformRouteId, entityConfigId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                setPlatformRouteId(this@onGroupContext, entityConfigId, routeId)
-            }
-        }
-    }
-
-    //TODO check
-    @JvmStatic
-    fun StartPlatform(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkConfigId(ScriptLib::StartPlatform, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                startPlatform(this@onGroupContext, configId)
-            }
-        }
-    }
-
-    //TODO check
-    @JvmStatic
-    fun StopPlatform(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkConfigId(ScriptLib::StopPlatform, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                stopPlatform(this@onGroupContext, configId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun CreateChannellerSlabCampRewardGadget(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                createChannellerSlabCampRewardGadget(this@onGroupContext, configId)
-            }
-        }
-    }
 
     @JvmStatic
     fun AssignPlayerShowTemplateReminder(context: LuaContextWrapper, var1: Int, var2Table: Any): Int {
@@ -891,38 +777,12 @@ object ScriptLib {
         }
     }
 
-    /**
-     * TODO implement
-     * @param context
-     * @param givingId The id if the giving element found in [GivingData]
-     * @param groupId The groupdId of the group containing the gadget
-     * @param gadgetCfgId The gadgets target configId
-     * @return 0 if success, something else if failed
-     */
-    @JvmStatic
-    fun ActiveGadgetItemGiving(context: LuaContextWrapper, givingId: Int, groupId: Int, gadgetCfgId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndConfigId(ScriptLib::ActiveGadgetItemGiving, groupId, gadgetCfgId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                activeGadgetItemGiving(this@onGroupContext, givingId, groupId, gadgetCfgId)
-            }
-        }
-    }
 
 
 
 
 
-    @JvmStatic
-    fun AddGadgetPlayProgress(context: LuaContextWrapper, param1: Int, param2: Int, progressChange: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                addGadgetPlayProgress(this@onGroupContext, param1, param2, progressChange)
-            }
-        }
-    }
+
 
 
 
@@ -1867,6 +1727,289 @@ object ScriptLib {
         return context.onGroupContext {
             onGroupAbilityHandler {
                 setGroupLogicStateValue(this@onGroupContext, sgvName, value)
+            }
+        }
+    }
+
+
+    /*                 */
+    /* Player Handlers */
+    /*                 */
+
+
+    /* Gadget giving handler */
+
+    /**
+     * TODO implement
+     * @param context
+     * @param givingId The id if the giving element found in [GivingData]
+     * @param groupId The groupdId of the group containing the gadget
+     * @param gadgetCfgId The gadgets target configId
+     * @return 0 if success, something else if failed
+     */
+    @JvmStatic
+    fun ActiveGadgetItemGiving(context: LuaContextWrapper, givingId: Int, groupId: Int, gadgetCfgId: Int): Int {
+        return context.onGroupContext {
+            onGadgetGivingHandler {
+                checkGroupIdAndConfigId(ScriptLib::ActiveGadgetItemGiving, groupId, gadgetCfgId)?.let {
+                    return@onGadgetGivingHandler it.getValue()
+                }
+                activeGadgetItemGiving(this@onGroupContext, givingId, groupId, gadgetCfgId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): IntArray? {
+        return context.onGroupContext {
+            onGadgetGivingHandler {
+                getGivingItemList(this@onGroupContext, givingId)
+            }
+        }
+    }
+
+
+    /* GadgetPlayScriptHandler Group and Controller context */
+
+
+    @JvmStatic
+    fun GetGadgetPlayProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onControllerContext {
+            onGadgetPlayControllerHandler {
+                checkGroupIdAndConfigId(::GetGadgetPlayProgress, groupId, configId)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                getGadgetPlayProgress(this@onControllerContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGadgetPlayStageBeginProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onControllerContext {
+            onGadgetPlayControllerHandler {
+                checkGroupIdAndConfigId(::GetGadgetPlayStageBeginProgress, groupId, configId)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                getGadgetPlayStageBeginProgress(this@onControllerContext, groupId, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetGadgetPlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        configId: Int,
+        uid: Int,
+        name: String
+    ): Int {
+        return context.onControllerContext {
+            onGadgetPlayControllerHandler {
+                checkUid(::GetGadgetPlayUidValue, uid)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                checkGroupIdAndConfigId(::GetGadgetPlayUidValue, groupId, configId)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                getGadgetPlayUidValue(this@onControllerContext, groupId, configId, uid, name)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun AddGadgetPlayProgress(context: LuaContextWrapper, param1: Int, param2: Int, progressChange: Int): Int {
+        return context.onControllerContext {
+            onGadgetPlayControllerHandler {
+                addGadgetPlayProgress(this@onControllerContext, param1, param2, progressChange)
+            }
+        }
+    }
+
+    /* special overload with signature used by ElemForce_Base.lua since cb3 */
+    @JvmStatic
+    fun GadgetPlayUidOp(
+        context: LuaContextWrapper,
+        groupId: Int,
+        gadgetCrucibleCfgId: Int,
+        uidListRawTable: Any,
+        op: Int,
+        param: Int,
+    ): Int {
+        val uidList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+        return GadgetPlayUidOpInternal(context, groupId, gadgetCrucibleCfgId, uidList, op, "", listOf(param))
+    }
+
+    @JvmStatic
+    fun GadgetPlayUidOp(
+        context: LuaContextWrapper,
+        groupId: Int,
+        gadgetCrucibleCfgId: Int,
+        uidListRawTable: Any,
+        op: Int,
+        paramString: String,
+        paramListRawTable: Any
+    ): Int {
+        val uidList = context.engine.getTable(uidListRawTable).getAsIntArray().toList()
+        val paramList = context.engine.getTable(paramListRawTable).getAsIntArray().toList()
+
+        return GadgetPlayUidOpInternal(context, groupId, gadgetCrucibleCfgId, uidList, op, paramString, paramList)
+    }
+
+    @JvmStatic
+    private fun GadgetPlayUidOpInternal(
+        context: LuaContextWrapper,
+        groupId: Int,
+        gadgetCrucibleCfgId: Int,
+        uidList: List<Int>,
+        op: Int,
+        paramString: String,
+        paramList: List<Int>
+    ): Int {
+        checkGroupIdAndConfigId(ScriptLib::GadgetPlayUidOpInternal, groupId, gadgetCrucibleCfgId)?.let {
+            return it.getValue()
+        }
+
+        return context.onTypedContext( {
+            onGadgetPlayHandler {
+                gadgetPlayUidOp(this@onTypedContext, groupId, gadgetCrucibleCfgId, uidList, op, paramString, paramList)
+            }
+        }, {
+            onGadgetPlayControllerHandler {
+                gadgetPlayUidOp(this@onTypedContext, groupId, gadgetCrucibleCfgId, uidList, op, paramString, paramList)
+            }
+        })
+    }
+
+    @JvmStatic
+    fun SetGadgetPlayUidValue(
+        context: LuaContextWrapper,
+        groupId: Int,
+        configId: Int,
+        uid: Int,
+        key: String,
+        value: Int
+    ): Int {
+        return context.onControllerContext {
+            onGadgetPlayControllerHandler {
+                checkUid(::SetGadgetPlayUidValue, uid)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                checkGroupIdAndConfigId(::SetGadgetPlayUidValue, groupId, configId)?.let {
+                    return@onGadgetPlayControllerHandler it.getValue()
+                }
+                setGadgetPlayUidValue(this@onControllerContext, groupId, configId, uid, key, value)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StartGadgetPlay(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
+        return context.onGroupContext {
+            onGadgetPlayHandler {
+                checkGroupIdAndConfigId(::StartGadgetPlay, groupId, configId)?.let {
+                    return@onGadgetPlayHandler it.getValue()
+                }
+                startGadgetPlay(this@onGroupContext, groupId, configId)
+            }
+        }
+    }
+
+
+    /* PlatformScriptHandler */
+
+    @JvmStatic
+    fun GetPlatformArrayInfoByPointId(context: LuaContextWrapper, arrayId: Int, pointId: Int): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                getPlatformArrayInfoByPointId(this@onGroupContext, arrayId, pointId)
+                // TODO actually return it as vararg containing the 3 values
+                0
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetPlatformPointArray(context: LuaContextWrapper, configId: Int): IntArray {
+        return context.onGroupContext {
+            onPlatformHandler {
+                checkConfigId(::GetPlatformPointArray, configId)?.let {
+                    return@onPlatformHandler intArrayOf(it.getValue())
+                }
+                getPlatformPointArray(this@onGroupContext, configId).toIntArray()
+            }
+        }
+    }
+    @JvmStatic
+    fun SetPlatformRouteIndexToNext(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                checkConfigId(::SetPlatformRouteIndexToNext, configId)?.let {
+                    return@onPlatformHandler it.getValue()
+                }
+                setPlatformRouteIndexToNext(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    /**
+     * TODO properly implement
+     * var3 might contain the next point, sometimes is a single int, sometimes multiple ints as array
+     * var4 has RouteType route_type, bool turn_mode
+     */
+    @JvmStatic
+    fun SetPlatformPointArray(
+        context: LuaContextWrapper,
+        entityConfigId: Int,
+        pointArrayId: Int,
+        rawPointListTable: Any,
+        rawParamsTable: Any
+    ): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                val pointList = context.engine.getTable(rawPointListTable).getAsIntArray().toList()
+                val paramsTable = context.engine.getTable(rawParamsTable)
+                val params = SetPlatformPointArrayParams.fromLuaTable(paramsTable) ?: run {
+                    scriptLogger.error { "[SetPlatformPointArray] Invalid parameters table $paramsTable" }
+                    return@onPlatformHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
+                }
+                setPlatformPointArray(this@onGroupContext, entityConfigId, pointArrayId, pointList, params)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun SetPlatformRouteId(context: LuaContextWrapper, entityConfigId: Int, routeId: Int): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                checkConfigId(ScriptLib::SetPlatformRouteId, entityConfigId)?.let {
+                    return@onPlatformHandler it.getValue()
+                }
+                setPlatformRouteId(this@onGroupContext, entityConfigId, routeId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StartPlatform(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                checkConfigId(ScriptLib::StartPlatform, configId)?.let {
+                    return@onPlatformHandler it.getValue()
+                }
+                startPlatform(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun StopPlatform(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onPlatformHandler {
+                checkConfigId(ScriptLib::StopPlatform, configId)?.let {
+                    return@onPlatformHandler it.getValue()
+                }
+                stopPlatform(this@onGroupContext, configId)
             }
         }
     }
@@ -3586,6 +3729,60 @@ object ScriptLib {
 
 
 
+    /*                */
+    /* Other Handlers */
+    /*                */
+
+    /* AranaraScriptHandler */
+
+    @JvmStatic
+    fun ReceiveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
+        return context.onGroupContext {
+            onAranaraHandler {
+                checkGroupId(::RecieveAllAranaraCollectionByType, groupId)?.let {
+                    return@onAranaraHandler it.getValue()
+                }
+                receiveAllAranaraCollectionByType(this@onGroupContext, groupId, type)
+            }
+        }
+    }
+    /* compat function with typo*/
+    @JvmStatic
+    fun RecieveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
+        return ReceiveAllAranaraCollectionByType(context, groupId, type)
+    }
+
+    @JvmStatic
+    fun GetAranaraCollectableCountByTypeAndState(context: LuaContextWrapper, type: Int, state: Int): Int {
+        return context.onGroupContext {
+            onAranaraHandler {
+                getAranaraCollectableCountByTypeAndState(this@onGroupContext, type, state)
+            }
+        }
+    }
+
+
+    /* TowerScriptHandler */
+
+    @JvmStatic
+    fun TowerCountTimeStatus(context: LuaContextWrapper, isDone: Int): Int {
+        return context.onGroupContext {
+            onTowerHandler {
+                towerCountTimeStatus(this@onGroupContext, isDone)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun TowerMirrorTeamSetUp(context: LuaContextWrapper, team: Int): Int {
+        return context.onGroupContext {
+            onTowerHandler {
+                towerMirrorTeamSetUp(this@onGroupContext, team)
+            }
+        }
+    }
+
+
 
 
     /*                   */
@@ -3644,6 +3841,24 @@ object ScriptLib {
         return context.onGroupContext {
             onChannelerSlapHandler {
                 isChannellerSlabLoopDungeonConditionSelected(this@onGroupContext, conditionId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun CreateChannellerSlabCampRewardGadget(context: LuaContextWrapper, configId: Int): Int {
+        return context.onGroupContext {
+            onChannelerSlapHandler {
+                createChannellerSlabCampRewardGadget(this@onGroupContext, configId)
+            }
+        }
+    }
+
+    @JvmStatic
+    fun GetChannellerSlabLoopDungeonLimitTime(context: LuaContextWrapper): Int {
+        return context.onGroupContext {
+            onChannelerSlapHandler {
+                getChannellerSlabLoopDungeonLimitTime(this@onGroupContext)
             }
         }
     }
@@ -5041,15 +5256,6 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetAranaraCollectableCountByTypeAndState(context: LuaContextWrapper, type: Int, state: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                getAranaraCollectableCountByTypeAndState(this@onGroupContext, type, state)
-            }
-        }
-    }
-
-    @JvmStatic
     fun GetChainLevel(context: LuaContextWrapper, uid: Int, chainId: Int): Int {
         return context.onGroupContext {
             onScriptLibHandler {
@@ -5062,64 +5268,10 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun GetGadgetPlayProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndConfigId(::GetGadgetPlayProgress, groupId, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getGadgetPlayProgress(this@onGroupContext, groupId, configId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGadgetPlayStageBeginProgress(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndConfigId(::GetGadgetPlayStageBeginProgress, groupId, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getGadgetPlayStageBeginProgress(this@onGroupContext, groupId, configId)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGadgetPlayUidValue(
-        context: LuaContextWrapper,
-        groupId: Int,
-        configId: Int,
-        uid: Int,
-        name: String
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(::GetGadgetPlayUidValue, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                checkGroupIdAndConfigId(::GetGadgetPlayUidValue, groupId, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getGadgetPlayUidValue(this@onGroupContext, groupId, configId, uid, name)
-            }
-        }
-    }
-
-    @JvmStatic
     fun GetGameTimePassed(context: LuaContextWrapper): Int {
         return context.onGroupContext {
             onScriptLibHandler {
                 getGameTimePassed(this@onGroupContext)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): IntArray? {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                getGivingItemList(this@onGroupContext, givingId)
             }
         }
     }
@@ -5154,26 +5306,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun GetPlatformArrayInfoByPointId(context: LuaContextWrapper, arrayId: Int, pointId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                getPlatformArrayInfoByPointId(this@onGroupContext, arrayId, pointId)
-            }
-        }
-    }
 
-    @JvmStatic
-    fun GetPlatformPointArray(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkConfigId(::GetPlatformPointArray, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                getPlatformPointArray(this@onGroupContext, configId)
-            }
-        }
-    }
 
     @JvmStatic
     fun GetPlayerVehicleType(context: LuaContextWrapper, uid: Int): Int {
@@ -5326,21 +5459,7 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun ReceiveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupId(::RecieveAllAranaraCollectionByType, groupId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                receiveAllAranaraCollectionByType(this@onGroupContext, groupId, type)
-            }
-        }
-    }
-    @JvmStatic
-    fun RecieveAllAranaraCollectionByType(context: LuaContextWrapper, groupId: Int, type: Int): Int {
-        return ReceiveAllAranaraCollectionByType(context, groupId, type)
-    }
+
 
 
     @JvmStatic
@@ -5383,28 +5502,6 @@ object ScriptLib {
     }
 
     @JvmStatic
-    fun SetGadgetPlayUidValue(
-        context: LuaContextWrapper,
-        groupId: Int,
-        configId: Int,
-        uid: Int,
-        key: String,
-        value: Int
-    ): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkUid(::SetGadgetPlayUidValue, uid)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                checkGroupIdAndConfigId(::SetGadgetPlayUidValue, groupId, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                setGadgetPlayUidValue(this@onGroupContext, groupId, configId, uid, key, value)
-            }
-        }
-    }
-
-    @JvmStatic
     fun SetLimitOptimization(context: LuaContextWrapper, uid: Int, isLimitOptimization: Boolean): Int {
         return context.onGroupContext {
             onScriptLibHandler {
@@ -5413,17 +5510,6 @@ object ScriptLib {
         }
     }
 
-    @JvmStatic
-    fun SetPlatformRouteIndexToNext(context: LuaContextWrapper, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkConfigId(::SetPlatformRouteIndexToNext, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                setPlatformRouteIndexToNext(this@onGroupContext, configId)
-            }
-        }
-    }
 
     @JvmStatic
     fun SetPlayerEyePoint(context: LuaContextWrapper, configId: Int, configId2: Int): Int {
@@ -5501,18 +5587,6 @@ object ScriptLib {
         return context.onGroupContext {
             onScriptLibHandler {
                 skipTeyvatTime(this@onGroupContext, time, rate)
-            }
-        }
-    }
-
-    @JvmStatic
-    fun StartGadgetPlay(context: LuaContextWrapper, groupId: Int, configId: Int): Int {
-        return context.onGroupContext {
-            onScriptLibHandler {
-                checkGroupIdAndConfigId(::StartGadgetPlay, groupId, configId)?.let {
-                    return@onScriptLibHandler it.getValue()
-                }
-                startGadgetPlay(this@onGroupContext, groupId, configId)
             }
         }
     }
