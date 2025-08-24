@@ -31,7 +31,7 @@ data class ChessPreviewInfo(
             val entrancePointMap = keys.associateWith { entrancePointMapTable.getInt(it) }
 
             val entranceDetailList = mutableListOf<ChessRoundInfo>()
-            for(i in 0..entranceDetailListTable.getSize()) {
+            for(i in 1..entranceDetailListTable.getSize()) {
                 val roundInfoTable = entranceDetailListTable.getTable(i) ?: continue
                 val roundId = roundInfoTable.optInt("round_id", -1)
                 val poolInfoList = mutableListOf<ChessPoolInfo>()

@@ -1,6 +1,7 @@
 package org.anime_game_servers.gi_lua.test.models.script_lib
 
 import org.anime_game_servers.gi_lua.models.ScriptArgs
+import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.LuaContext
 import org.anime_game_servers.gi_lua.script_lib.LuaContextWrapper
 import org.anime_game_servers.gi_lua.script_lib.ScriptLib
@@ -53,15 +54,15 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         // setup handler to check calls
         var passedArgs : MutableList<Any?>? = null
         ScriptLib.staticHandler = object : ScriptLibStaticHandler {
-            override fun PrintLog(msg: String?) {
+            override fun printLog(msg: String?) {
                 TODO("Not yet implemented")
             }
 
-            override fun PrintContextLog(context: LuaContext, msg: String) {
+            override fun printContextLog(context: LuaContext, msg: String) {
                 TODO("Not yet implemented")
             }
 
-            override fun GetEntityType(entityId: Int): Int {
+            override fun getEntityType(entityId: Int): Int {
                 passedArgs = mutableListOf<Any?>().apply {
                     add(entityId)
                 }
@@ -112,17 +113,17 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         // setup handler to check calls
         var passedArgs : MutableList<Any?>? = null
         ScriptLib.staticHandler = object : ScriptLibStaticHandler {
-            override fun PrintLog(msg: String?) {
+            override fun printLog(msg: String?) {
                 passedArgs = mutableListOf<Any?>().apply {
                     add(msg)
                 }
             }
 
-            override fun PrintContextLog(context: LuaContext, msg: String) {
+            override fun printContextLog(context: LuaContext, msg: String) {
                 TODO("Not yet implemented")
             }
 
-            override fun GetEntityType(entityId: Int): Int {
+            override fun getEntityType(entityId: Int): Int {
                 TODO("Not yet implemented")
             }
         }
@@ -165,18 +166,18 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         // setup handler to check calls
         var passedArgs : MutableList<Any?>? = null
         ScriptLib.staticHandler = object : ScriptLibStaticHandler {
-            override fun PrintLog(msg: String?) {
+            override fun printLog(msg: String?) {
                 TODO("Not yet implemented")
             }
 
-            override fun PrintContextLog(context: LuaContext, msg: String) {
+            override fun printContextLog(context: LuaContext, msg: String) {
                 passedArgs = mutableListOf<Any?>().apply {
                     add(context)
                     add(msg)
                 }
             }
 
-            override fun GetEntityType(entityId: Int): Int {
+            override fun getEntityType(entityId: Int): Int {
                 TODO("Not yet implemented")
             }
         }
@@ -214,20 +215,20 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         var passedPrintContextArgs : MutableList<Any?>? = null
         var passedGetEntityIdArgs : MutableList<Any?>? = null
         ScriptLib.staticHandler = object : ScriptLibStaticHandler {
-            override fun PrintLog(msg: String?) {
+            override fun printLog(msg: String?) {
                 passedPrintArgs = mutableListOf<Any?>().apply {
                     add(msg)
                 }
             }
 
-            override fun PrintContextLog(context: LuaContext, msg: String) {
+            override fun printContextLog(context: LuaContext, msg: String) {
                 passedPrintContextArgs = mutableListOf<Any?>().apply {
                     add(context)
                     add(msg)
                 }
             }
 
-            override fun GetEntityType(entityId: Int): Int {
+            override fun getEntityType(entityId: Int): Int {
                 passedGetEntityIdArgs = mutableListOf<Any?>().apply {
                     add(entityId)
                 }

@@ -210,4 +210,18 @@ interface ScenePlayScriptHandler<GroupEventContext : GroupEventLuaContext> {
         param5: Int
     ): Int
 
+    fun createFoundation(
+        context: GroupEventContext,
+        uidList: IntArray,
+        configId: Int,
+        groupId: Int,
+        playIndex: Int
+    ): Int
+
+    fun createFoundations(
+        context: GroupEventContext,
+        foundationParamsMap: Map<Int, Int>,
+        groupId: Int,
+        playIndex: Int
+    ): Int
 }

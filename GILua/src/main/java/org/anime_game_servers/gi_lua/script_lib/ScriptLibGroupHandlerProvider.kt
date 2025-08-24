@@ -9,15 +9,20 @@ import org.anime_game_servers.gi_lua.script_lib.handler.entites.GroupRegionScrip
 import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetGivingScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.gadget.GadgetPlayScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.gadget.PlatformScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.gadget.VehicleScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.other.AranaraScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.LoggingScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.MiscNotifyScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.OfferingScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.RegionalPlayScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.TimeScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.other.TowerScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.other.VisionScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.ExhibitionScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.player.QuestScriptHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.scene.*
 
 interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext> {
-    fun getScriptLibHandler(): ScriptLibHandler<GroupEventContext>
-
     /* Entity handlers */
     fun getGroupAbilityHandler(): AbilityScriptHandler<GroupEventContext>? = null
     fun getGroupEntityHandler(): GroupEntityHandler<GroupEventContext>? = null
@@ -29,6 +34,7 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getGadgetGivingHandler(): GadgetGivingScriptHandler<GroupEventContext>? = null
     fun getGadgetPlayHandler(): GadgetPlayScriptHandler<GroupEventContext>? = null
     fun getPlatformHandler(): PlatformScriptHandler<GroupEventContext>? = null
+    fun getVehicleHandler(): VehicleScriptHandler<GroupEventContext>? = null
 
 
     /* player handler */
@@ -36,19 +42,33 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getExhibitionHandler(): ExhibitionScriptHandler<GroupEventContext>? = null
 
     /* scene handler*/
+    fun getBlossomHandler(): BlossomScriptHandler<GroupEventContext>? = null
     fun getChallengeHandler(): ChallengeScriptHandler<GroupEventContext>? = null
     fun getDungeonHandler(): DungeonScriptHandler<GroupEventContext>? = null
+    fun getEnvAnimalHandler(): EnvAnimalScriptHandler<GroupEventContext>? = null
     fun getDeathZoneHandler(): DeathZoneScriptHandler<GroupEventContext>? = null
     fun getGalleryHandler(): GalleryScriptHandler<GroupEventContext>? = null
     fun getGroupManagementHandler(): GroupManagementScriptHandler<GroupEventContext>? = null
+    fun getHuntingHandler(): HuntingScriptHandler<GroupEventContext>? = null
     fun getMonsterTideHandler(): MonsterTideScriptHandler<GroupEventContext>? = null
+    fun getRandTaskHandler(): RandTaskScriptHandler<GroupEventContext>? = null
+    fun getSceneGadgetChainHandler(): SceneGadgetChainScriptHandler<GroupEventContext>? = null
     fun getScenePlayHandler(): ScenePlayScriptHandler<GroupEventContext>? = null
+    fun getScenePlayerHandler(): ScenePlayerScriptHandler<GroupEventContext>? = null
     fun getSceneStateHandler(): SceneStateScriptHandler<GroupEventContext>? = null
     fun getSealBattleHandler(): SealBattleScriptHandler<GroupEventContext>? = null
+    fun getTimersHandler(): TimersScriptHandler<GroupEventContext>? = null
+    fun getWeatherHandler(): WeatherScriptHandler<GroupEventContext>? = null
 
     /* other handlers */
     fun getAranaraHandler(): AranaraScriptHandler<GroupEventContext>? = null
+    fun getLoggingHandler(): LoggingScriptHandler<GroupEventContext>? = null
+    fun getOfferingHandler(): OfferingScriptHandler<GroupEventContext>? = null
+    fun getRegionalPlayHandler(): RegionalPlayScriptHandler<GroupEventContext>? = null
+    fun getTimeHandler(): TimeScriptHandler<GroupEventContext>? = null
     fun getTowerHandler(): TowerScriptHandler<GroupEventContext>? = null
+    fun getVisionHandler(): VisionScriptHandler<GroupEventContext>? = null
+    fun getMiscNotifyHandler(): MiscNotifyScriptHandler<GroupEventContext>? = null
 
     /* Activity handlers */
     fun getActivityHandler(): GeneralActivityScriptHandler<GroupEventContext>? = null
@@ -73,6 +93,7 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getMechanicusHandler(): MechanicusScriptHandler<GroupEventContext>? = null
     fun getMichiaeMatsuriHandler(): MichiaeMatsuriScriptHandler<GroupEventContext>? = null
     fun getMistTrialHandler(): MistTrialScriptHandler<GroupEventContext>? = null
+    fun getMoonfinHandler(): MoonfinScriptHandler<GroupEventContext>? = null
     fun getPotionHandler(): PotionScriptHandler<GroupEventContext>? = null
     fun getRogueDiaryHandler(): RogueDiaryScriptHandler<GroupEventContext>? = null
     fun getRoguelikeHandler(): RoguelikeScriptHandler<GroupEventContext>? = null
@@ -82,6 +103,7 @@ interface ScriptLibGroupHandlerProvider<GroupEventContext : GroupEventLuaContext
     fun getTreasureSeelieHandler(): TreasureSeelieScriptHandler<GroupEventContext>? = null
     fun getUgcDungeonHandler(): UgcDungeonScriptHandler<GroupEventContext>? = null
     fun getVintageHandler(): VintageScriptHandler<GroupEventContext>? = null
+    fun getWaterSpiritChallengeHandler(): WaterSpiritChallengeScriptHandler<GroupEventContext>? = null
     fun getWinterCampHandler(): WinterCampScriptHandler<GroupEventContext>? = null
 
 

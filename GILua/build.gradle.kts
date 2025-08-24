@@ -21,16 +21,16 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:${libs.versions.junit}"))
     testImplementation(libs.junit)
+    testImplementation(project(":LuaJEngine"))
+    testImplementation(project(":JNLuaEngine"))
+    compileOnly(libs.jvm.lombok)
+    annotationProcessor(libs.jvm.lombok)
     implementation(libs.jvm.kotlin.stdlib)
     api(libs.bundles.jvm.ags.lua.gi)
     implementation(libs.findbugs.jsr305)
     implementation(libs.jvm.logging)
-    compileOnly(libs.jvm.lombok)
-    annotationProcessor(libs.jvm.lombok)
     implementation(libs.jvm.rtree.multi)
     implementation(project(":base"))
-    testImplementation(project(":LuaJEngine"))
-    testImplementation(project(":JNLuaEngine"))
 }
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
@@ -44,6 +44,9 @@ tasks.test {
 
 kotlin {
     jvmToolchain(libs.versions.jvmTargetVersion.get().toInt())
+    compilerOptions{
+        freeCompilerArgs.add("-Xcontext-sensitive-resolution")
+    }
 }
 
 java {

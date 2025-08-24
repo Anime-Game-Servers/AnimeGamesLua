@@ -1,5 +1,10 @@
 package org.anime_game_servers.lua.engine
 
+/**
+ * Interface for the abstraction of lua tables, to allow working with different engines.
+ * Working with the key getter, its always the lua index (so starting with 1 for int indexes),
+ * When converting to an array, the array will end up as normal 0 indexed array
+ */
 interface LuaTable {
     fun has(key: String): Boolean
 
@@ -15,9 +20,8 @@ interface LuaTable {
 
     fun optInt(key: Int, defaultValue: Int): Int
 
-    fun set(key: Int, value: Int)
-
-    fun set(key: String, value: Int)
+    operator fun set(key: Int, value: Int)
+    operator fun set(key: String, value: Int)
 
     fun getLong(key: String): Long
 
@@ -27,9 +31,9 @@ interface LuaTable {
 
     fun optLong(key: Int, defaultValue: Long): Long
 
-    fun set(key: Int, value: Long)
+    operator fun set(key: Int, value: Long)
 
-    fun set(key: String, value: Long)
+    operator fun set(key: String, value: Long)
 
     fun getDouble(key: String): Double
 
@@ -39,9 +43,9 @@ interface LuaTable {
 
     fun optDouble(key: Int, defaultValue: Double): Double
 
-    fun set(key: Int, value: Double)
+    operator fun set(key: Int, value: Double)
 
-    fun set(key: String, value: Double)
+    operator fun set(key: String, value: Double)
 
     fun getFloat(key: String): Float
 
@@ -51,9 +55,9 @@ interface LuaTable {
 
     fun optFloat(key: Int, defaultValue: Float): Float
 
-    fun set(key: Int, value: Float)
+    operator fun set(key: Int, value: Float)
 
-    fun set(key: String, value: Float)
+    operator fun set(key: String, value: Float)
 
     fun getBoolean(key: String): Boolean
 
@@ -63,9 +67,9 @@ interface LuaTable {
 
     fun optBoolean(key: Int, defaultValue: Boolean): Boolean
 
-    fun set(key: Int, value: Boolean)
+    operator fun set(key: Int, value: Boolean)
 
-    fun set(key: String, value: Boolean)
+    operator fun set(key: String, value: Boolean)
 
     fun getString(key: String): String?
 
@@ -75,21 +79,24 @@ interface LuaTable {
 
     fun optString(key: Int, defaultValue: String?): String?
 
-    fun set(key: Int, value: String)
+    operator fun set(key: Int, value: String)
 
-    fun set(key: String, value: String)
+    operator fun set(key: String, value: String)
 
     fun getTable(key: String): LuaTable?
 
     fun getTable(key: Int): LuaTable?
 
-    fun set(key: Int, value: LuaTable)
+    operator fun set(key: Int, value: LuaTable)
 
-    fun set(key: String, value: LuaTable)
+    operator fun set(key: String, value: LuaTable)
 
     fun getKeys(): Set<String>
 
     fun getAsIntArray(): IntArray
+    fun getAsFloatArray(): FloatArray
+    fun getAsDoubleArray(): DoubleArray
+    fun getAsStringArray(): Array<String>
 
     fun getSize(): Int
 

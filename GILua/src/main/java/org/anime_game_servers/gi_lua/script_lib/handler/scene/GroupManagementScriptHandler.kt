@@ -50,7 +50,10 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
     fun removeExtraGroupSuite(context: GroupEventContext, groupId: Int, suite: Int): Int
     fun killExtraGroupSuite(context: GroupEventContext, groupId: Int, suite: Int): Int
 
-    /* flow suite */
+    /*
+    * flow suite
+    * Flow suites have the IO type [IOType.GROUP_IO_TYPE_FLOW] and use SuiteDisks instead of normal suites
+    */
     fun goToFlowSuite(context: GroupEventContext, groupId: Int, suite: Int): Int
     fun setFlowSuite(context: GroupEventContext, groupId: Int, suite: Int): Int
 
@@ -82,6 +85,10 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
     fun deactivateGroupLinkBundle(context: GroupEventContext, groupId: Int): Int
     fun deactivateGroupLinkBundleByBundleId(context: GroupEventContext, bundleId: Int): Int
     fun finishGroupLinkBundle(context: GroupEventContext, groupId: Int): Int
+    /**
+     * updates group link bundle show state bool and sends GroupLinkMarkUpdateNotify to all in world
+     */
+    fun updateBundleMarkShowStateByGroupId(context: GroupEventContext?, groupId: Int, isShow: Boolean): Int
 
     /* group variables */
     fun createGroupVariable(context: GroupEventContext, varName: String, value: Int): Int
@@ -97,6 +104,17 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
     fun getGroupTempValue(context: GroupEventContext, name: String, groupId: Int): Int
     fun changeGroupTempValue(context: GroupEventContext, name: String, diff: Int, groupId: Int): Int
 
+    /* group trigger */
+    // returns the trigger count from a GroupTrigger that's currently executed
+    fun createGroupTrigger(context: GroupEventContext, triggerName: String): Int
+    fun getCurTriggerCount(context: GroupEventContext): Int
+
+    /* group entity checks */
+    fun getGroupAliveMonsterList(context: GroupEventContext, groupId: Int): IntArray?
+    fun getGroupMonsterCountByGroupId(context: GroupEventContext, groupId: Int): Int
+    fun getGroupMonsterCount(context: GroupEventContext): Int
+    // Checks if an entity with that configId exists in the group with the id groupId
+    fun checkIsInGroup(context: GroupEventContext, groupId: Int, configId: Int): Boolean
 
     /* misc */
     /**
@@ -104,7 +122,6 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
      */
     fun refreshGroup(context: GroupEventContext, params: RefreshGroupParams): Int
     fun setGroupReplaceable(context: GroupEventContext, groupId: Int, value: Boolean): Int
-    fun createGroupTrigger(context: GroupEventContext, triggerName: String): Int
     fun setGroupDead(context: GroupEventContext, groupId: Int): Int
     fun isGroupRegisteredInCurScene(context: GroupEventContext, groupId: Int): Int
     fun unfreezeGroupLimit(context: GroupEventContext, forceId: Int): Int

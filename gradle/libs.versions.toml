@@ -1,11 +1,11 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.1.21"
+kotlin = "2.2.10"
 jvmTargetVersion = "17"
 # https://github.com/Kotlin/kotlinx-io/releases
-kx_io = "0.7.0"
+kx_io = "0.8.0"
 # https://github.com/oshai/kotlin-logging/releases
-logger = "6.0.3"
+logger = "7.0.12"
 # https://mvnrepository.com/artifact/com.esotericsoftware/reflectasm/1.11.9  // TODO not maintained anymore
 reflectasm = "1.11.9"
 # https://github.com/ronmamo/reflections/releases // TODO not maintained anymore

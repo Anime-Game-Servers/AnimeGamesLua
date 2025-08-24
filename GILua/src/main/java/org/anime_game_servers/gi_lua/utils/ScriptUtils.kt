@@ -9,19 +9,16 @@ object ScriptUtils {
     @JvmStatic
     fun posToLua(position: Vector?, engine: LuaEngine): LuaTable {
         val result = engine.createTable()
-        if (position != null) {
-            result.set("x", position.getX())
-            result.set("y", position.getY())
-            result.set("z", position.getZ())
-        } else {
-            result.set("x", 0)
-            result.set("y", 0)
-            result.set("z", 0)
-        }
+        result["x"] = position?.getX() ?: 0f
+        result["y"] = position?.getY() ?: 0f
+        result["z"] = position?.getZ() ?: 0f
 
         return result
     }
 
+    fun Vector?.toLuaTable(engine: LuaEngine): LuaTable {
+        return posToLua(this, engine)
+    }
     fun LuaTable.toVector(): Vector {
         return luaToPos(this)
     }
@@ -31,9 +28,9 @@ object ScriptUtils {
         val result = PositionImpl()
         if (position != null) {
             result.apply {
-                setX(position.optFloat("x", 0f))
-                setY(position.optFloat("y", 0f))
-                setZ(position.optFloat("z", 0f))
+                x = position.optFloat("x", 0f)
+                y = position.optFloat("y", 0f)
+                z = position.optFloat("z", 0f)
             }
         }
 

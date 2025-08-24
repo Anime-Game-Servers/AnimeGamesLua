@@ -1,5 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
+import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreType
 import org.anime_game_servers.gi_lua.models.constants.temporary.GalleryProgressScoreUIType
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
@@ -25,12 +26,12 @@ interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
 
     // progress
     fun initGalleryProgressScore(
-        context: GroupEventContext, name: String, galleryId: Int, progressTable: LuaTable,
+        context: GroupEventContext, name: String, galleryId: Int, progress: List<Int>,
         scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType
     ): Int
 
     fun initGalleryProgressWithScore(
-        context: GroupEventContext, name: String, galleryId: Int, progress: LuaTable,
+        context: GroupEventContext, name: String, galleryId: Int, progress: List<Int>,
         maxProgress: Int, scoreUiType: GalleryProgressScoreUIType, scoreType: GalleryProgressScoreType
     ): Int
 
@@ -43,4 +44,18 @@ interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun attachGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
     fun attachGalleryTeamAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
     fun delGalleryAbilityGroup(context: GroupEventContext, uidList: List<Int>, galleryId: Int, abilityGroupIndex: Int): Int
+
+    // home gallery
+    fun startHomeGallery(context: GroupEventContext, galleryId: Int, uid: Int): Int
+    fun updateStakeHomePlayRecord(context: GroupEventContext, uidList: IntArray): Int
+
+    // handball
+    // gallery home
+    fun setHandballGalleryBallPosAndRot(
+        context: GroupEventContext,
+        galleryId: Int,
+        positionTable: Vector,
+        rotationTable: Vector
+    ): Int
+
 }

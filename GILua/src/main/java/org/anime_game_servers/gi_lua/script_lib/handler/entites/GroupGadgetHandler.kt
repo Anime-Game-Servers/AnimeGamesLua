@@ -39,7 +39,7 @@ data class CreateGadgetParameters(
             if (sgvKeys != null && sgvValues != null && sgvKeys.getSize() == sgvValues.size) {
                 sgvMap = mutableMapOf()
                 for (i in 0 until sgvKeys.getSize()) {
-                    val key = sgvKeys.getString(i)
+                    val key = sgvKeys.getString(i+1)
                     if(key == null) continue
                     val value = sgvValues[i]
                     sgvMap[key] = value
@@ -62,6 +62,8 @@ data class CreateGadgetParameters(
 interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
 
     fun createGadget(context: GroupEventContext, configId: Int): Int
+    fun createGadgetWithGlobalValue(context: GroupEventContext, configId: Int, sgvTable: Map<String, Number>): Int
+
 
     /**
      * Spawn a gadget from the caller group at the specified position
@@ -78,6 +80,15 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
      * @param creationParams parameters to spawn a gadget with
      */
     fun createGadgetByParamTable(context: GroupEventContext, creationParams: CreateGadgetParameters): Int
+
+    fun createGadgetWave(
+        context: GroupEventContext,
+        areaId: Int,
+        suitId: Int,
+        offset: Int,
+        boxSize: Vector,
+        gadgetSize: Vector
+    ): Int
 
     /**
      * Returns the state of a gadget based on the group id and config id
@@ -157,18 +168,14 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
 
     /* Lua */
     /**
-     * // TODO identify unknown parameters and exact behaviour
-     * Executes a lua function on a gadgets lua controller.
+     * Executes the OnClientExecuteReq function on a gadgets lua controller.
      * This seems to be used in only the Crucible activity
      * @param groupId group to find the gadget in
-     * @param gadgetCfgId cfg id of the gadget in the group to execute lua in
-     * @param activityType seems to be an activity type
-     * @param var4 TODO
-     * @param val5 TODO
+     * @param gadgetCfgId cfg id of the gadget in the group to execute lua in or 0 to get from context
      */
     fun executeGadgetLua(
         context: GroupEventContext, groupId: Int, gadgetCfgId: Int,
-        activityType: Int, var4: Int, val5: Int
+        param1: Int, param2: Int, param3: Int
     ): Int
 
 }

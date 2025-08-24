@@ -1,7 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.gadget
 
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
-import org.anime_game_servers.lua.engine.LuaTable
 
 /**
  * This handles script lib functions that are specific to the Gadget play system in groups.

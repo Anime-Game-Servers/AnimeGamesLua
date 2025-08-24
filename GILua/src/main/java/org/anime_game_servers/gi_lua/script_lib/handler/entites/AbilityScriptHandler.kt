@@ -66,4 +66,5 @@ interface AbilityScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun getTeamServerGlobalValue(context: GroupEventContext, ownerId: Int, sgvName: String, value: Int): Int
 
     fun setGroupLogicStateValue(context: GroupEventContext, sgvName: String, value: Int): Int
+    fun getGroupLogicStateValue(context: GroupEventContext, sgvName: String): Int
 }

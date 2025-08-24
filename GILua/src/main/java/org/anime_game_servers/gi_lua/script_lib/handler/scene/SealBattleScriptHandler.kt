@@ -54,9 +54,9 @@ interface SealBattleParams {
             }
             val battleTypeEnum = SealBattleType.entries[battleType]
             return when (battleTypeEnum) {
-                SealBattleType.NONE -> battleParams.parseSealBattleNoneParams()
-                SealBattleType.KILL_MONSTER -> battleParams.parseSealBattleMonsterKillParams()
-                SealBattleType.ENERGY_CHARGE -> battleParams.parseEnergySealBattleTimeParams()
+                NONE -> battleParams.parseSealBattleNoneParams()
+                KILL_MONSTER -> battleParams.parseSealBattleMonsterKillParams()
+                ENERGY_CHARGE -> battleParams.parseEnergySealBattleTimeParams()
             }
         }
     }
@@ -71,7 +71,7 @@ data class EnergySealBattleParams(
     val autoDecline: Int,
     val maxEnergy: Int,
 ) : SealBattleParams {
-    override val sealBattleType: SealBattleType = SealBattleType.ENERGY_CHARGE
+    override val sealBattleType: SealBattleType = ENERGY_CHARGE
 }
 
 data class DefaultSealBattleParams(
@@ -81,7 +81,7 @@ data class DefaultSealBattleParams(
     val failTime: Int,
     val maxProgress: Int,
 ) : SealBattleParams {
-    override val sealBattleType: SealBattleType = SealBattleType.NONE
+    override val sealBattleType: SealBattleType = NONE
 }
 
 data class MonsterSealBattleParams(
@@ -90,7 +90,7 @@ data class MonsterSealBattleParams(
     val monsterGroupId: Int,
     val maxProgress: Int,
 ) : SealBattleParams {
-    override val sealBattleType : SealBattleType = SealBattleType.KILL_MONSTER
+    override val sealBattleType : SealBattleType = KILL_MONSTER
 }
 
 
