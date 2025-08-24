@@ -5,6 +5,7 @@ plugins {
     id("java")
     id("maven-publish")
     alias(libs.plugins.kotlin.multiplatform) apply false
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 group = "org.anime_game_servers"
@@ -26,6 +27,7 @@ repositories {
 
 allprojects {
     apply(plugin ="maven-publish")
+    apply(plugin = "org.jetbrains.dokka")
 
     repositories {
         mavenLocal()

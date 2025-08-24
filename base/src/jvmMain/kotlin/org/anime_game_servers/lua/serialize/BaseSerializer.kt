@@ -3,11 +3,9 @@ package org.anime_game_servers.lua.serialize
 import com.esotericsoftware.reflectasm.ConstructorAccess
 import com.esotericsoftware.reflectasm.MethodAccess
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.lua.utils.getLuaNames
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.TypeVariable
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.Nonnull

@@ -36,7 +36,7 @@ data class SetPlatformPointArrayParams(
     @LuaNames("turn_mode")
     val turnMode: Boolean = false,
     @LuaNames("record_mode")
-    val recordMode: RouteRecordMode = RouteRecordMode.NONE,
+    val recordMode: RouteRecordMode = NONE,
     @LuaNames("speed_level")
     val speedLevel: Int = 0,
     @LuaNames("arrive_range")

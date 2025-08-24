@@ -4,12 +4,11 @@ import org.anime_game_servers.gi_lua.models.ScriptArgs
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.ScriptLibGroupHandlerProvider
-import org.anime_game_servers.gi_lua.script_lib.ScriptLibHandler
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.AsterScriptHandler
 import org.anime_game_servers.lua.engine.LuaEngine
 
 data class LuaGroupContextImpl(
-    val myEngine: LuaEngine, val scriptArgs: ScriptArgs, val ouid: Int = 0
+    override val engine: LuaEngine, val scriptArgs: ScriptArgs, val ouid: Int = 0
 ) : GroupEventLuaContext {
     var scriptlibHandlerProvider: ScriptLibGroupHandlerProvider<LuaGroupContextImpl>? = TestScriptLibHandlerProvider()
     override fun getGroupInstance(): SceneGroup {
@@ -18,13 +17,8 @@ data class LuaGroupContextImpl(
 
     override fun getArgs() = scriptArgs
 
-    override fun <T : GroupEventLuaContext> getScriptLibHandler(): ScriptLibHandler<T>? =
-        getScriptLibHandlerProvider<T>().getScriptLibHandler()
-
     override fun <T : GroupEventLuaContext> getScriptLibHandlerProvider(): ScriptLibGroupHandlerProvider<T> =
         scriptlibHandlerProvider as ScriptLibGroupHandlerProvider<T>
-
-    override fun getEngine() = myEngine
 
     override fun uid(): Int = scriptArgs.uid
     override fun sourceEntityId(): Int = scriptArgs.sourceEid
@@ -34,10 +28,6 @@ data class LuaGroupContextImpl(
 
 class TestScriptLibHandlerProvider : ScriptLibGroupHandlerProvider<LuaGroupContextImpl> {
     var asterScriptHandler: AsterScriptHandler<LuaGroupContextImpl>? = null
-
-    override fun getScriptLibHandler(): ScriptLibHandler<LuaGroupContextImpl> {
-        TODO("Not yet implemented but will be deprecated anyway")
-    }
 
     override fun getAsterHandler(): AsterScriptHandler<LuaGroupContextImpl>? {
         return asterScriptHandler

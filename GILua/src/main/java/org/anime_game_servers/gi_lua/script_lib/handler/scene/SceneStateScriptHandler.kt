@@ -2,7 +2,7 @@ package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
 import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
-import org.anime_game_servers.gi_lua.utils.ScriptUtils
+import org.anime_game_servers.gi_lua.utils.ScriptUtils.toVector
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class ChangeLevelTagParams(
@@ -11,11 +11,11 @@ data class ChangeLevelTagParams(
     var radius: Int = -1
 ) {
     companion object {
-        fun fromLuaTable(table: LuaTable): ChangeLevelTagParams {
-            val posTable = table.getTable("pos")
-            val rotTable = table.getTable("rot")
+        fun fromLuaTable(table: LuaTable): ChangeLevelTagParams? {
+            val pos = table.getTable("pos")?.toVector() ?: return null
+            val rot = table.getTable("rot")?.toVector() ?: return null
             val radius = table.optInt("radius", -1)
-            return ChangeLevelTagParams(ScriptUtils.luaToPos(posTable), ScriptUtils.luaToPos(rotTable), radius)
+            return ChangeLevelTagParams(pos, rot, radius)
         }
     }
 }
@@ -51,4 +51,8 @@ interface SceneStateScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun getLevelTagNameById(context: GroupEventContext, levelTagId: Int): String
     fun isLevelTagChangeInCD(context: GroupEventContext, levelTagGroupId: Int): Boolean
 
+    /* misc */
+    fun getSceneUidList(context: GroupEventContext): IntArray
+    fun getSceneOwnerUid(context: GroupEventContext): Int
+    fun checkIsInMpMode(context: GroupEventContext): Boolean
 }

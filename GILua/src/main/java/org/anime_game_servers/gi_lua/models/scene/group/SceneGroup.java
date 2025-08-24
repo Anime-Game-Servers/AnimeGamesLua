@@ -50,6 +50,9 @@ public class SceneGroup {
     @LuaNames("sight_groups")
     private List<List<Integer>> sightGroups;
 
+    @LuaNames("suite_disk")
+    private List<SuiteDisk> suiteDisks;
+
     @Nullable
     private SceneGarbage garbages;
 
@@ -82,10 +85,17 @@ public class SceneGroup {
 
 
     public SceneSuite getSuiteByIndex(int index) {
-        if (index < 1 || index > suites.size()) {
+        if (suites == null || index < 1 || index > suites.size()) {
             return null;
         }
         return this.suites.get(index - 1);
+    }
+
+    public SuiteDisk getSuiteDiscByIndex(int index) {
+        if (suiteDisks == null || index < 1 || index > suiteDisks.size()) {
+            return null;
+        }
+        return this.suiteDisks.get(index - 1);
     }
 
     public synchronized SceneGroup load(GIScriptLoader scriptLoader) {
@@ -155,7 +165,13 @@ public class SceneGroup {
             this.variables = cs.getGlobalVariableList("variables", SceneVar.class);
 
             this.monsterPools = cs.getGlobalVariableList("monster_pools", SceneMonsterPool.class);
-            //this.sight_groups = cs.getGlobalVariableList("sight_groups", List<Integer>.class);
+
+            //this.sightGroups = cs.getGlobalVariableList("sight_groups", List<Integer>.class);
+            try {
+                this.suiteDisks = cs.getGlobalVariableList("suite_disk", SuiteDisk.class);
+            }catch (Exception ex){
+                // TODO log
+            }
 
             this.points = cs.getGlobalVariableList("points", ScenePoint.class).stream()
                     .peek(point -> {
@@ -175,22 +191,41 @@ public class SceneGroup {
         return this;
     }
 
-    public int findInitSuiteIndex(int exclude_index) { //TODO: Investigate end index
+
+    public int findInitSuiteIndex(int excludeIndex) {
+        return findInitSuiteIndex(0, excludeIndex);
+    }
+
+    /**
+     * This returns the suite index for an initial or later group refresh, based on the initConfig
+     * @param currentSuiteIndex suite index the group currently has. 0 if none is set yet or the previous one should be ignored
+     * @param excludeIndex suite index to exclude from random suite selection
+     * @return the suite index to move to
+     */
+    public int findInitSuiteIndex(int currentSuiteIndex, int excludeIndex) {
         if (initConfig == null) return 1;
         if (initConfig.getIoType() == IOType.GROUP_IO_TYPE_FLOW) return initConfig.getSuite();
         if (initConfig.isRandSuite()) {
+            if(suites == null || suites.isEmpty()){
+                // todo log
+                return 1;
+            }
             if (suites.size() == 1) {
                 return initConfig.getSuite();
-            } else {
-                List<Integer> randSuiteList = new ArrayList<>();
-                for (int i = 0; i < suites.size(); i++) {
-                    if (i == exclude_index) continue;
-
-                    var suite = suites.get(i);
-                    for (int j = 0; j < suite.getRandWeight(); j++) randSuiteList.add(Integer.valueOf(i + 1));
-                }
-                return randSuiteList.get(random.nextInt(randSuiteList.size()));
             }
+
+            List<Integer> randSuiteList = new ArrayList<>();
+            for (int i = 0; i < suites.size(); i++) {
+                if (i == excludeIndex) continue;
+
+                var suite = suites.get(i);
+                for (int j = 0; j < suite.getRandWeight(); j++) randSuiteList.add(i + 1);
+            }
+            return randSuiteList.get(random.nextInt(randSuiteList.size()));
+        }
+        val endSuite = initConfig.getEndSuite();
+        if(endSuite != 0 && endSuite == currentSuiteIndex){
+            return endSuite;
         }
         return initConfig.getSuite();
     }

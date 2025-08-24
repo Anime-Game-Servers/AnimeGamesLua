@@ -1,8 +1,6 @@
 package org.anime_game_servers.jnlua_engine
 
 import org.anime_game_servers.lua.engine.LuaTable
-import org.terasology.jnlua.LuaState
-import org.terasology.jnlua.util.AbstractTableMap
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
@@ -209,11 +207,39 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
     override fun getAsIntArray(): IntArray {
         val result = mutableListOf<Int>()
         for (i in 0 until table.size) {
-            (table[i + 1] as Int?)?.let {
-                result.add(i,it)
+            (table[i + 1] as Number?)?.let {
+                result.add(i,it.toInt())
             }
         }
         return result.toIntArray()
+    }
+    override fun getAsFloatArray(): FloatArray {
+        val result = mutableListOf<Float>()
+        for (i in 0 until table.size) {
+            (table[i + 1] as Number?)?.let {
+                result.add(i,it.toFloat())
+            }
+        }
+        return result.toFloatArray()
+    }
+    override fun getAsDoubleArray(): DoubleArray {
+        val result = mutableListOf<Double>()
+        for (i in 0 until table.size) {
+            (table[i + 1] as Number?)?.let {
+                result.add(i,it.toDouble())
+            }
+        }
+        return result.toDoubleArray()
+    }
+
+    override fun getAsStringArray(): Array<String> {
+        val result = mutableListOf<String>()
+        for (i in 0 until table.size) {
+            (table[i + 1] as String?)?.let {
+                result.add(i,it)
+            }
+        }
+        return result.toTypedArray()
     }
 
     override fun getSize(): Int {

@@ -7,7 +7,7 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams
 
 /**
- * Handler for scriptlib functions used in GroupScripts related to Gadgets.
+ * Handler for scriptlib functions used in GroupScripts.
  * These are only callable from a lua group context.
  */
 interface GroupEntityHandler<GroupEventContext : GroupEventLuaContext> {
@@ -26,9 +26,13 @@ interface GroupEntityHandler<GroupEventContext : GroupEventLuaContext> {
 
     fun getRotationByEntityId(context: GroupEventContext, entityId: Int): Vector?
 
+    fun getSurroundUidList(context: GroupEventContext, configId: Int, radius: Int): IntArray?
 
     fun killGroupEntityByCfgIds(context: GroupEventContext, groupId: Int, monsters: IntArray, gadgets: IntArray): Int
     fun killGroupEntityByPolicy(context: GroupEventContext, groupId: Int, policy: GroupKillPolicy): Int
     fun killEntityByConfigId(context: GroupEventContext, params: KillByConfigIdParams): Int
     fun removeEntityByConfigId(context: GroupEventContext, groupId: Int, entityType: EntityType, configId: Int): Int
+
+    fun tryReallocateEntityAuthority(context: GroupEventContext, uid: Int, configId: Int, regionConfigId: Int): Int
+    fun forceRefreshAuthorityByConfigId(context: GroupEventContext, configId: Int, uid: Int): Int
 }
