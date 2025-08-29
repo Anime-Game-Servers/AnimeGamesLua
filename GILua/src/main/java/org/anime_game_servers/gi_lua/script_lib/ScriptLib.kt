@@ -504,14 +504,18 @@ object ScriptLib {
      */
     @JvmStatic
     fun SetGadgetStateByConfigId(context: LuaContextWrapper, configId: Int, gadgetState: Int): Int {
-        return context.onGroupContext {
-            onGroupGadgetHandler {
-                checkConfigId(::SetGadgetStateByConfigId, configId)?.let {
-                    return@onGroupGadgetHandler it.getValue()
-                }
-                setGadgetStateByConfigId(this@onGroupContext, configId, gadgetState)
-            }
+        checkConfigId(::SetGadgetStateByConfigId, configId)?.let {
+            return it.getValue()
         }
+        return context.onTypedContext({
+            onGroupGadgetHandler {
+                setGadgetStateByConfigId(this@onTypedContext, configId, gadgetState)
+            }
+        }, {
+            onGadgetControllerHandler {
+                setGadgetStateByConfigId(this@onTypedContext, configId, gadgetState)
+            }
+        })
     }
 
 

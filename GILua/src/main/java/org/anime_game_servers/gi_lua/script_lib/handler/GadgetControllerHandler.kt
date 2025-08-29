@@ -14,6 +14,14 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
     fun setGadgetState(context: ControllerEventContext, gadgetState: Int): Int
 
     /**
+     * Change the state of a gadget in the contexts current group
+     * @param context A Gadget controller context
+     * @param configId config id of a gadget in the current caller group
+     * @param gadgetState target state for the gadget
+     */
+    fun setGadgetStateByConfigId(context: ControllerEventContext, configId: Int, gadgetState: Int): Int
+
+    /**
      * Returns the current state of the gadget that called the controller.
      */
     fun getGadgetState(context: ControllerEventContext): Int
