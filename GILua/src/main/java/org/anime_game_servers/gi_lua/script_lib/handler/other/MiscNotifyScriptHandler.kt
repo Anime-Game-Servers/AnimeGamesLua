@@ -130,8 +130,8 @@ interface MiscNotifyScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         index: Int,
         key: String,
-        floatParamTable: FloatArray,
-        intParam: IntArray
+        floatParamTable: List<Float>,
+        intParam: List<Int>
     ): Int
 
     /**
@@ -194,7 +194,7 @@ interface MiscNotifyScriptHandler<GroupEventContext : GroupEventLuaContext> {
      * Just broadcasts ShowTemplateReminderNotify
      * target: all in scene
      */
-    fun showTemplateReminder(context: GroupEventContext, reminderId: Int, timerInfo: IntArray): Int
+    fun showTemplateReminder(context: GroupEventContext, reminderId: Int, timerInfo: List<Int>): Int
 
     /**
      * Just sends ShowTemplateReminderNotify,

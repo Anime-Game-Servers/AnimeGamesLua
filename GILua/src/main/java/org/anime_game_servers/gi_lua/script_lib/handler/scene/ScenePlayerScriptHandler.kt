@@ -173,7 +173,7 @@ interface ScenePlayerScriptHandler<GroupEventContext : GroupEventLuaContext> {
      */
     fun transPlayerToPos(
         context: GroupEventContext,
-        targetUIds: IntArray,
+        targetUIds: List<Int>,
         pos: Vector,
         rot: Vector,
         radius: Int,
@@ -184,7 +184,7 @@ interface ScenePlayerScriptHandler<GroupEventContext : GroupEventLuaContext> {
     // same as transPlayerToPos, but always inside the current scene
     fun movePlayerToPos(
         context: GroupEventContext,
-        targetUIds: IntArray,
+        targetUIds: List<Int>,
         pos: Vector,
         rot: Vector,
         radius: Int,

@@ -43,7 +43,7 @@ interface MonsterTideScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         tideId: Int,
         groupId: Int,
-        ordersConfigId: Array<Int>,
+        ordersConfigId: List<Int>,
         tideCount: Int,
         sceneLimit: Int,
         param6: Int
@@ -54,10 +54,10 @@ interface MonsterTideScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         index: Int,
         groupId: Int,
-        monsterPool: IntArray,
+        monsterPool: List<Int>,
         routeId: Int,
-        routePoints: IntArray,
-        monsterAffix: IntArray,
+        routePoints: List<Int>,
+        monsterAffix: List<Int>,
         monsterPoolParam: PoolMonsterTideConfig
     ): Int
 

@@ -161,7 +161,7 @@ interface GroupGadgetHandler<GroupEventContext : GroupEventLuaContext> {
     fun setWorktopOptionsByGroupId(context: GroupEventContext, groupId: Int, configId: Int, options: List<Int>): Int
     fun setWorktopOptions(context: GroupEventContext, options: List<Int>): Int
     fun delWorktopOptionByGroupId(context: GroupEventContext, groupId: Int, configId: Int, option: Int): Int
-    fun delWorktopOption(context: GroupEventContext, var1: Int): Int
+    fun delWorktopOption(context: GroupEventContext, option: Int): Int
 
 
     fun checkRemainGadgetCountByGroupId(context: GroupEventContext, parameters: RemainGadgetCountParameters): Int

@@ -8,9 +8,9 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
  */
 interface VisionScriptHandler<GroupEventContext : GroupEventLuaContext> {
     // Vision/view stuff
-    fun addPlayerGroupVisionType(context: GroupEventContext, uids: IntArray, visionTypeList: IntArray): Int
-    fun delPlayerGroupVisionType(context: GroupEventContext, uids: IntArray, visionTypeList: IntArray): Int
-    fun setPlayerGroupVisionType(context: GroupEventContext, uids: IntArray, visionTypeList: IntArray): Int
+    fun addPlayerGroupVisionType(context: GroupEventContext, uids: List<Int>, visionTypeList: List<Int>): Int
+    fun delPlayerGroupVisionType(context: GroupEventContext, uids: List<Int>, visionTypeList: List<Int>): Int
+    fun setPlayerGroupVisionType(context: GroupEventContext, uids: List<Int>, visionTypeList: List<Int>): Int
 
     fun revertPlayerRegionVision(context: GroupEventContext, uid: Int): Int
     fun forbidPlayerRegionVision(context: GroupEventContext, uid: Int): Int
@@ -39,7 +39,7 @@ interface VisionScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         uid: Int,
         pointArrayId: Int,
-        routeList: IntArray,
+        routeList: List<Int>,
         speed: Float,
         clientParams: String
     ): Int
@@ -49,7 +49,7 @@ interface VisionScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         uid: Int,
         pointArrayId: Int,
-        routeList: IntArray,
+        routeList: List<Int>,
         templateId: Int,
         speed: Float
     ): Int

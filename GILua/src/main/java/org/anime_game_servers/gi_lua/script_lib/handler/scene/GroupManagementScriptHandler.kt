@@ -110,7 +110,7 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
     fun getCurTriggerCount(context: GroupEventContext): Int
 
     /* group entity checks */
-    fun getGroupAliveMonsterList(context: GroupEventContext, groupId: Int): IntArray?
+    fun getGroupAliveMonsterList(context: GroupEventContext, groupId: Int): List<Int>?
     fun getGroupMonsterCountByGroupId(context: GroupEventContext, groupId: Int): Int
     fun getGroupMonsterCount(context: GroupEventContext): Int
     // Checks if an entity with that configId exists in the group with the id groupId
@@ -133,7 +133,7 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
      * [new context], [this function calls context], [call parameter 1], [call parameter 2]...
      * @param groupId group id of the group to call the function in
      * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     * @param callParams list containing the parameters to pass to the function on call
      */
     fun executeActiveGroupLua(
         context: GroupEventContext,
@@ -149,7 +149,7 @@ interface GroupManagementScriptHandler<GroupEventContext : GroupEventLuaContext>
      * If the group is not loaded yet, this should force load the group and then call the function.
      * @param groupId group id of the group to call the function in
      * @param functionName name of the function to call
-     * @param callParamsTable lua array containing the parameters to pass to the function on call
+     * @param callParams list containing the parameters to pass to the function on call
      */
     fun executeGroupLua(
         context: GroupEventContext,

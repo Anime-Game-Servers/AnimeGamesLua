@@ -3,7 +3,6 @@ package org.anime_game_servers.gi_lua.script_lib.handler.player
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
-import org.anime_game_servers.gi_lua.script_lib.ScriptLib
 import org.anime_game_servers.lua.engine.LuaTable
 
 private val scriptLogger = logger {}
