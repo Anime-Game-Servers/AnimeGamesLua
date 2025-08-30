@@ -52,7 +52,7 @@ interface SceneStateScriptHandler<GroupEventContext : GroupEventLuaContext> {
     fun isLevelTagChangeInCD(context: GroupEventContext, levelTagGroupId: Int): Boolean
 
     /* misc */
-    fun getSceneUidList(context: GroupEventContext): IntArray
+    fun getSceneUidList(context: GroupEventContext): List<Int>
     fun getSceneOwnerUid(context: GroupEventContext): Int
     fun checkIsInMpMode(context: GroupEventContext): Boolean
 }

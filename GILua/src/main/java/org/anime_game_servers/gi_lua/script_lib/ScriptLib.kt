@@ -199,8 +199,8 @@ object ScriptLib {
         scriptLogger.debug { "[KillGroupEntity] kill by cfg ids" }
         val monsterList = luaTable.getTable("monsters")
         val gadgetList = luaTable.getTable("gadgets")
-        val monsters = monsterList?.getAsIntArray() ?: IntArray(0)
-        val gadgets = gadgetList?.getAsIntArray() ?: IntArray(0)
+        val monsters = monsterList?.getAsIntArray()?.toList() ?: emptyList()
+        val gadgets = gadgetList?.getAsIntArray()?.toList() ?: emptyList()
 
         return context.onGroupEntityHandler {
             killGroupEntityByCfgIds(context, groupId, monsters, gadgets)
@@ -314,7 +314,7 @@ object ScriptLib {
                 checkConfigId(::GetSurroundUidList, configId)?.let {
                     return@onGroupEntityHandler intArrayOf(it.getValue())
                 }
-                getSurroundUidList(this@onGroupContext, configId, radius)
+                getSurroundUidList(this@onGroupContext, configId, radius)?.toIntArray()
             }
         }
     }
@@ -1139,7 +1139,7 @@ object ScriptLib {
     fun GetGivingItemList(context: LuaContextWrapper, givingId: Int): IntArray? {
         return context.onGroupContext {
             onGadgetGivingHandler {
-                getGivingItemList(this@onGroupContext, givingId)
+                getGivingItemList(this@onGroupContext, givingId)?.toIntArray()
             }
         }
     }
@@ -2234,7 +2234,7 @@ object ScriptLib {
     fun UpdateStakeHomePlayRecord(context: LuaContextWrapper, uids: Any): Int {
         return context.onGroupContext {
             onGalleryHandler {
-                val uidList = context.engine.getTable(uids).getAsIntArray()
+                val uidList = context.engine.getTable(uids).getAsIntArray().toList()
                 updateStakeHomePlayRecord(this@onGroupContext, uidList)
             }
         }
@@ -2617,7 +2617,7 @@ object ScriptLib {
                 checkGroupId(::GetGroupAliveMonsterList, groupId)?.let {
                     return@onGroupManagementHandler intArrayOf(it.getValue())
                 }
-                getGroupAliveMonsterList(this@onGroupContext, groupId)
+                getGroupAliveMonsterList(this@onGroupContext, groupId)?.toIntArray()
             }
         }
     }
@@ -2858,7 +2858,7 @@ object ScriptLib {
                 checkGroupId(::AutoMonsterTide, groupId)?.let {
                     return@onMonsterTideHandler it.getValue()
                 }
-                autoMonsterTide(this@onGroupContext, tideId, groupId, ordersConfigId, tideCount, sceneLimit, param6)
+                autoMonsterTide(this@onGroupContext, tideId, groupId, ordersConfigId.toList(), tideCount, sceneLimit, param6)
             }
         }
     }
@@ -2896,9 +2896,9 @@ object ScriptLib {
                     scriptLogger.error { "AutoPoolMonsterTide: Invalid monsterPoolParamTable" }
                     return@onMonsterTideHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
-                val monsterPoolList = context.engine.getTable(monsterPools).getAsIntArray()
-                val routePointsList = context.engine.getTable(routePoints).getAsIntArray()
-                val monsterAffixList = context.engine.getTable(monsterAffixes).getAsIntArray()
+                val monsterPoolList = context.engine.getTable(monsterPools).getAsIntArray().toList()
+                val routePointsList = context.engine.getTable(routePoints).getAsIntArray().toList()
+                val monsterAffixList = context.engine.getTable(monsterAffixes).getAsIntArray().toList()
                 autoPoolMonsterTide(
                     this@onGroupContext,
                     index,
@@ -3058,9 +3058,9 @@ object ScriptLib {
                 checkGroupIdAndConfigId(::ScenePlayBattleUidOp, groupId, configId)?.let {
                     return@onScenePlayHandler it.getValue()
                 }
-                val uidList = context.engine.getTable(uids).getAsIntArray()
-                val paramList = context.engine.getTable(params).getAsIntArray()
-                val paramTargetList = context.engine.getTable(paramTargets).getAsIntArray()
+                val uidList = context.engine.getTable(uids).getAsIntArray().toList()
+                val paramList = context.engine.getTable(params).getAsIntArray().toList()
+                val paramTargetList = context.engine.getTable(paramTargets).getAsIntArray().toList()
                 scenePlayBattleUidOp(
                     this@onGroupContext,
                     groupId,
@@ -3264,7 +3264,7 @@ object ScriptLib {
                     scriptLogger.error { "InitSceneMultistagePlay: Invalid paramTable" }
                     return@onScenePlayHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
-                val uidList = context.engine.getTable(uids).getAsIntArray()
+                val uidList = context.engine.getTable(uids).getAsIntArray().toList()
                 initSceneMultistagePlay(this@onGroupContext, index, playType, params, uidList)
             }
         }
@@ -3283,7 +3283,7 @@ object ScriptLib {
                 checkGroupIdAndConfigId(::CreateFoundation, groupId, configId)?.let {
                     return@onScenePlayHandler it.getValue()
                 }
-                val uidList = context.engine.getTable(uids).getAsIntArray()
+                val uidList = context.engine.getTable(uids).getAsIntArray().toList()
                 createFoundation(this@onGroupContext, uidList, configId, groupId, index)
             }
         }
@@ -3410,7 +3410,7 @@ object ScriptLib {
         return context.onGroupContext {
             onScenePlayerHandler {
                 val moveParams = context.engine.getTable(moveParamsTable)
-                val targets = moveParams.getTable("uid_list")?.getAsIntArray()
+                val targets = moveParams.getTable("uid_list")?.getAsIntArray()?.toList()
                 val pos = moveParams.getTable("pos")?.toVector()
                 val rot = moveParams.getTable("rot")?.toVector() ?: PositionImpl()
                 val radius = moveParams.optInt("radius", -1)
@@ -3445,7 +3445,7 @@ object ScriptLib {
         return context.onGroupContext {
             onScenePlayerHandler {
                 val transportationParams = context.engine.getTable(transportationParamsTable)
-                val targets = transportationParams.getTable("uid_list")?.getAsIntArray()
+                val targets = transportationParams.getTable("uid_list")?.getAsIntArray()?.toList()
                 val pos = transportationParams.getTable("pos")?.toVector()
                 val rot = transportationParams.getTable("rot")?.toVector() ?: PositionImpl()
                 val radius = transportationParams.optInt("radius", -1)
@@ -3942,8 +3942,8 @@ object ScriptLib {
     fun AddPlayerGroupVisionType(context: LuaContextWrapper, uidsTable: Any, visionTypesTable: Any): Int {
         return context.onGroupContext {
             onVisionHandler {
-                val uids = context.engine.getTable(uidsTable).getAsIntArray()
-                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray()
+                val uids = context.engine.getTable(uidsTable).getAsIntArray().toList()
+                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray().toList()
                 addPlayerGroupVisionType(this@onGroupContext, uids, visionTypes)
             }
         }
@@ -3953,8 +3953,8 @@ object ScriptLib {
     fun DelPlayerGroupVisionType(context: LuaContextWrapper, uidsTable: Any, visionTypesTable: Any): Int {
         return context.onGroupContext {
             onVisionHandler {
-                val uids = context.engine.getTable(uidsTable).getAsIntArray()
-                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray()
+                val uids = context.engine.getTable(uidsTable).getAsIntArray().toList()
+                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray().toList()
                 delPlayerGroupVisionType(this@onGroupContext, uids, visionTypes)
             }
         }
@@ -3964,8 +3964,8 @@ object ScriptLib {
     fun SetPlayerGroupVisionType(context: LuaContextWrapper, uidsTable: Any, visionTypesTable: Any): Int {
         return context.onGroupContext {
             onVisionHandler {
-                val uids = context.engine.getTable(uidsTable).getAsIntArray()
-                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray()
+                val uids = context.engine.getTable(uidsTable).getAsIntArray().toList()
+                val visionTypes = context.engine.getTable(visionTypesTable).getAsIntArray().toList()
                 setPlayerGroupVisionType(this@onGroupContext, uids, visionTypes)
             }
         }
@@ -4061,7 +4061,7 @@ object ScriptLib {
                 }
                 val paramsTable = context.engine.getTable(rawMoveParamsTable)
                 val speed = paramsTable.optFloat("speed", -1f)
-                val routeList = context.engine.getTable(routes).getAsIntArray()
+                val routeList = context.engine.getTable(routes).getAsIntArray().toList()
                 moveAvatarByPointArrayWithTemplate(
                     this@onGroupContext,
                     uid,
@@ -4086,7 +4086,7 @@ object ScriptLib {
     ): Int {
         return context.onGroupContext {
             onVisionHandler {
-                val routeList = context.engine.getTable(routeListTable).getAsIntArray()
+                val routeList = context.engine.getTable(routeListTable).getAsIntArray().toList()
                 val routeParams = context.engine.getTable(routeParamsTable)
                 val speed = routeParams.optFloat("speed", -1f)
                 if(speed == -1f){
@@ -4149,8 +4149,8 @@ object ScriptLib {
     ): Int {
         return context.onGroupContext {
             onMiscNotifyHandler {
-                val intParamList = context.engine.getTable(intParams).getAsIntArray()
-                val floatParam = context.engine.getTable(floatParamTable).getAsFloatArray()
+                val intParamList = context.engine.getTable(intParams).getAsIntArray().toList()
+                val floatParam = context.engine.getTable(floatParamTable).getAsFloatArray().toList()
                 setEnvironmentEffectState(this@onGroupContext, index, key, floatParam, intParamList)
             }
         }
@@ -4305,7 +4305,7 @@ object ScriptLib {
     fun ShowTemplateReminder(context: LuaContextWrapper, reminderId: Int, timerInfo: Any): Int {
         return context.onGroupContext {
             onMiscNotifyHandler {
-                val timerInfoList = context.engine.getTable(timerInfo).getAsIntArray()
+                val timerInfoList = context.engine.getTable(timerInfo).getAsIntArray().toList()
                 showTemplateReminder(this@onGroupContext, reminderId, timerInfoList)
             }
         }
@@ -5669,7 +5669,7 @@ object ScriptLib {
     fun GetGatherConfigIdList(context: LuaContextWrapper): IntArray {
         return context.onControllerContext {
             onGadgetControllerHandler {
-                getGatherConfigIdList(this@onControllerContext)
+                getGatherConfigIdList(this@onControllerContext).toIntArray()
             }
         }
     }

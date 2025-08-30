@@ -63,7 +63,7 @@ interface GadgetControllerHandler<GadgetEntity, ControllerEventContext : Control
 
     fun dropSubfield(context: ControllerEventContext, subfieldName: String): Int
 
-    fun getGatherConfigIdList(context: ControllerEventContext): IntArray
+    fun getGatherConfigIdList(context: ControllerEventContext): List<Int>
 
 
     fun killEntityByConfigId(context: ControllerEventContext, params: KillByConfigIdParams): Int

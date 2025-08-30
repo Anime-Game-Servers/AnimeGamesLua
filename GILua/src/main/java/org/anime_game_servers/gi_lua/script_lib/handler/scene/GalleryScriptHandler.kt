@@ -47,7 +47,7 @@ interface GalleryScriptHandler<GroupEventContext : GroupEventLuaContext> {
 
     // home gallery
     fun startHomeGallery(context: GroupEventContext, galleryId: Int, uid: Int): Int
-    fun updateStakeHomePlayRecord(context: GroupEventContext, uidList: IntArray): Int
+    fun updateStakeHomePlayRecord(context: GroupEventContext, uidList: List<Int>): Int
 
     // handball
     // gallery home

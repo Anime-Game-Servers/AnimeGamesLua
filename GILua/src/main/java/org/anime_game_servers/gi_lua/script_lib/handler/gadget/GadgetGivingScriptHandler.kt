@@ -16,5 +16,5 @@ interface GadgetGivingScriptHandler<GroupEventContext : GroupEventLuaContext> {
      */
     fun activeGadgetItemGiving(context: GroupEventContext, givingId: Int, groupId: Int, gadgetCfgId: Int): Int
 
-    fun getGivingItemList(context: GroupEventContext, givingId: Int): IntArray?
+    fun getGivingItemList(context: GroupEventContext, givingId: Int): List<Int>?
 }

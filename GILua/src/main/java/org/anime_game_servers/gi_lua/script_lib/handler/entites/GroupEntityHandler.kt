@@ -26,9 +26,9 @@ interface GroupEntityHandler<GroupEventContext : GroupEventLuaContext> {
 
     fun getRotationByEntityId(context: GroupEventContext, entityId: Int): Vector?
 
-    fun getSurroundUidList(context: GroupEventContext, configId: Int, radius: Int): IntArray?
+    fun getSurroundUidList(context: GroupEventContext, configId: Int, radius: Int): List<Int>?
 
-    fun killGroupEntityByCfgIds(context: GroupEventContext, groupId: Int, monsters: IntArray, gadgets: IntArray): Int
+    fun killGroupEntityByCfgIds(context: GroupEventContext, groupId: Int, monsters: List<Int>, gadgets: List<Int>): Int
     fun killGroupEntityByPolicy(context: GroupEventContext, groupId: Int, policy: GroupKillPolicy): Int
     fun killEntityByConfigId(context: GroupEventContext, params: KillByConfigIdParams): Int
     fun removeEntityByConfigId(context: GroupEventContext, groupId: Int, entityType: EntityType, configId: Int): Int

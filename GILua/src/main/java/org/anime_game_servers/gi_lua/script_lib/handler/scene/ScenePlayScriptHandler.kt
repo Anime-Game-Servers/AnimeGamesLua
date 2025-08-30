@@ -132,11 +132,11 @@ interface ScenePlayScriptHandler<GroupEventContext : GroupEventLuaContext> {
         context: GroupEventContext,
         groupId: Int,
         configId: Int,
-        uidList: IntArray,
+        uidList: List<Int>,
         buffType: Int,
         paramString: String,
-        paramList: IntArray,
-        paramTargetList: IntArray,
+        paramList: List<Int>,
+        paramTargetList: List<Int>,
         index: Int,
         duration: Int
     ): Int
@@ -167,7 +167,7 @@ interface ScenePlayScriptHandler<GroupEventContext : GroupEventLuaContext> {
         index: Int,
         playType: MultistagePlayType,
         paramTable: InitSceneMultistagePlayParams,
-        uidList: IntArray
+        uidList: List<Int>
     ): Int
 
     fun setSceneMultiStagePlayUidValue(
@@ -212,7 +212,7 @@ interface ScenePlayScriptHandler<GroupEventContext : GroupEventLuaContext> {
 
     fun createFoundation(
         context: GroupEventContext,
-        uidList: IntArray,
+        uidList: List<Int>,
         configId: Int,
         groupId: Int,
         playIndex: Int
