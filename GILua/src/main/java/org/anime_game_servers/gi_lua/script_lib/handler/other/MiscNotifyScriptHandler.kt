@@ -55,7 +55,7 @@ data class ScenePlaySoundParams(
     companion object {
         fun fromLuaTable(table: LuaTable): ScenePlaySoundParams? {
             return table.run {
-                val playPos = getTable("playPos")?.toVector()
+                val playPos = getTable("play_pos")?.toVector()
                 val soundName = optString("sound_name", null)
                 if (playPos == null || soundName == null ) {
                     scriptLogger.error { "[ScenePlaySound] missing parameter $playPos  $soundName" }
