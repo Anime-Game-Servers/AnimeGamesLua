@@ -162,7 +162,7 @@ object JNLuaReflector : DefaultJavaReflector() {
                     }
                 }
             } catch (e: NoSuchFieldException) {
-                logger.warn(e) { "[createClassAccessors] " }
+                logger.debug(e) { "[createClassAccessors] " }
             }
 
             result[name] = accessor

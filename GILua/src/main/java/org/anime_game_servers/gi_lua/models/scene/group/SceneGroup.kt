@@ -247,7 +247,7 @@ class SceneGroup internal constructor(// internal
 
     fun searchBossChestInGroup(): SceneBossChest? {
         return this.gadgets?.values?.stream()?.map<SceneBossChest> { g: SceneGadget -> g.bossChest }
-            ?.filter { obj: SceneBossChest -> Objects.nonNull(obj) }
+            ?.filter { obj: SceneBossChest? -> Objects.nonNull(obj) }
             ?.filter { bossChest: SceneBossChest -> bossChest.monsterConfigId > 0 }
             ?.findFirst()?.getOrNull()
     }
