@@ -5,6 +5,7 @@ import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.script_lib.ScriptLibGroupHandlerProvider
 import org.anime_game_servers.gi_lua.script_lib.handler.activity.AsterScriptHandler
+import org.anime_game_servers.gi_lua.script_lib.handler.activity.CrystalLinkScriptHandler
 import org.anime_game_servers.lua.engine.LuaEngine
 
 data class LuaGroupContextImpl(
@@ -28,8 +29,9 @@ data class LuaGroupContextImpl(
 
 class TestScriptLibHandlerProvider : ScriptLibGroupHandlerProvider<LuaGroupContextImpl> {
     var asterScriptHandler: AsterScriptHandler<LuaGroupContextImpl>? = null
+    var crystalLinkScriptHandler: CrystalLinkScriptHandler<LuaGroupContextImpl>? = null
 
-    override fun getAsterHandler(): AsterScriptHandler<LuaGroupContextImpl>? {
-        return asterScriptHandler
-    }
+    override fun getAsterHandler() = asterScriptHandler
+
+    override fun getCrystalLinkHandler() = crystalLinkScriptHandler
 }

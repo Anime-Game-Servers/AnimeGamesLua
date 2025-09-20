@@ -1,16 +1,13 @@
 package org.anime_game_servers.jnlua_engine
 
+import org.anime_game_servers.lua.engine.Class
 import org.anime_game_servers.lua.engine.LuaTable
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
-class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
-    var table: AbstractMap<Any, Any>
-
-    init {
-        this.table = table as AbstractMap<Any, Any>
-    }
+class JNLuaTable internal constructor(val serializer: JNLuaSerializer, table: AbstractMap<*, *>) : LuaTable {
+    var table: AbstractMap<Any, Any> = table as AbstractMap<Any, Any>
 
     override fun has(key: String): Boolean {
         return table.containsKey(key)
@@ -181,11 +178,11 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
     }
 
     override fun getTable(key: String): LuaTable? {
-        return (table[key] as? AbstractMap<*, *>?)?.let { JNLuaTable(it) }
+        return (table[key] as? AbstractMap<*, *>?)?.let { JNLuaTable(serializer, it) }
     }
 
     override fun getTable(key: Int): LuaTable? {
-        return (table[key] as? AbstractMap<*, *>?)?.let { JNLuaTable(it) }
+        return (table[key] as? AbstractMap<*, *>?)?.let { JNLuaTable(serializer, it) }
     }
 
     override fun set(key: Int, value: LuaTable) {
@@ -240,6 +237,10 @@ class JNLuaTable internal constructor(table: AbstractMap<*, *>) : LuaTable {
             }
         }
         return result.toTypedArray()
+    }
+
+    override fun <T> asObject(type: Class<T>): T? {
+        return serializer.toObject(type, table)
     }
 
     override fun getSize(): Int {

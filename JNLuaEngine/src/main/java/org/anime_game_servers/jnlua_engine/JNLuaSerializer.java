@@ -121,24 +121,24 @@ public class JNLuaSerializer extends BaseSerializer {
     @Override
     @Nonnull
     public <T> List<T> toList(Class<T> type, Object obj) {
-        return serializeList(type, (LuaValueProxy) obj);
+        return serializeList(type, (Map<?,?>) obj);
     }
 
     @Override
     public <T> T toObject(Class<T> type, Object obj) {
-        return serialize(type, null, (LuaValueProxy) obj);
+        return serialize(type, null, (Map<?,?>) obj);
     }
 
     @Override
     @Nonnull
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
-        return serializeMap(String.class, type, (LuaValueProxy) obj);
+        return serializeMap(String.class, type, (Map<?,?>) obj);
     }
 
     @Nonnull
     @Override
     public <K,V> Map<K,V> toMap(Class<K> keyType, Class<V> valueType, Object obj) {
-        return serializeMap(keyType, valueType, (LuaValueProxy) obj);
+        return serializeMap(keyType, valueType, (Map<?,?>) obj);
     }
 
     private <T> T objectToClass(Class<T> type, Object value) {
@@ -159,7 +159,7 @@ public class JNLuaSerializer extends BaseSerializer {
         } else if(Enum.class.isAssignableFrom(type)){
             getEnum(value, type);
         } else {
-            object = serialize(type, null, (LuaValueProxy) value);
+            object = serialize(type, null, (Map<?,?>) value);
             if(String.class.isAssignableFrom(type)){
                 return (T) String.valueOf(object);
             }
@@ -168,14 +168,14 @@ public class JNLuaSerializer extends BaseSerializer {
         return (T) object;
     }
 
-    private <T> List<T> serializeList(Class<T> type, LuaValueProxy table) {
+    private <T> List<T> serializeList(Class<T> type, Map<?, ?> table) {
         return serializeCollection(type, new ArrayList<>(), table);
     }
-    private <T> Set<T> serializeSet(Class<T> type, LuaValueProxy table) {
+    private <T> Set<T> serializeSet(Class<T> type, Map<?, ?> table) {
         return serializeCollection(type, new HashSet<>(), table);
     }
 
-    public <T, Y extends Collection<T>> Y serializeCollection(Class<T> type, Y target, LuaValueProxy table) {
+    public <T, Y extends Collection<T>> Y serializeCollection(Class<T> type, Y target, Map<?, ?> table) {
 
         if (table == null) {
             return target;
@@ -204,7 +204,7 @@ public class JNLuaSerializer extends BaseSerializer {
         return target;
     }
 
-    public <T> T serialize(Class<T> type, @Nullable Field field, LuaValueProxy table) {
+    public <T> T serialize(Class<T> type, @Nullable Field field, Map<?, ?> table) {
         T object = null;
 
         if (type == List.class) {
@@ -251,7 +251,7 @@ public class JNLuaSerializer extends BaseSerializer {
                 return object;
             }
 
-            var tableObj = (AbstractTableMap<String>) table;
+            var tableObj = (Map<String, Object>) table;
             for (var k : tableObj.entrySet()) {
                 try {
                     var keyName = k.getKey();
@@ -274,12 +274,12 @@ public class JNLuaSerializer extends BaseSerializer {
                     } else if (fieldMeta.getType().equals(boolean.class)) {
                         set(object, fieldMeta, methodAccess, (boolean) keyValue);
                     } else if (fieldMeta.getType().equals(List.class)) {
-                        LuaValueProxy objTable = (LuaValueProxy) tableObj.get(k.getKey());
+                        var objTable = (Map<?,?>) tableObj.get(k.getKey());
                         Class<?> listType = getCollectionType(type, fieldMeta.getField());
                         List<?> listObj = serializeList(listType, objTable);
                         set(object, fieldMeta, methodAccess, listObj);
                     } else if (fieldMeta.getType().equals(Set.class)) {
-                        LuaValueProxy objTable = (LuaValueProxy) tableObj.get(k.getKey());
+                        var objTable = (Map<?,?>) tableObj.get(k.getKey());
                         Class<?> listType = getCollectionType(type, fieldMeta.getField());
                         Set<?> listObj = serializeSet(listType, objTable);
                         set(object, fieldMeta, methodAccess, listObj);
@@ -289,7 +289,7 @@ public class JNLuaSerializer extends BaseSerializer {
                             set(object, fieldMeta, methodAccess, enumValue);
                         }
                     } else {
-                        set(object, fieldMeta, methodAccess, serialize(fieldMeta.getType(), fieldMeta.getField(), (LuaValueProxy) keyValue));
+                        set(object, fieldMeta, methodAccess, serialize(fieldMeta.getType(), fieldMeta.getField(), (Map<?,?>) keyValue));
                     }
                 } catch (Exception ex) {
                    logger.error(ex, () -> "Exception serializing");
@@ -302,17 +302,15 @@ public class JNLuaSerializer extends BaseSerializer {
         return object;
     }
 
-    public <K,V> Map<K, V> serializeMap(Class<K> typeKey, Class<V> typeValue, LuaValueProxy table) {
+    public <K,V> Map<K, V> serializeMap(Class<K> typeKey, Class<V> typeValue, Map<?, ?> table) {
         Map<K, V> map = new HashMap<>();
 
         if (table == null) {
             return map;
         }
 
-        var tableObj = (Map<Object, Object>) table;
-
         try {
-            for (var k : tableObj.entrySet()) {
+            for (var k : table.entrySet()) {
                 try {
                     K key = objectToClass(typeKey, k.getKey());
                     if(key == null){

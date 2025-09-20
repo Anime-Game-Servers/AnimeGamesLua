@@ -97,6 +97,7 @@ interface LuaTable {
     fun getAsFloatArray(): FloatArray
     fun getAsDoubleArray(): DoubleArray
     fun getAsStringArray(): Array<String>
+    fun <T> asObject(type: Class<T>): T?
 
     fun getSize(): Int
 
