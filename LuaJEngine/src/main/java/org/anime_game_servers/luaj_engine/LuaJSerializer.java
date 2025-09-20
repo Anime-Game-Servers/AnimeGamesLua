@@ -12,6 +12,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.ast.Str;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -49,6 +50,7 @@ public class LuaJSerializer extends BaseSerializer {
         return null;
     }
 
+    @Nonnull
     @Override
     public <T> List<T> toList(Class<T> type, Object obj) {
         return serializeList(type, (LuaTable) obj);
@@ -59,9 +61,16 @@ public class LuaJSerializer extends BaseSerializer {
         return serialize(type, null, (LuaTable) obj);
     }
 
+    @Nonnull
     @Override
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
-        return serializeMap(String.class, type, (LuaTable) obj);
+        return toMap(String.class, type, obj);
+    }
+
+    @Override
+    @Nonnull
+    public <K,V> Map<K,V> toMap(Class<K> keyType, Class<V> valueType, Object obj) {
+        return serializeMap(keyType, valueType, (LuaTable) obj);
     }
 
     @Nullable
@@ -70,10 +79,22 @@ public class LuaJSerializer extends BaseSerializer {
 
         if (keyValue.istable()) {
             object = serialize(type, null, keyValue.checktable());
-        } else if (keyValue.isint()) {
-            object = (Integer) keyValue.toint();
         } else if (keyValue.isnumber()) {
-            object = (Float) keyValue.tofloat(); // terrible...
+            if(type.equals(int.class) || type.equals(Integer.class)){
+                object = (Integer) keyValue.toint();
+            } else if (type.equals(long.class) || type.equals(Long.class)) {
+                object = (Long) keyValue.tolong();
+            } else if (type.equals(double.class) || type.equals(Double.class)) {
+                object = (Double) keyValue.todouble();
+            } else if (type.equals(float.class) || type.equals(Float.class)) {
+                object = (Float) keyValue.tofloat();
+            } else if(type.equals(String.class)) {
+                object = (String) keyValue.tojstring();
+            } else if (type.equals(boolean.class) || type.equals(Boolean.class)){
+                object = (Boolean) (keyValue.toint() != 0);
+            } else if(Enum.class.isAssignableFrom(type)){
+                object = getEnum(keyValue, type);
+            }
         } else if (keyValue.isstring()) {
             object = keyValue.tojstring();
         } else if (keyValue.isboolean()) {
@@ -91,6 +112,7 @@ public class LuaJSerializer extends BaseSerializer {
             return (T) object;
         }
     }
+
 
     private <K,V> Map<K, V> serializeMap(Class<K> typeKey, Class<V> typeValue, LuaTable table) {
         Map<K, V> map = new HashMap<>();
@@ -145,9 +167,19 @@ public class LuaJSerializer extends BaseSerializer {
 
         try {
             LuaValue[] keys = table.keys();
-            for (LuaValue k : keys) {
+            var areNumberKeys = true;
+            for (var key : keys) {
+                if (!key.isinttype()) {
+                    areNumberKeys = false;
+                    break;
+                }
+            }
+            if(areNumberKeys){
+                Arrays.sort(keys, Comparator.comparingInt(LuaValue::toint));
+            }
+            for (var k : keys) {
                 try {
-                    LuaValue keyValue = table.get(k);
+                    var keyValue = table.get(k);
 
                     T object = valueToType(type, keyValue);
 

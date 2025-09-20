@@ -1,11 +1,11 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 jvmTargetVersion = "17"
 # https://github.com/Kotlin/kotlinx-io/releases
 kx_io = "0.8.0"
 # https://github.com/oshai/kotlin-logging/releases
-logger = "7.0.12"
+logger = "7.0.13"
 # https://mvnrepository.com/artifact/com.esotericsoftware/reflectasm/1.11.9  // TODO not maintained anymore
 reflectasm = "1.11.9"
 # https://github.com/ronmamo/reflections/releases // TODO not maintained anymore
@@ -13,15 +13,13 @@ reflections = "0.10.2"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://projectlombok.org/download
-lombok_libs = "1.18.38"
+lombok_libs = "1.18.42"
 # https://plugins.gradle.org/plugin/io.freefair.lombok
-lombok_plugin = "8.14"
+lombok_plugin = "8.14.2"
 # https://github.com/davidmoten/rtree-multi/releases
 rtree_multi = "0.1"
 
 ## testing libs
-# https://github.com/junit-team/junit5/releases
-junit = "5.10.1"
 
 ## ags libs
 # https://github.com/Hartie95/JNLua_GC
@@ -45,7 +43,7 @@ findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "j
 jvm-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok_libs" }
 jvm-rtree-multi = { module = "com.github.davidmoten:rtree-multi", version.ref = "rtree_multi" }
 
-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 jvm-jnlua = { module = "org.anime_game_servers:JNLua_GC", version.ref = "luaEngine_jnlua" }
 jvm-luaj = { module = "org.anime_game_servers:luaj", version.ref = "luaEngine_luaj" }

@@ -11,7 +11,6 @@ group = "org.anime_game_servers.lua"
 kotlin {
     jvmToolchain(libs.versions.jvmTargetVersion.get().toInt())
     jvm {
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
@@ -51,6 +50,9 @@ kotlin {
             }
         }
         val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
         }
         val jvmMain by getting {
             dependencies {
@@ -63,7 +65,6 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                implementation(libs.junit)
                 implementation(project(":base"))
                 implementation(project(":LuaJEngine"))
                 implementation(project(":JNLuaEngine"))

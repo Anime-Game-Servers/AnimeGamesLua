@@ -137,18 +137,17 @@ abstract class ParsingTest{
         assert(script.hasMethod("expectIntArray"))
         val luaValue = script.callMethod("expectIntArray", context)!!
         assert(luaValue.isTable())
-        val intArrayMap = luaValue.asObject(Map::class.java)
+        val intArrayMap = luaValue.asMap(Int::class.java, Int::class.java)
         assert(intArrayMap != null)
         assert(intArrayMap!!.size == 5)
         intArrayMap.forEach { (key, value) ->
-            val key = if(key is String) key.toInt() else key
             assert(key == value)
         }
 
         assert(script.hasMethod("expectObjectTable"))
         val objectTableResult = script.callMethod("expectObjectTable", context)!!
         assert(objectTableResult.isTable())
-        val objectMap = objectTableResult.asObject(Map::class.java)
+        val objectMap = objectTableResult.asMap(String::class.java, Int::class.java)
         assert(objectMap != null)
         assert(objectMap!!.size == 3)
         assert(objectMap["x"] == 1)

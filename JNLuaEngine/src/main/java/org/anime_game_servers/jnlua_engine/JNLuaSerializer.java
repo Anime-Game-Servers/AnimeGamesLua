@@ -8,10 +8,9 @@ import org.anime_game_servers.lua.serialize.BaseSerializer;
 import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.jnlua.util.AbstractTableMap;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -120,6 +119,7 @@ public class JNLuaSerializer extends BaseSerializer {
 
     // ...
     @Override
+    @Nonnull
     public <T> List<T> toList(Class<T> type, Object obj) {
         return serializeList(type, (LuaValueProxy) obj);
     }
@@ -130,8 +130,15 @@ public class JNLuaSerializer extends BaseSerializer {
     }
 
     @Override
+    @Nonnull
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
         return serializeMap(String.class, type, (LuaValueProxy) obj);
+    }
+
+    @Nonnull
+    @Override
+    public <K,V> Map<K,V> toMap(Class<K> keyType, Class<V> valueType, Object obj) {
+        return serializeMap(keyType, valueType, (LuaValueProxy) obj);
     }
 
     private <T> T objectToClass(Class<T> type, Object value) {
@@ -176,6 +183,7 @@ public class JNLuaSerializer extends BaseSerializer {
 
         var tableObj = (Map<String, Object>) table;
         try {
+            // TODO sort to make sure index order is correct?
             for (var k : tableObj.entrySet()) {
                 try {
                     var keyValue = k.getValue();

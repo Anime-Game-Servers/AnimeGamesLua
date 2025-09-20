@@ -239,7 +239,7 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         assert(script.hasMethod("testScriptLibStatic"))
         val callResult = script.callMethod("testScriptLibStatic", wrappedContext, args)!!
         assert(callResult.isTable())
-        val result = callResult.asObject(Map::class.java)
+        val result = callResult.asMap(String::class.java, Int::class.java)
         assert(result != null)
         assert(result!!.size == 3)
         result.forEach { (_, ret) -> assert(ret == 0) }
@@ -265,7 +265,7 @@ abstract class ScriptLibStaticTest : BaseScriptLibTest(){
         assert(script.hasMethod("testScriptLibStaticCompat"))
         val compatCallResult = script.callMethod("testScriptLibStaticCompat", wrappedContext, args)!!
         assert(compatCallResult.isTable())
-        val compatResult = compatCallResult.asObject(Map::class.java)
+        val compatResult = compatCallResult.asMap(String::class.java, Int::class.java)
         assert(compatResult != null)
         assert(compatResult!!.size == 2)
         compatResult.forEach { (_, ret) -> assert(ret == 0) }

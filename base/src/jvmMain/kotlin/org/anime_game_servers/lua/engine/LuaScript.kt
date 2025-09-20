@@ -13,7 +13,7 @@ interface LuaScript {
     fun evaluate()
     fun <T> getGlobalVariable(name: String, type: Class<T>): T?
     fun <T> getGlobalVariableList(name: String, type: Class<T>): List<T>
-    fun <T> getGlobalVariableMap(name: String, type: Class<T>): Map<String, T>
+    fun <K,V> getGlobalVariableMap(name: String, keyType: Class<K>, valueType: Class<V>): Map<K, V>
     val engine: LuaEngine?
 
 

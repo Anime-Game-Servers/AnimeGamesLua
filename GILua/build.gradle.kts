@@ -19,8 +19,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:${libs.versions.junit}"))
-    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
     testImplementation(project(":LuaJEngine"))
     testImplementation(project(":JNLuaEngine"))
     compileOnly(libs.jvm.lombok)

@@ -46,7 +46,7 @@ interface BaseScriptLoader {
         fun getScriptType(): ScriptType = ScriptType.DATA_STORAGE
     }
 
-    interface ScriptParser {
+    fun interface ScriptParser {
         @Throws(ScriptException::class)
         fun parse(script: LuaScript)
     }

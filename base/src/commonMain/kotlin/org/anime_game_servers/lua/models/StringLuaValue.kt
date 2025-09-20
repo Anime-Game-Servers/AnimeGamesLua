@@ -22,6 +22,8 @@ open class StringLuaValue(protected val value: String) : MockLuaValue {
     override fun asString() = value
 
     override fun <T> asObject(type: Class<T>): T? = null
+    override fun <K, V> asMap(keyType: Class<K>, valueType: Class<V>) = null
+    override fun <T> asList(type: Class<T>) = null
 
     companion object {
         @JvmField
