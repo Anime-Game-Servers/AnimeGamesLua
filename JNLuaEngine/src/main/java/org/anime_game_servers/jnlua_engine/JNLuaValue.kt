@@ -101,4 +101,23 @@ class JNLuaValue internal constructor(private val engine: JNLuaEngine, private v
         // TODO expects LuaValueProxy
         return engine.serializer.toObject(type, value)
     }
+
+    override fun <K, V> asMap(
+        keyType: Class<K>,
+        valueType: Class<V>
+    ): Map<K, V>? {
+        if (value == null || !isTable()) {
+            return null
+        }
+
+        return engine.serializer.toMap(keyType, valueType, value)
+    }
+
+    override fun <T> asList(type: Class<T>): List<T>? {
+        if (value == null || !isTable()) {
+            return null
+        }
+
+        return engine.serializer.toList(type, value)
+    }
 }

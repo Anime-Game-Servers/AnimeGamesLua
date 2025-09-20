@@ -71,4 +71,23 @@ class LuaJValue internal constructor(private val engine: LuaJEngine, private val
 
         return engine.serializer.toObject<T?>(type, value.checktable())
     }
+
+    override fun <K, V> asMap(
+        keyType: Class<K>,
+        valueType: Class<V>
+    ): Map<K, V>? {
+        if (!value.istable()) {
+            return null
+        }
+
+        return engine.serializer.toMap(keyType, valueType, value.checktable())
+    }
+
+    override fun <T> asList(type: Class<T>): List<T>? {
+        if (!value.istable()) {
+            return null
+        }
+
+        return engine.serializer.toList(type, value.checktable())
+    }
 }

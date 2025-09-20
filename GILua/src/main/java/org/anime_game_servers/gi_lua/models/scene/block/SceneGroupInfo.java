@@ -1,10 +1,12 @@
 package org.anime_game_servers.gi_lua.models.scene.block;
 
 import lombok.Getter;
+import lombok.val;
 import org.anime_game_servers.core.base.annotations.lua.LuaNames;
 import org.anime_game_servers.gi_lua.models.PositionImpl;
 import org.anime_game_servers.gi_lua.models.constants.GroupLoadStrategy;
 import org.anime_game_servers.gi_lua.models.scene.SceneMeta;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -68,5 +70,17 @@ public class SceneGroupInfo {
 
     public boolean isReplaceable() {
         return this.isReplaceable != null && this.isReplaceable.isValue();
+    }
+
+
+    @TestOnly
+    public static SceneGroupInfo of(int sceneId, int groupId, int blockId, int activityId){
+        val sceneGroupInfo = new SceneGroupInfo();
+        sceneGroupInfo.sceneMeta = SceneMeta.of(sceneId);
+        sceneGroupInfo.id = groupId;
+        sceneGroupInfo.blockId = blockId;
+        sceneGroupInfo.activityId = activityId;
+
+        return sceneGroupInfo;
     }
 }

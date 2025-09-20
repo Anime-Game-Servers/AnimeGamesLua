@@ -17,8 +17,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:${libs.versions.junit}"))
-    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
     implementation(libs.jvm.kotlin.stdlib)
     api(libs.bundles.jvm.ags.lua.engine)
     implementation(libs.findbugs.jsr305)

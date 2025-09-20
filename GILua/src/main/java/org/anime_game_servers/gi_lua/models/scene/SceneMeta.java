@@ -13,6 +13,7 @@ import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.anime_game_servers.gi_lua.models.loader.GIScriptLoader;
 import org.anime_game_servers.lua.engine.LuaScript;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -42,6 +43,10 @@ public class SceneMeta {
     public static SceneMeta of(int sceneId, GIScriptLoader scriptLoader) {
         return new SceneMeta(sceneId)
                 .load(scriptLoader);
+    }
+    @TestOnly
+    public static SceneMeta of(int sceneId) {
+        return new SceneMeta(sceneId);
     }
 
     private SceneMeta(int sceneId) {
@@ -77,7 +82,7 @@ public class SceneMeta {
     private void loadDummyPoints(GIScriptLoader scriptLoader){
         val scriptParams = new SceneDummyPointScriptLoadParams(sceneId);
         scriptLoader.loadData(scriptParams, (cs -> {
-            this.dummyPoints = cs.getGlobalVariableMap("dummy_points", DummyPoint.class);
+            this.dummyPoints = cs.getGlobalVariableMap("dummy_points", String.class, DummyPoint.class);
         }));
     }
     private void loadBlocks(GIScriptLoader scriptLoader){

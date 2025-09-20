@@ -17,6 +17,7 @@ abstract class BaseSerializer : Serializer {
     abstract fun <T> toObject(type: Class<T>?, obj: Any?): T
 
     abstract fun <T> toMap(type: Class<T>?, obj: Any?): Map<String?, T>?
+    abstract fun <K, V> toMap(keyType: Class<K>?, valueType: Class<V>?, obj: Any?): Map<K, V>?
 
     protected fun getSetterName(fieldName: String?): String? {
         if (fieldName == null || fieldName.length == 0) {

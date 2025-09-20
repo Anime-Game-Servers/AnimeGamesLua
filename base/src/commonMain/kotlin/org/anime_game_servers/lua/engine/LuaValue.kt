@@ -18,5 +18,6 @@ interface LuaValue {
     fun asFloat(): Float
     fun asString(): String?
     fun <T> asObject(type: Class<T>): T?
-
+    fun <K,V> asMap(keyType: Class<K>, valueType: Class<V>): Map<K,V>?
+    fun <T> asList(type: Class<T>): List<T>?
 }
