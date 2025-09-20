@@ -1,22 +1,31 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.activity
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class ChessPoolInfo(
+    @field:LuaNames("pool_id")
     val poolId: Int,
+    @field:LuaNames("entrance_point_id")
     val entrancePointId: Int,
 )
 
 data class ChessRoundInfo(
+    @field:LuaNames("round_id")
     val roundId: Int,
+    @field:LuaNames("pool_info_list")
     val poolInfoList: List<ChessPoolInfo>,
 )
 
 data class ChessPreviewInfo(
+    @field:LuaNames("entrance_point_map")
     val entrancePointMap: Map<Int, Int>,
+    @field:LuaNames("exit_point_id_list")
     val exitPointIdList: List<Int>,
+    @field:LuaNames("entrance_detail_list")
     val entranceDetailList: List<ChessRoundInfo>,
+    @field:LuaNames("ban_card_tag_list")
     val banCardTagList: List<Int>?,
 ) {
     companion object {

@@ -1,18 +1,27 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
 
 data class PoolMonsterTideConfig(
+    @field:LuaNames("total_count")
     val totalCount: Int,
+    @field:LuaNames("min_count")
     val minCount: Int,
+    @field:LuaNames("max_count")
     val maxCount: Int,
     val tag: Int,
+    @field:LuaNames("fill_time")
     val fillTime: Int,
+    @field:LuaNames("fill_count")
     val fillCount: Int,
+    @field:LuaNames("is_ordered")
     val isOrdered: Boolean,
+    @field:LuaNames("is_tag_bit_match")
     val isTagBitMatch: Boolean,
+    @field:LuaNames("sgv_map")
     val sgvMap: Map<String, Number>?,
 ){
     companion object {

@@ -16,47 +16,47 @@ import org.anime_game_servers.lua.engine.LuaTable
 private val scriptLogger = logger {}
 
 data class BeginCameraSceneLookParams(
-    @LuaNames("look_config_id", "look_configid")
+    @field:LuaNames("look_config_id", "look_configid")
     val lookConfigId: Int = 0,
-    @LuaNames("look_pos")
+    @field:LuaNames("look_pos")
     val lookPos: Vector? = null,
     val duration: Float = 1f,
-    @LuaNames("is_force")
+    @field:LuaNames("is_force")
     val isForce: Boolean = false,
-    @LuaNames("is_broadcast")
+    @field:LuaNames("is_broadcast")
     val isBroadcast: Boolean = false,
-    @LuaNames("is_recover_keep_current")
+    @field:LuaNames("is_recover_keep_current")
     val isRecoverKeepCurrent: Boolean = true,
     val delay: Int = 0,
-    @LuaNames("is_allow_input")
+    @field:LuaNames("is_allow_input")
     val isAllowInput: Boolean = false,
-    @LuaNames("is_set_follow_pos")
+    @field:LuaNames("is_set_follow_pos")
     val isSetFollowPos: Boolean = false,
-    @LuaNames("follow_pos")
+    @field:LuaNames("follow_pos")
     val followPos: Vector? = null,
-    @LuaNames("is_force_walk")
+    @field:LuaNames("is_force_walk")
     val isForceWalk: Boolean = false,
-    @LuaNames("is_change_play_mode")
+    @field:LuaNames("is_change_play_mode")
     val isChangePlayMode: Boolean = false,
-    @LuaNames("screen_x")
+    @field:LuaNames("screen_x")
     val screenX: Float = 0f,
-    @LuaNames("screen_y")
+    @field:LuaNames("screen_y")
     val screenY: Float = 0f,
-    @LuaNames("is_set_screenXY")
+    @field:LuaNames("is_set_screenXY")
     val isSetScreenXY: Boolean = false,
-    @LuaNames("other_params")
+    @field:LuaNames("other_params")
     val otherParams: List<String>? = null,
-    @LuaNames("keep_rot_type")
+    @field:LuaNames("keep_rot_type")
     val keepRotType: KeepRotType = KEEP_ROT_X,
-    @LuaNames("custom_radius")
+    @field:LuaNames("custom_radius")
     val customRadius: Float = 0f,
-    @LuaNames("is_abs_follow_pos")
+    @field:LuaNames("is_abs_follow_pos")
     val isAbsFollowPos: Boolean = false,
-    @LuaNames("disable_protect")
+    @field:LuaNames("disable_protect")
     val disableProtect: Boolean = false,
-    @LuaNames("blend_type")
+    @field:LuaNames("blend_type")
     val blendType: Int = 0,
-    @LuaNames("blend_duration")
+    @field:LuaNames("blend_duration")
     val blendDuration: Float = 0f,
 ) {
     companion object {
@@ -100,18 +100,18 @@ data class BeginCameraSceneLookParams(
 }
 
 data class BeginCameraSceneLookTemplateParams(
-    @LuaNames("look_config_id", "look_configid")
+    @field:LuaNames("look_config_id", "look_configid")
     val lookConfigId: Int = 0,
-    @LuaNames("look_pos")
+    @field:LuaNames("look_pos")
     val lookPos: Vector? = null,
-    @LuaNames("is_broadcast")
+    @field:LuaNames("is_broadcast")
     val isBroadcast: Boolean = false,
     val delay: Int = 0,
-    @LuaNames("follow_pos")
+    @field:LuaNames("follow_pos")
     val followPos: Vector? = null,
-    @LuaNames("follow_type")
+    @field:LuaNames("follow_type")
     val followType: FollowType = FOLLOW_TYPE_INIT_FOLLOW_POS,
-    @LuaNames("other_params")
+    @field:LuaNames("other_params")
     val otherParams: List<String>? = null,
 ) {
     companion object {

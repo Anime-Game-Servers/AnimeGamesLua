@@ -6,15 +6,15 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class RefreshGroupParams(
-    @LuaNames("group_id")
+    @field:LuaNames("group_id")
     val groupId: Int,
-    @LuaNames("suite")
+    @field:LuaNames("suite")
     val suiteId: Int,
-    @LuaNames("refresh_level_revise")
+    @field:LuaNames("refresh_level_revise")
     val refreshLevelRevise: Int = 0,
-    @LuaNames("exclude_prev")
+    @field:LuaNames("exclude_prev")
     val excludePrev: Boolean = false,
-    @LuaNames("is_force_random_suite")
+    @field:LuaNames("is_force_random_suite")
     val isForceRandomSuite: Boolean = false,
 ) {
     companion object {

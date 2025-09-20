@@ -1,9 +1,12 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.activity
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 
 data class FungusFighterTrainingParams(
+    @field:LuaNames("rand_index")
     var randIndex: Int,
+    @field:LuaNames("monster_pool_list")
     var monsterPoolList: List<Int>,
 )
 

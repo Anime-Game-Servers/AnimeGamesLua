@@ -31,15 +31,15 @@ enum class RouteType {
 }
 
 data class SetPlatformPointArrayParams(
-    @LuaNames("route_type")
+    @field:LuaNames("route_type")
     val routeType: RouteType?,
-    @LuaNames("turn_mode")
+    @field:LuaNames("turn_mode")
     val turnMode: Boolean = false,
-    @LuaNames("record_mode")
+    @field:LuaNames("record_mode")
     val recordMode: RouteRecordMode = NONE,
-    @LuaNames("speed_level")
+    @field:LuaNames("speed_level")
     val speedLevel: Int = 0,
-    @LuaNames("arrive_range")
+    @field:LuaNames("arrive_range")
     val arriveRange: Float,
 ) {
     companion object {

@@ -5,13 +5,13 @@ import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class RefreshBlossomGroupParams(
-    @LuaNames("group_id")
+    @field:LuaNames("group_id")
     val groupId: Int,
-    @LuaNames("suite_id")
+    @field:LuaNames("suite_id")
     val suiteId: Int,
-    @LuaNames("exclude_prev")
+    @field:LuaNames("exclude_prev")
     val excludePrev: Boolean,
-    @LuaNames("is_delay_unload")
+    @field:LuaNames("is_delay_unload")
     val isDelayUnload: Boolean,
 ){
     companion object {

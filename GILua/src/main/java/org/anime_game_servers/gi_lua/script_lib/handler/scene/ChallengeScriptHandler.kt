@@ -9,7 +9,7 @@ import org.anime_game_servers.lua.engine.LuaTable
 data class CreateFatherChallengeParameters(
     val success: Int,
     val fail: Int,
-    @LuaNames("fail_on_wipe")
+    @field:LuaNames("fail_on_wipe")
     val failOnWipe: Boolean
 ) {
     companion object {

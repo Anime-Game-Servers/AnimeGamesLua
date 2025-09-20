@@ -1,24 +1,59 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.entites
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.gi_lua.utils.ScriptUtils.toVector
 import org.anime_game_servers.lua.engine.LuaTable
 
+private val scriptLogger = logger {}
+
 data class MonsterFaceAvatarParameters(
+    @field:LuaNames("entity_id")
     var entityId: Int,
     var monsters: List<Int>,
     var ranges: Pair<Int, Int>,
     var angle: Int
-)
+) {
+    companion object {
+        fun fromLuaTable(table: LuaTable): MonsterFaceAvatarParameters? {
+            val entityId = table.optInt("entity_id", -1)
+            val monsters = table.getTable("monsters")?.getAsIntArray()?.toList()
+            val ranges = table.getTable("ranges")?.let {
+                val list = it.getAsIntArray()
+                if(list.size != 2){
+                    scriptLogger.error { "[MonsterFaceAvatarParameters] Invalid ranges size ${it.getSize()}" }
+                    return null
+                }
+                Pair(list[0], list[1])
+            }
+            val angle = table.optInt("angle", 0)
+            if(monsters == null || ranges == null || angle == -1 || entityId == -1){
+                scriptLogger.error { "[MonsterFaceAvatarParameters] Invalid or missing monsters, ranges, angle or entityId" }
+                return null
+            }
+            return MonsterFaceAvatarParameters(
+                entityId = entityId,
+                monsters = monsters,
+                ranges = ranges,
+                angle = angle
+            )
+        }
+    }
+}
 
 data class CreateMonsterParameters(
+    @field:LuaNames("config_id")
     var configId: Int,
+    @field:LuaNames("delay_time")
     var delayTime: Int = 0,
     var level: Int = 0,
+    @field:LuaNames("affix_list")
     var affixList: List<Int>? = null,
     var pos: Vector? = null,
     var rot: Vector? = null,
+    @field:LuaNames("server_global_value")
     var sgvTable: Map<String, Number>? = null
 ) {
     companion object {

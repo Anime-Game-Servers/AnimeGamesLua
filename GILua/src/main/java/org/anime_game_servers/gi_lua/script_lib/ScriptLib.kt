@@ -701,22 +701,11 @@ object ScriptLib {
         return context.onGroupContext {
             onGroupMonsterHandler {
                 val table = context.engine.getTable(rawTable)
-                val entityId = table.optInt("entity_id", -1)
-                val monsters = table.getTable("monsters")?.getAsIntArray()?.toList()
-                val angle = table.optInt("angle", -1)
-                val ranges = table.getTable("ranges")?.let {
-                    val list = it.getAsIntArray()
-                    if(list.size != 2){
-                        scriptLogger.error { "[CreateMonsterFaceAvatar] Invalid ranges size ${it.getSize()}" }
-                        return@onGroupMonsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
-                    }
-                    Pair(list[0], list[1])
-                }
-                if(monsters == null || ranges == null || angle == -1 || entityId == -1){
-                    scriptLogger.error { "[CreateMonsterFaceAvatar] Invalid or missing monsters, ranges, angle or entityId" }
+                val params = MonsterFaceAvatarParameters.fromLuaTable(table) ?: run {
+                    scriptLogger.error { "[CreateMonsterFaceAvatar] Invalid parameters: $rawTable" }
                     return@onGroupMonsterHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
-                createMonsterFaceAvatar(this@onGroupContext, MonsterFaceAvatarParameters(entityId, monsters, ranges, angle))
+                createMonsterFaceAvatar(this@onGroupContext, params)
             }
         }
     }
@@ -4756,8 +4745,8 @@ object ScriptLib {
         return context.onGroupContext {
             onFungusFighterHandler {
                 val paramsTable = context.engine.getTable(rawTable)
-                val randIndex = paramsTable.optInt("randIndex", -1)
-                val monsterPoolList = paramsTable.getTable("monsterPoolList")?.getAsIntArray()?.toList()
+                val randIndex = paramsTable.optInt("rand_index", -1)
+                val monsterPoolList = paramsTable.getTable("monster_pool_list")?.getAsIntArray()?.toList()
 
                 if(randIndex == -1 || monsterPoolList == null) {
                     scriptLogger.error { "SetCurFungusFighterTrainingParams: Invalid parameters" }

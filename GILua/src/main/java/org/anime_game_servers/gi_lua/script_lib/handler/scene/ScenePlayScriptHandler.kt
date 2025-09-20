@@ -7,11 +7,11 @@ import org.anime_game_servers.lua.engine.LuaTable
 
 data class PrestartScenePlayBattleParams(
     var duration: Int,
-    @LuaNames("start_cd")
+    @field:LuaNames("start_cd")
     var startCd: Int,
-    @LuaNames("progres_stage")
+    @field:LuaNames("progres_stage")
     var progresStage: List<Int>,
-    @LuaNames("group_id")
+    @field:LuaNames("group_id")
     var groupId: Int,
     var mode: Int = 0,
 ) {
@@ -36,11 +36,11 @@ data class PrestartScenePlayBattleParams(
 
 data class InitSceneMultistagePlayParams(
     val rounds: Int,
-    @LuaNames("init_building_points")
+    @field:LuaNames("init_building_points")
     val initBuildingPoints: Int,
-    @LuaNames("ban_card_tag_list")
+    @field:LuaNames("ban_card_tag_list")
     val banCardTagList: List<Int>? = null,
-    @LuaNames("gallery_stage_count")
+    @field:LuaNames("gallery_stage_count")
     val galleryStageCount: Int,
 ) {
     companion object {
@@ -63,13 +63,13 @@ data class InitSceneMultistagePlayParams(
 data class SetSceneMultiStagePlayValuesParams(
     var round: Int,
     var rounds: Int,
-    @LuaNames("left_monsters")
+    @field:LuaNames("left_monsters")
     var leftMonsters: Int,
-    @LuaNames("max_escapable_monsters")
+    @field:LuaNames("max_escapable_monsters")
     var maxEscapableMonsters: Int,
-    @LuaNames("escaped_monsters")
+    @field:LuaNames("escaped_monsters")
     var escapedMonsters: Int,
-    @LuaNames("stage_bonus_building_points")
+    @field:LuaNames("stage_bonus_building_points")
     var stageBonusBuildingPoints: Int,
 ) {
     companion object {
@@ -94,11 +94,11 @@ data class SetSceneMultiStagePlayValuesParams(
 }
 
 data class StartSceneMultiStagePlayStageParams(
-    @LuaNames("preview_stage_index")
+    @field:LuaNames("preview_stage_index")
     var previewStageIndex: Int,
-    @LuaNames("preview_display_duration")
+    @field:LuaNames("preview_display_duration")
     var previewDisplayDuration: Int,
-    @LuaNames("gallery_stage_index")
+    @field:LuaNames("gallery_stage_index")
     var galleryStageIndex: Int,
 ) {
     companion object {
