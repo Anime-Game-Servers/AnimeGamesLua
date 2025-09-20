@@ -9,9 +9,9 @@ import org.anime_game_servers.lua.engine.LuaTable
 private val scriptLogger = logger {}
 
 data class ModifyClimatePolygonParams(
-    @LuaNames("climate_type")
+    @field:LuaNames("climate_type")
     val climateType: JsonClimateType = NORMAL,
-    @LuaNames("meter_inherit_ratio")
+    @field:LuaNames("meter_inherit_ratio")
     val meterInheritRatio: Float = 0f,
 ) {
     companion object {

@@ -1,5 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.scene
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.models.constants.SealBattleType
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
@@ -64,11 +65,17 @@ interface SealBattleParams {
 
 data class EnergySealBattleParams(
     override val radius: Int,
+    @field:LuaNames("battle_time")
     val battleTime: Int,
+    @field:LuaNames("monster_group_id")
     val monsterGroupId: Int,
+    @field:LuaNames("default_kill_charge")
     val defaultKillCharge: Int,
+    @field:LuaNames("auto_charge")
     val autoCharge: Int,
+    @field:LuaNames("auto_decline")
     val autoDecline: Int,
+    @field:LuaNames("max_energy")
     val maxEnergy: Int,
 ) : SealBattleParams {
     override val sealBattleType: SealBattleType = ENERGY_CHARGE
@@ -76,9 +83,13 @@ data class EnergySealBattleParams(
 
 data class DefaultSealBattleParams(
     override val radius: Int,
+    @field:LuaNames("in_add")
     val inAdd: Int,
+    @field:LuaNames("out_sub")
     val outSub: Int,
+    @field:LuaNames("fail_time")
     val failTime: Int,
+    @field:LuaNames("max_progress")
     val maxProgress: Int,
 ) : SealBattleParams {
     override val sealBattleType: SealBattleType = NONE
@@ -86,8 +97,11 @@ data class DefaultSealBattleParams(
 
 data class MonsterSealBattleParams(
     override val radius: Int,
+    @field:LuaNames("kill_time")
     val killTime: Int,
+    @field:LuaNames("monster_group_id")
     val monsterGroupId: Int,
+    @field:LuaNames("max_progress")
     val maxProgress: Int,
 ) : SealBattleParams {
     override val sealBattleType : SealBattleType = KILL_MONSTER

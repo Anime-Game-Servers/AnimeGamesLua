@@ -1,6 +1,7 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.player
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.gi_lua.models.constants.ExhibitionPlayType
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
 import org.anime_game_servers.lua.engine.LuaTable
@@ -8,7 +9,9 @@ import org.anime_game_servers.lua.engine.LuaTable
 private val scriptLogger = logger {}
 
 data class ExhibitionPlayTarget(
+    @field:LuaNames("play_type")
     val playType: ExhibitionPlayType,
+    @field:LuaNames("gallery_id")
     val galleryId: Int
 ) {
     companion object {

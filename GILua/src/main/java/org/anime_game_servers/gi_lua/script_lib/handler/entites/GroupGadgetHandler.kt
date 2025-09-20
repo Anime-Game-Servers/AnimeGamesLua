@@ -1,5 +1,6 @@
 package org.anime_game_servers.gi_lua.script_lib.handler.entites
 
+import org.anime_game_servers.core.base.annotations.lua.LuaNames
 import org.anime_game_servers.core.gi.models.Vector
 import org.anime_game_servers.gi_lua.models.PositionImpl
 import org.anime_game_servers.gi_lua.script_lib.GroupEventLuaContext
@@ -7,7 +8,9 @@ import org.anime_game_servers.gi_lua.utils.ScriptUtils.toVector
 import org.anime_game_servers.lua.engine.LuaTable
 
 data class RemainGadgetCountParameters(
+    @field:LuaNames("group_id")
     var groupId: Int,
+    @field:LuaNames("gadget_id")
     var gadgetIds: List<Int>?
 ) {
     companion object {
@@ -23,9 +26,11 @@ data class RemainGadgetCountParameters(
 }
 
 data class CreateGadgetParameters(
+    @field:LuaNames("config_id")
     var configId: Int,
     var pos: Vector,
     var rot: Vector,
+    @field:LuaNames("sgv_value")
     var sgvMap: Map<String, Number>? = null,
 ) {
     companion object {

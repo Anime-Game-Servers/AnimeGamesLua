@@ -10,14 +10,14 @@ import org.anime_game_servers.lua.engine.LuaTable
 private val scriptLogger = logger {}
 
 data class AssignPlayerUidOpNotifyParams(
-    @LuaNames("param_index")
+    @field:LuaNames("param_index")
     val paramIndex: Int,
-    @LuaNames("param_list")
+    @field:LuaNames("param_list")
     val paramList: List<Int>,
-    @LuaNames("param_uid_list")
+    @field:LuaNames("param_uid_list")
     val paramUidList: List<Int>,
     val duration: Int,
-    @LuaNames("target_uid_list")
+    @field:LuaNames("target_uid_list")
     val targetUidList: List<Int>,
 ) {
     companion object {
@@ -43,13 +43,13 @@ data class AssignPlayerUidOpNotifyParams(
 }
 
 data class ScenePlaySoundParams(
-    @LuaNames("play_pos")
+    @field:LuaNames("play_pos")
     val playPos: Vector,
-    @LuaNames("sound_name")
+    @field:LuaNames("sound_name")
     val soundName: String = "",
-    @LuaNames("play_type")
+    @field:LuaNames("play_type")
     val playType: Int = 0,
-    @LuaNames("is_broadcast")
+    @field:LuaNames("is_broadcast")
     val isBroadcast: Boolean = false,
 ) {
     companion object {
@@ -73,13 +73,13 @@ data class ScenePlaySoundParams(
 }
 
 data class AssignPlayerShowTemplateReminderParams(
-    @LuaNames("param_vec")
+    @field:LuaNames("param_vec")
     val paramVec: List<Int>,
-    @LuaNames("param_uid_vec")
+    @field:LuaNames("param_uid_vec")
     val paramUidVec: List<Int>,
-    @LuaNames("uid_vec")
+    @field:LuaNames("uid_vec")
     val uidVec: List<Int>,
-    @LuaNames("is_need_cache")
+    @field:LuaNames("is_need_cache")
     val isNeedCache: Boolean = false,
 ) {
     companion object {
