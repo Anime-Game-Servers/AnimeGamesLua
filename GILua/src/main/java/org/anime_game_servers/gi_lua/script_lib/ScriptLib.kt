@@ -4533,10 +4533,11 @@ object ScriptLib {
                     return@onCrystalLinkHandler it.getValue()
                 }
                 val setupParamsTable = context.engine.getTable(rawSetupParamsTable)
-                val setupParams = CrystalLinkTeamSetupParams.fromLuaTable(setupParamsTable) ?: run {
-                    scriptLogger.error { "[CrystalLinkDungeonTeamSetUp] Invalid setup params" }
+                val setupParams = setupParamsTable.asObject(CrystalLinkTeamSetupParams::class.java) ?: run {
+                    scriptLogger.error { "[CrystalLinkDungeonTeamSetUp] Invalid setup params table" }
                     return@onCrystalLinkHandler ScriptLibErrors.INVALID_PARAMETER_TABLE_CONTENT.getValue()
                 }
+
                 crystalLinkDungeonTeamSetUp(this@onGroupContext, configId, setupParams)
             }
         }

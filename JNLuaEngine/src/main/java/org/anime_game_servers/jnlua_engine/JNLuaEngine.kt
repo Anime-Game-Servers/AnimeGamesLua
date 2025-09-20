@@ -70,11 +70,11 @@ class JNLuaEngine(override val scriptConfig: ScriptConfig) : LuaEngine {
     }
 
     override fun getTable(table: Any): LuaTable {
-        return JNLuaTable((table as AbstractMap<*, *>))
+        return JNLuaTable(serializer, (table as AbstractMap<*, *>))
     }
 
     override fun createTable(): LuaTable {
-        return JNLuaTable(JNLuaTableMap<Any, Any>())
+        return JNLuaTable(serializer, JNLuaTableMap<Any, Any>())
     }
 
     companion object {
