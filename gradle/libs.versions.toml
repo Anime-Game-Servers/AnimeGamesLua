@@ -1,6 +1,6 @@
 [versions]
 # https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 jvmTargetVersion = "17"
 # https://github.com/Kotlin/kotlinx-io/releases
 kx_io = "0.8.0"
@@ -15,7 +15,7 @@ jsr305 = "3.0.2"
 # https://projectlombok.org/download
 lombok_libs = "1.18.42"
 # https://plugins.gradle.org/plugin/io.freefair.lombok
-lombok_plugin = "8.14.2"
+lombok_plugin = "9.1.0"
 # https://github.com/davidmoten/rtree-multi/releases
 rtree_multi = "0.1"
 

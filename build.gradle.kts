@@ -5,7 +5,7 @@ plugins {
     id("java")
     id("maven-publish")
     alias(libs.plugins.kotlin.multiplatform) apply false
-    id("org.jetbrains.dokka") version "2.0.0"
+    id("org.jetbrains.dokka") version "2.1.0"
 }
 
 group = "org.anime_game_servers"
